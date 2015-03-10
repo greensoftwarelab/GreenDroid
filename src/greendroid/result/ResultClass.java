@@ -47,14 +47,15 @@ public class ResultClass {
         if(tam == 0) return 1;
         if(tam == 1) return children.get(0).getFactor();
         for(ResultMethod x : children){
-            if(x.getFactor() == 100) y++;
-            else if(x.getFactor() == 200) r++;
-            else g++;
+            if(x.getFactor() == 200) y++;
+            else if(x.getFactor() == 300) r++;
+            else if (x.getFactor() == 100) g++;
         }
-        if(r > (tam/2)) return 200;
-        if(g >= (tam/2)) return 1;
+        if(r==0 && g==0 && y==0) return 400;
+        if(r > (tam/2)) return 300;
+        if(g >= (tam/2)) return 100;
         
-        return 100;
+        return 200;
     }
 
     public void setFactor(int factor) {

@@ -1,0 +1,10 @@
+#Every line describing a project must follow the same template
+#name of the project,name of the package, path to the project folder (ending with a /), path to the test folder (ending with a /)
+
+authenticator,com.google.android.apps.authenticator2,C:/Users/User/workspace/Google Authenticator/,C:/Users/User/workspace/Google Authenticator/tests/
+newsblur,com.newsblur,C:/Users/User/Desktop/Thesis/App's Source Code/NewsBlur-master/clients/android/NewsBlur/,C:/Users/User/Desktop/Thesis/App's Source Code/NewsBlur-master/clients/android/NewsBlurTest/
+apptracker,com.nolanlawson.apptracker,C:/Users/User/Desktop/Thesis/App's Source Code/AppTracker-master/AppTracker/,C:/Users/User/Desktop/Thesis/App's Source Code/AppTracker-master/AppTrackerTest/
+chordreader,com.nolanlawson.chordreader,C:/Users/User/Desktop/Thesis/App's Source Code/ChordReaderRoot-master/ChordReader/,C:/Users/User/Desktop/Thesis/App's Source Code/ChordReaderRoot-master/ChordReaderTest/
+logcat,com.nolanlawson.logcat,C:/Users/User/Desktop/Thesis/App's Source Code/Catlog-master/Catlog/,C:/Users/User/Desktop/Thesis/App's Source Code/Catlog-master/CatlogTest/
+connectbot,org.connectbot,C:/Users/User/workspace/connectbot/,C:/Users/User/workspace/connectbot/tests/
+#duckduckgo,com.duckduckgo.mobile.android,C:/Users/User/Desktop/Thesis/App's Source Code/duckduckgo/,C:/Users/User/Desktop/Thesis/App's Source Code/duckduckgo/tests/

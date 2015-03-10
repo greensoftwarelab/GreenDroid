@@ -265,15 +265,18 @@ public class InstrumentHelper {
             in.close();
         }
         //ADD THE IMPORT OF THE STATIC ESTIMATOR
-        //ImportDeclaration imp1 = new ImportDeclaration(ASTHelper.createNameExpr("measure.util.SystemInfo"), false, false);
+        //jRAPL
+        //ImportDeclaration imp1 = new ImportDeclaration(ASTHelper.createNameExpr("jRAPL.EnergyCheckUtils"), false, false);
         ImportDeclaration imp2 = new ImportDeclaration(ASTHelper.createNameExpr("com.greendroid.StaticEstimator"), false, false);
         if(cu.getImports() != null){
             //cu.getImports().add(imp1);
             cu.getImports().add(imp2);
+            //cu.getImports().add(imp1);
         }else{
             cu.setImports(new LinkedList<ImportDeclaration>());
             //cu.getImports().add(imp1);
             cu.getImports().add(imp2);
+            //cu.getImports().add(imp1);
         }
         String pack = cu.getPackage().getName().toString();
         String cl = cu.getTypes().get(0).getName();
@@ -296,6 +299,7 @@ public class InstrumentHelper {
         }
         */
 
+        //The following condition is NEVER true
         String l = pack+"."+cl;
         if(this.devPackage.equals(l)){
             cDef.setLauncher(true);

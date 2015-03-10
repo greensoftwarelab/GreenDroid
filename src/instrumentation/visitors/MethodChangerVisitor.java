@@ -66,6 +66,7 @@ public class MethodChangerVisitor extends VoidVisitorAdapter {
     public void visit(MethodDeclaration n, Object arg) {
         ClassDefs cDef = (ClassDefs)arg;
         String retType = n.getType().getClass().getName();
+        
         //All the arguments for the function call
         Expression className = new StringLiteralExpr(cDef.getDescriptor());
         Expression method = new StringLiteralExpr(n.getName());
@@ -104,7 +105,7 @@ public class MethodChangerVisitor extends VoidVisitorAdapter {
                     insertIn++;
                 }
                 x.add(insertIn, new ExpressionStmt(mcB));
-
+                
                 MethodCallExpr mcE = new MethodCallExpr();
                 mcE.setName("StaticEstimator.traceMethod");
                 ASTHelper.addArgument(mcE, className);
@@ -126,7 +127,9 @@ public class MethodChangerVisitor extends VoidVisitorAdapter {
                 if(stm.contains("ReturnStmt") || stm.contains("ThrowStmt")){
                     x.add((x.size()-1), new ExpressionStmt(mcE));
                 }else if(retType.contains("VoidType")){
-                    if(!unReachable.hasRet()) x.add(new ExpressionStmt(mcE));
+                    if(!unReachable.hasRet()){
+                        x.add(new ExpressionStmt(mcE));
+                    }
                 }
 
                 ClassM cm = this.getClass(cDef.getName(), cDef.getPack());

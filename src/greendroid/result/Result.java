@@ -35,8 +35,9 @@ public class Result {
     }
 
     public int getFactor() {
-        if(children.isEmpty()) return 0;
-        else return (factor/children.size());
+        //if(children.isEmpty()) return 0;
+        //else return (factor/children.size());
+        return -1;
     }
 
     public void setFactor(int factor) {

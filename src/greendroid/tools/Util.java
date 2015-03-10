@@ -8,7 +8,7 @@ import greendroid.result.ResultMethod;
 import greendroid.result.ResultClass;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import greendroid.result.Result;
-import greendroid.TracedMethod;
+import greendroid.trace.TracedMethod;
 import greendroid.result.ResultPackage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -19,6 +19,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -82,7 +83,7 @@ public class Util {
     
     public static void toJSON(LinkedHashMap<String, LinkedList<TracedMethod>> map, LinkedList<Integer> sfl, String fileJSON) throws IOException{
         Result result = new Result();
-        result.setName("0xBenchmark");
+        result.setName("GreenAnalysis");
         ArrayList<ResultPackage> package_list = new ArrayList<ResultPackage>();
         ArrayList<ResultMethod> method_list;
         int i=0; int size=0, factor=0;
@@ -117,9 +118,50 @@ public class Util {
         mapper.writeValue(new File(fileJSON), result);
     }
     
+    private static int determineLevel(int max){
+        if(max%10 == 0) return 10;
+        if(max%9 == 0) return 9;
+        if(max%8 == 0) return 8;
+        if(max%7 == 0) return 7;
+        if(max%6 == 0) return 6;
+        if(max%5 == 0) return 5;
+        return 4;
+    }
+    
+    public static void createRadar(String className, TracedMethod method){
+        String filename = "D:/tests/"+className+"."+method.getMethod()+".js";
+        System.out.println(filename);
+        ArrayList<Integer> list = new ArrayList(); 
+        list.add(method.getGreen()); list.add(method.getRed()); list.add(method.getYellow()); list.add(method.getOrange()); 
+        int levels = determineLevel(Collections.max(list));
+        String legend = "var LegendOptions = ['"+className+"."+method.getMethod()+"']\n\n";
+        String red = "{axis:\"RED\",value:"+method.getRed()+"}";
+        String orange = "{axis:\"ORANGE\",value:"+method.getOrange()+"}";
+        String yellow = "{axis:\"YELLOW\",value:"+method.getYellow()+"}";
+        String green = "{axis:\"GREEN\",value:"+method.getGreen()+"}";
+        String testResults = "["+red+","+orange+","+yellow+","+green+"]";
+        String data = "var d = ["+testResults+"]\n\n";
+        String size = "var w = 500,\n\th = 500;\n\n";
+        String imported = "var imported = document.createElement('script');\n" +
+                          "imported.src = 'script.js';\n" +
+                          "document.head.appendChild(imported);";
+        String other = "var mycfg = {\n" +
+                       "  w: w,\n" +
+                       "  h: h,\n" +
+                       "  maxValue: "+Collections.max(list)+",\n" +
+                       "  levels: "+levels+",\n" +
+                       "  ExtraWidthX: 300\n" +
+                       "}\n\n";
+        String content = legend+data+size+other+imported;
+        saveFile(filename, content, false);
+    }
+    
     public static void saveFile(String filename, String content, boolean append){
         try {
             File file = new File(filename);
+            if(!file.exists()){
+                file.createNewFile();
+            }
 
             FileWriter fw = new FileWriter(file.getAbsoluteFile(), append);
 
@@ -132,8 +174,8 @@ public class Util {
         }
     }
     
-    public static long readLongsFromFile(String filename){
-        long ret = 0;
+    public static List<Long> readLongsFromFile(String filename){
+        List<Long> ret = new ArrayList<Long>();
         try{
             // Open the file that is the first 
             // command line parameter
@@ -142,17 +184,89 @@ public class Util {
             DataInputStream in = new DataInputStream(fstream);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             String strLine="";
-            long total=0, count=0;
             //Read File Line By Line
             while ((strLine = br.readLine()) != null) {
-                count++;
-                total += Long.parseLong(strLine);
+                ret.add(Long.parseLong(strLine));
             }
-            ret = (long)total/count;
             in.close();
         }catch (Exception e){//Catch exception if any
             System.err.println("Error: " + e);
         }
         return ret;
+    }
+    
+    public static long sum(List<Long> list){
+        long ret = 0;
+        for(Long l : list){
+            ret += l;
+        }
+        return ret;
+    }
+    
+    public static long average(List<Long> list){
+        long ret = 0, sum = 0;
+        for(Long l : list){
+            sum += l;
+        }
+        ret = (long)sum/list.size();
+        return ret;
+    }
+    
+    public static File[] listFilesFromDir(String directory){
+        File dir = new File(directory);
+        File[] list = dir.listFiles();
+        return list;
+    }
+
+    public static File getFileWithName(String directory, String name) {
+        int flagC = 0;
+        
+        File dir = new File(directory);
+        File[] list = dir.listFiles();
+        String compName = name;
+        if(compName.startsWith("*")){
+            flagC += 1;
+            compName = compName.substring(1);
+        }
+        if(name.endsWith("*")){
+            flagC += 2;
+            compName = compName.substring(0, compName.length()-1);
+        }
+        for(int i = 0; i<list.length; i++){
+            switch (flagC){
+                case 0:
+                    if (list[i].getName().equals(compName)) return list[i];
+                    break;
+                case 1:
+                    if (list[i].getName().endsWith(compName)) return list[i];
+                    break;
+                case 2:
+                    if (list[i].getName().startsWith(compName)) return list[i];
+                    break;
+                case 3:
+                    if (list[i].getName().contains(compName)) return list[i];
+                    break;
+                default:
+                    break;
+            }
+        }
+        return null;
+    }
+
+    public static void toCSV(LinkedHashMap<String, LinkedList<TracedMethod>> all, String fileCSV) {
+        String content = "State,Green,Yellow,Orange,Red\n"; 
+        int i = 0;
+        for(String cl : all.keySet()){
+            for(TracedMethod tm : all.get(cl)){
+                i++;
+                if(tm.getGreen()+tm.getYellow()+tm.getOrange()+tm.getRed() == 0){
+                    
+                }else{
+                    content += "m"+i+","+tm.getGreen()+","+tm.getYellow()+","+tm.getOrange()+","+tm.getRed()+""+"\n";
+                }
+                
+            }
+        }
+        saveFile(fileCSV, content, false);
     }
 }

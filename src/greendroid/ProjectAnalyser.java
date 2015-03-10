@@ -4,6 +4,9 @@
  */
 package greendroid;
 
+import greendroid.trace.Consumption;
+import greendroid.trace.TracedMethod;
+import greendroid.trace.TestCase;
 import greendroid.tools.Util;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -17,6 +20,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Random;
 /**
  *
  * @author User
@@ -37,6 +41,8 @@ public class ProjectAnalyser {
     //File with the result of the SFL similarity calculation
     private String fileSFLResult;
     private String fileJSON;
+    private String fileJSON2;
+    private String fileCSV;
     //Strings used to temporarily store the SFL matrices
     private String executionBits;
     private String numExecutions;
@@ -48,7 +54,6 @@ public class ProjectAnalyser {
     private LinkedHashMap<String, LinkedList<TracedMethod>> all;
     private TestCase tCase;
     private LinkedList<TestCase> traced;
-    //private LinkedList<Long> times;
     private LinkedList<Double> times;
     private LinkedList<Consumption> consumptions;
     
@@ -58,6 +63,7 @@ public class ProjectAnalyser {
     private int totalMethods;
     private int totalClasses;
     private int totalPackages; 
+    private String projectN;
     
     /**
      * @param args the command line arguments
@@ -69,6 +75,7 @@ public class ProjectAnalyser {
     
     public ProjectAnalyser(String projectName, String projectPath, String folder){
         String path = folder+projectPath+"//";
+        projectN = projectName;
         testsFolder = path;
         allFolder = testsFolder+"all//";
         traceFile = allFolder+"traceAll";
@@ -80,6 +87,8 @@ public class ProjectAnalyser {
         fileNumExecutions = resultsFolder+"countExecutions.txt";
         fileSFLResult = resultsFolder+"SFLResult.txt";
         fileJSON = resultsFolder+projectName+".json";
+        fileJSON2 = resultsFolder+projectName+"2.json";
+        fileCSV = resultsFolder+projectName+".csv";
         executionBits = "";
         numExecutions = "";
 
@@ -182,10 +191,6 @@ public class ProjectAnalyser {
             String [] x;
             //Read File Line By Line
             while ((strLine = br.readLine()) != null) {
-                if(strLine.contains("NEW MEASURE") && flagC == 1){
-                    consumptions.add(cons);
-                    cons = new Consumption();
-                }
                 if(strLine.contains("[CONSUMPTION]")){
                     flagC = 1;
                     x=strLine.split("[\t]");
@@ -194,19 +199,21 @@ public class ProjectAnalyser {
                     if(x.length == 7){
                         String lcd=x[1], cpu=x[2], wifi=x[3], g3=x[4], gps=x[5], audio=x[6];
                         //l += Integer.parseInt(lcd.split(":")[1]);
-                        l += 0;
-                        c += Integer.parseInt(cpu.split(":")[1]);
-                        w += Integer.parseInt(wifi.split(":")[1]);
-                        g += Integer.parseInt(g3.split(":")[1]);
-                        gp += Integer.parseInt(gps.split(":")[1]);
-                        a += Integer.parseInt(audio.split(":")[1]);
+                        l = 0;
+                        c = Integer.parseInt(cpu.split(":")[1]);
+                        w = Integer.parseInt(wifi.split(":")[1]);
+                        g = Integer.parseInt(g3.split(":")[1]);
+                        gp = Integer.parseInt(gps.split(":")[1]);
+                        a = Integer.parseInt(audio.split(":")[1]);
                         cons = new Consumption(l, c, w, g, gp, a);
                     }else{
                         System.err.println("Error in measures: Unexpected length");
                     }
+                    consumptions.add(cons.clone());
+                    cons = new Consumption();
                 }
             }
-            consumptions.add(cons);
+            
             //for(Long px : consumptions) System.out.println(px);
             //Close the input stream
             in.close();
@@ -236,6 +243,7 @@ public class ProjectAnalyser {
             while ((strLine = br.readLine()) != null) {
                 if(strLine.contains("NEW TRACE")){
                     if(flagT == 1){
+                        tCase.setTime(times.get(conTrace));
                         generateResults();
                         /*tCase.clear();
                         tCase = new TestCase();
@@ -244,11 +252,11 @@ public class ProjectAnalyser {
                         tCase.copyAll(all);
                         //tCase.print();
                     }
-                }else if(strLine.contains("{")){
+                /*}else if(strLine.contains("{")){
                     flagT = 1;
-                    time = Long.parseLong(strLine.substring(1, strLine.length()-1));
+                    //time = Long.parseLong(strLine.substring(1, strLine.length()-1));
                     //tCase.setTime(time);
-                    tCase.setTime(times.get(conTrace));
+                    tCase.setTime(times.get(conTrace));*/
                 }else if(strLine.contains("(BEGIN)")){
                     flagT = 1;
                     x=strLine.split("[\\)@\\[\\]]");
@@ -370,6 +378,7 @@ public class ProjectAnalyser {
     public void saveTestResults() throws IOException{
         int i = 0;
         for(TestCase c : traced){
+            //save the average consumption for this test case
             Util.saveFile("D://meansSecond.txt", c.getMeanSecond()+"\n", true);
             for(String cl : c.getTraced().keySet()){
                 for(TracedMethod t : c.get(cl)){
@@ -377,7 +386,7 @@ public class ProjectAnalyser {
                     numExecutions+=t.getNum_exec()+"\t";
                 }
             }
-            executionBits+=c.getConsumption()+"\t"+c.getTime()+"\n";
+            executionBits+=c.getConsumption().sum()+"\t"+c.getTime()+"\n";
             numExecutions = numExecutions.equals("") ? numExecutions : numExecutions.substring(0, numExecutions.length()-1);
             numExecutions+="\n";
         }
@@ -398,7 +407,7 @@ public class ProjectAnalyser {
         
         file = new File(fileNumExecutions);
 
-        fw = new FileWriter(file.getAbsoluteFile(), true);
+        fw = new FileWriter(file.getAbsoluteFile());
         bw = new BufferedWriter(fw);
         bw.write(numExecutions);
         bw.flush();
@@ -413,21 +422,81 @@ public class ProjectAnalyser {
         getMeasures();
         getTrace();
         /*'generateResults()' is invoked here to assure that the last trace is treated */
+        //readFromMatrix();
         generateResults();
         saveTestResults();
-        
     }
     
     /**Calculates the resulting statistics for the project and corresponding files */
     public void createFinalResults() throws IOException{
-        calculateSFL();
+        classifyMethods("totalmean");
+        Util.toJSON(all, sfl, fileJSON); sfl.clear();
+        classifyMethods("percentage");
+        boolean found = false;
+        while(found){   //never enters here
+            Random rand = new Random();
+            int x = rand.nextInt(all.size());
+            String c = (String)all.keySet().toArray()[x];
+            int y = rand.nextInt(all.get(c).size());
+            TracedMethod m = all.get(c).get(y);
+            Util.createRadar(c.replaceAll("<|>", ""), m);
+        }
         /** */
         //loadSFLResult();    //?
         
-        Util.toJSON(all, sfl, fileJSON);
     }
     
-    private void calculateSFL() {
+    private void classifyMethods(String metric){
+        switch(metric){
+            case "totalmean":
+                classifyMeanApproach();
+                break;
+            case "percentage":
+                classifyPercentageApproach();
+                break;
+            default:
+                //NOT A VALID APPROACH!
+                break;
+        }
+    }
+    
+    private void classifyPercentageApproach(){
+        //List<Long> means = Util.readLongsFromFile("D:/meansSecond.txt");
+        ArrayList<TestCase> reds = new ArrayList<TestCase>();
+        ArrayList<TestCase> greens = new ArrayList<TestCase>();
+        ArrayList<TestCase> yellows = new ArrayList<TestCase>();
+        ArrayList<TestCase> oranges = new ArrayList<TestCase>();
+        int green = 2;        //bellow 70%
+        //int green = 215;        //bellow 70%
+        int yellow = 3;       //between 70% and 80%
+        //int yellow = 366;       //between 70% and 80%
+        int orange = 10;       //between 80% and 90%
+        //int orange = 691;       //between 80% and 90%
+        //int red = 1188;       //above 90%
+        //System.out.println("Yellow: "+yellow+" -> "+means.get(yellow));
+        //System.out.println("Red: "+red+" -> "+means.get(red));
+        for(TestCase tc : traced){
+            double ratio = (double)tc.getMeanSecond()/tc.getNumExecutions();
+            //int ratio = tc.getMeanSecond();
+            if(ratio <= green){
+                //green test case!
+                greens.add(tc);
+            }else if(ratio <= yellow){
+                //yellow test case!
+                yellows.add(tc);
+            }else if(ratio <= orange){
+                //orange test case!
+                oranges.add(tc);
+            }else{
+                //red test case!
+                tc.setExcessive(1);
+                reds.add(tc);
+            }
+        }
+        assignCoefficients(reds, oranges, yellows, greens);
+    }
+    
+    private void classifyMeanApproach() {
         int i;
         long totals = 0, totalMean = 0;
         ArrayList<TestCase> excessives = new ArrayList<TestCase>();
@@ -443,7 +512,6 @@ public class ProjectAnalyser {
         }
         totalMean = (long)totals/consumptions.size();
         */
-        //Util.saveFile("D://meansSecond.txt", totalMean+"\n", false);
         for(TestCase tc : traced){
             if(tc.getMeanSecond() > totalMean){
                 tc.setExcessive(1);
@@ -472,21 +540,139 @@ public class ProjectAnalyser {
                     }
                 }
                 if(exc == 0){
-                    //GREEN!
-                    System.out.println("GREEN");
-                    sfl.add(1);
+                    if(norm == 0){
+                        //WHITE! -> NOT ANALYZED
+                        sfl.add(400);
+                    }else{
+                        //GREEN!
+                        //System.out.println("GREEN");
+                        sfl.add(100);
+                    }
                 //}else if(exc > 0 && norm < (0.4*traced.size())){
                 }else if(exc > 0 && norm < (0.4*(norm+exc))){
                     //RED
-                    System.err.println("RED");
-                    sfl.add(200);
+                    //System.err.println("RED");
+                    sfl.add(300);
                 }else{
                     //YELLOW
-                    System.out.println("YELLOW");
-                    sfl.add(100);
+                    //System.out.println("YELLOW");
+                    sfl.add(200);
                 }
                 i++;
             }
+        }
+    }
+    
+    private void assignCoefficients(ArrayList<TestCase> reds, ArrayList<TestCase> oranges, ArrayList<TestCase> yellows, ArrayList<TestCase> greens) {
+        int i = 0; boolean b = false; int lastR = 0, lastG = 0;
+        String cla = "";
+        TracedMethod toAnalyse = new TracedMethod("null");
+        Random rand = new Random();
+        int x = rand.nextInt(totalMethods);
+        for(String cl : all.keySet()){
+            for(TracedMethod tm : all.get(cl)){
+                i++;
+                for(TestCase tc : reds){
+                    if(tc.hasMethod(cl, tm.getMethod())){
+                        tm.incRed();
+                    }
+                }
+                for(TestCase tc : oranges){
+                    if(tc.hasMethod(cl, tm.getMethod())){
+                        tm.incOrange();
+                    }
+                }
+                for(TestCase tc : yellows){
+                    if(tc.hasMethod(cl, tm.getMethod())){
+                        tm.incYellow();
+                    }
+                }
+                for(TestCase tc : greens){
+                    if(tc.hasMethod(cl, tm.getMethod())){
+                        tm.incGreen();
+                    }
+                }
+                if(tm.getExecuted() == 1 && b == false){
+                    cla = cl;
+                    toAnalyse = tm;
+                    b = true;
+                }
+                if(lastR < tm.getRed()){
+                    lastR = tm.getRed();
+                    cla = cl;
+                    toAnalyse = tm;
+                }
+                /*if(i<x && tm.getExecuted() == 1){
+                    cla = cl;
+                    toAnalyse = tm;
+                }
+                i++;
+                //GARBAGE!
+                /*if(tm.getMethod().contains("getLeft")){
+                    cla = cl;
+                    toAnalyse = tm;
+                }*/
+            }
+        }
+        Util.createRadar(cla.replaceAll("<|>", ""), toAnalyse);
+        Util.toCSV(all, fileCSV);
+        /*System.out.println("->"+projectN);
+        for(TestCase xx: traced){
+            System.out.println(xx.getNumExecutions());
+        }*/
+    }
+
+    @Deprecated
+    private void readFromMatrix() {
+        String result="", result2="";
+        try{
+            // Open the file that is the first 
+            // command line parameter
+            FileInputStream fstream = new FileInputStream("D:\\tests\\org.zeroxlab.zeroxbenchmark\\results\\testResults.txt");
+            // Get the object of DataInputStream
+            DataInputStream in = new DataInputStream(fstream);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String strLine="";
+            String [] x;
+            long c=0;
+            //Read File Line By Line
+            while ((strLine = br.readLine()) != null) {
+                LinkedHashMap<String, LinkedList<TracedMethod>> allN = new LinkedHashMap<String, LinkedList<TracedMethod>>();
+                copy(all, allN);
+                LinkedList<TracedMethod> aux = new LinkedList<TracedMethod>();
+                for(String k : allN.keySet()){
+                    aux.addAll(allN.get(k));
+                }
+                TestCase t = new TestCase();
+                String[] tok = strLine.split("\t");
+                int size = tok.length;
+                int cpu = Integer.parseInt(tok[size-2]);
+                double time = Double.parseDouble(tok[size-1]);
+                t.setConsumption(new Consumption(0, cpu, 0, 0, 0, 0));
+                t.setTime(time);
+                
+                for(int i=0; i<size-2; i++){
+                    if(Integer.parseInt(tok[i]) == 1){
+                        aux.get(i).setExecuted(1);
+                    }
+                }
+                t.setTraced(allN);
+                traced.add(t);
+            }
+            
+            //Close the input stream
+        }catch (Exception e){//Catch exception if any
+            System.err.println("Error: " + e);
+        }
+    }
+    
+    public void copy(LinkedHashMap<String, LinkedList<TracedMethod>> org, LinkedHashMap<String, LinkedList<TracedMethod>> dest){
+        for(String x : org.keySet()){
+            LinkedList<TracedMethod> all = new LinkedList<TracedMethod>();
+            for(TracedMethod t : org.get(x)){
+                all.add(t.clone());
+            }
+            dest.put(x, all);
         }
     }
 

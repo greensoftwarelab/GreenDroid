@@ -18,7 +18,7 @@ Its workflow is the following:
 7. Runs an algorithm to detect methods associated with anomalous energy consumption;
 8. Classify each method analyzed, and generate the result to a JSON file;
 
-The JSON file contains data to be displayed in a sunburst diagram. That diagram can be found [here](http://bl.ocks.org/mbostock/4348373), and a version edited by us can be found [here](https://github.com/MarcoCouto/GreenDroid/tree/master/auxiliar/sunburst/)
+The JSON file contains data to be displayed in a sunburst diagram. That diagram can be found [here](http://bl.ocks.org/mbostock/4348373), and a version edited by us can be found [here](https://github.com/greensoftwarelab/GreenDroid/tree/master/auxiliar/sunburst/)
 
 # Current status
 
