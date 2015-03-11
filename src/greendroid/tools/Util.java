@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import greendroid.result.Result;
 import greendroid.trace.TracedMethod;
 import greendroid.result.ResultPackage;
+import instrumentation.util.PackageM;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
@@ -257,16 +258,23 @@ public class Util {
         String content = "State,Green,Yellow,Orange,Red\n"; 
         int i = 0;
         for(String cl : all.keySet()){
+            String cla = cl.replaceAll("<", "").replaceAll(">", ".");
             for(TracedMethod tm : all.get(cl)){
                 i++;
                 if(tm.getGreen()+tm.getYellow()+tm.getOrange()+tm.getRed() == 0){
                     
                 }else{
-                    content += "m"+i+","+tm.getGreen()+","+tm.getYellow()+","+tm.getOrange()+","+tm.getRed()+""+"\n";
+                    content += cla+"."+tm.getMethod()+","+tm.getGreen()+","+tm.getYellow()+","+tm.getOrange()+","+tm.getRed()+""+"\n";
                 }
                 
             }
         }
         saveFile(fileCSV, content, false);
+    }
+
+    public static void copyAll(List<PackageM> source, List<PackageM> destiny) {
+        for(PackageM obj : source){
+            destiny.add(obj.clone());
+        }
     }
 }

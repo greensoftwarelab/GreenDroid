@@ -20,19 +20,20 @@ import java.util.List;
 import instrumentation.visitors.utils.ClassDefs;
 import instrumentation.util.ClassM;
 import instrumentation.util.PackageM;
+import java.util.LinkedList;
 
 /**
  *
  * @author User
  */
 public class MethodChangerVisitor extends VoidVisitorAdapter {
-    private static ArrayList<PackageM> packages = new ArrayList<PackageM>();
+    private static LinkedList<PackageM> packages = new LinkedList<PackageM>();
     
     public static void restartPackages(){
         packages.clear();
     }
     
-    public static ArrayList<PackageM> getPackages(){
+    public static LinkedList<PackageM> getPackages(){
         return packages;
     }
     
@@ -76,64 +77,66 @@ public class MethodChangerVisitor extends VoidVisitorAdapter {
         if(n.getBody() != null){
             if(n.getBody().getStmts() != null){
                 List<Statement> x = n.getBody().getStmts();
+                //Avoid monitoring getters and setters
+                if(!(n.getName().startsWith("get") || n.getName().startsWith("set")) || x.size() > 1){
+                    MethodCallExpr mcB = new MethodCallExpr();
+                    mcB.setName("StaticEstimator.traceMethod");
+                    ASTHelper.addArgument(mcB, className);
+                    ASTHelper.addArgument(mcB, method);
+                    ASTHelper.addArgument(mcB, flagB);
+                    int insertIn = 0;
+                    if(n.getName().equals("onCreate")){
+                        if(cDef.isLauncher()){
+                            MethodCallExpr mcConfig = new MethodCallExpr();
+                            mcConfig.setName("StaticEstimator.config");
+                            MethodCallExpr getUid = new MethodCallExpr();
+                            getUid.setName("SystemInfo.getInstance().getUidForPid");
+                            MethodCallExpr getPid = new MethodCallExpr();
+                            getPid.setName("android.os.Process.myPid");
+                            ASTHelper.addArgument(getUid, getPid);
+                            ASTHelper.addArgument(mcConfig, new ThisExpr());
+                            ASTHelper.addArgument(mcConfig, getUid);
 
-                MethodCallExpr mcB = new MethodCallExpr();
-                mcB.setName("StaticEstimator.traceMethod");
-                ASTHelper.addArgument(mcB, className);
-                ASTHelper.addArgument(mcB, method);
-                ASTHelper.addArgument(mcB, flagB);
-                int insertIn = 0;
-                if(n.getName().equals("onCreate")){
-                    if(cDef.isLauncher()){
-                        MethodCallExpr mcConfig = new MethodCallExpr();
-                        mcConfig.setName("StaticEstimator.config");
-                        MethodCallExpr getUid = new MethodCallExpr();
-                        getUid.setName("SystemInfo.getInstance().getUidForPid");
-                        MethodCallExpr getPid = new MethodCallExpr();
-                        getPid.setName("android.os.Process.myPid");
-                        ASTHelper.addArgument(getUid, getPid);
-                        ASTHelper.addArgument(mcConfig, new ThisExpr());
-                        ASTHelper.addArgument(mcConfig, getUid);
-                        
-                        MethodCallExpr mcStart = new MethodCallExpr();
-                        mcStart.setName("StaticEstimator.start");
+                            MethodCallExpr mcStart = new MethodCallExpr();
+                            mcStart.setName("StaticEstimator.start");
 
-                        n.getBody().getStmts().add(1, new ExpressionStmt(mcConfig));
-                        n.getBody().getStmts().add(2, new ExpressionStmt(mcStart));
-                        insertIn += 2;
+                            n.getBody().getStmts().add(1, new ExpressionStmt(mcConfig));
+                            n.getBody().getStmts().add(2, new ExpressionStmt(mcStart));
+                            insertIn += 2;
+                        }
+                        insertIn++;
                     }
-                    insertIn++;
-                }
-                x.add(insertIn, new ExpressionStmt(mcB));
-                
-                MethodCallExpr mcE = new MethodCallExpr();
-                mcE.setName("StaticEstimator.traceMethod");
-                ASTHelper.addArgument(mcE, className);
-                ASTHelper.addArgument(mcE, method);
-                ASTHelper.addArgument(mcE, flagE);
+                    x.add(insertIn, new ExpressionStmt(mcB));
 
-                ReturnFlag hasRet = new ReturnFlag();
-                ReturnFlag unReachable = new ReturnFlag();
-                new ReturnVisitor().visit(n, hasRet);
-                new WhileChangerVisitor().visit(n, unReachable);
-                new ForChangerVisitor().visit(n, unReachable);
-                
-                if(hasRet.hasRet()){
-                    new GenericBlockVisitor().visit(n, new ExpressionStmt(mcE));
-                }
+                    MethodCallExpr mcE = new MethodCallExpr();
+                    mcE.setName("StaticEstimator.traceMethod");
+                    ASTHelper.addArgument(mcE, className);
+                    ASTHelper.addArgument(mcE, method);
+                    ASTHelper.addArgument(mcE, flagE);
 
-                MethodDeclaration mt;
-                String stm = x.get(x.size()-1).getClass().getName();
-                if(stm.contains("ReturnStmt") || stm.contains("ThrowStmt")){
-                    x.add((x.size()-1), new ExpressionStmt(mcE));
-                }else if(retType.contains("VoidType")){
-                    if(!unReachable.hasRet()){
-                        x.add(new ExpressionStmt(mcE));
+                    ReturnFlag hasRet = new ReturnFlag();
+                    ReturnFlag unReachable = new ReturnFlag();
+                    new ReturnVisitor().visit(n, hasRet);
+                    new WhileChangerVisitor().visit(n, unReachable);
+                    new ForChangerVisitor().visit(n, unReachable);
+
+                    if(hasRet.hasRet()){
+                        new GenericBlockVisitor().visit(n, new ExpressionStmt(mcE));
                     }
-                }
 
-                ClassM cm = this.getClass(cDef.getName(), cDef.getPack());
-                cm.getMethods().add(n.getName());
+                    MethodDeclaration mt;
+                    String stm = x.get(x.size()-1).getClass().getName();
+                    if(stm.contains("ReturnStmt") || stm.contains("ThrowStmt")){
+                        x.add((x.size()-1), new ExpressionStmt(mcE));
+                    }else if(retType.contains("VoidType")){
+                        if(!unReachable.hasRet()){
+                            x.add(new ExpressionStmt(mcE));
+                        }
+                    }
+
+                    ClassM cm = this.getClass(cDef.getName(), cDef.getPack());
+                    cm.getMethods().add(n.getName());
+                }
             }
         }
     }

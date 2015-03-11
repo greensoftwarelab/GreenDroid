@@ -56,6 +56,10 @@ public class ClassM {
         res+="\n";
         return res;
     }
+    @Override
+    public ClassM clone(){
+        return new ClassM(this.name, this.methods);
+    }
     
     
 }

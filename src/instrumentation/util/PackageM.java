@@ -4,6 +4,7 @@
  */
 package instrumentation.util;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -78,5 +79,15 @@ public class PackageM {
         return true;
     }
     
-    
+    @Override
+    public PackageM clone(){
+        PackageM newP = new PackageM();
+        newP.setName(this.name);
+        List<ClassM> newClasses = new ArrayList<>();
+        for(ClassM c : this.classes){
+            newClasses.add(c.clone());
+        }
+        newP.setClasses(newClasses);
+        return newP;
+    }
 }

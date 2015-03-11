@@ -4,6 +4,7 @@
  */
 package instrumentation.transform;
 
+import greendroid.tools.Util;
 import japa.parser.ASTHelper;
 import japa.parser.JavaParser;
 import japa.parser.ast.CompilationUnit;
@@ -55,6 +56,7 @@ public class InstrumentHelper {
     private String manifestTest;
     private String projectDesc;
     private String devPackage;
+    private ArrayList<PackageM> packages;
 
     public InstrumentHelper() {
     }
@@ -72,6 +74,7 @@ public class InstrumentHelper {
         this.projectDesc = project+".project";
         this.aux = transFolder+"_aux_/";
         this.devPackage = "";
+        this.packages = new ArrayList<>();
         
         instrumented.add("ActivityUnitTestCase");
         instrumented.add("ActivityIntrumentationTestCase2");
@@ -171,6 +174,17 @@ public class InstrumentHelper {
                 FileUtils.copyFile(f, aux);
             }
         }
+        //Save all methods definition in file
+        String allMethods = "";
+        Util.copyAll(MethodChangerVisitor.getPackages(), packages);
+        for(PackageM p : packages){
+            allMethods += p.toString();
+        }
+        File auxF = new File(aux); auxF.mkdir();
+        FileUtils.writeFile(new File(aux+"AllMethods"), allMethods);
+        packages.clear();
+        MethodChangerVisitor.restartPackages();
+        
         this.addPermission();
         File libs = new File(transFolder+"libs");
         if (!libs.exists()) {
@@ -243,12 +257,7 @@ public class InstrumentHelper {
                     FileUtils.copyFile(src, dest);
                 }
     	}
-        String allMethods = "";
-        for(PackageM p : MethodChangerVisitor.getPackages()){
-            allMethods += p.toString();
-        }
-        File auxF = new File(aux); auxF.mkdir();
-        FileUtils.writeFile(new File(aux+"AllMethods"), allMethods);
+        
     }
     
     
@@ -341,6 +350,7 @@ public class InstrumentHelper {
             }
             */
             new MethodChangerVisitor().visit(cu, cDef);
+            
         }
         if(cu != null){
             // prints the changed compilation unit

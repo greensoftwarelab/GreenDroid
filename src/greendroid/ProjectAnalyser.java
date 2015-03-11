@@ -466,18 +466,18 @@ public class ProjectAnalyser {
         ArrayList<TestCase> greens = new ArrayList<TestCase>();
         ArrayList<TestCase> yellows = new ArrayList<TestCase>();
         ArrayList<TestCase> oranges = new ArrayList<TestCase>();
-        int green = 2;        //bellow 70%
-        //int green = 215;        //bellow 70%
-        int yellow = 3;       //between 70% and 80%
-        //int yellow = 366;       //between 70% and 80%
-        int orange = 10;       //between 80% and 90%
-        //int orange = 691;       //between 80% and 90%
+        //int green = 2;        //bellow 70%
+        int green = 215;        //bellow 70%
+        //int yellow = 3;       //between 70% and 80%
+        int yellow = 366;       //between 70% and 80%
+        //int orange = 10;       //between 80% and 90%
+        int orange = 691;       //between 80% and 90%
         //int red = 1188;       //above 90%
         //System.out.println("Yellow: "+yellow+" -> "+means.get(yellow));
         //System.out.println("Red: "+red+" -> "+means.get(red));
         for(TestCase tc : traced){
-            double ratio = (double)tc.getMeanSecond()/tc.getNumExecutions();
-            //int ratio = tc.getMeanSecond();
+            //double ratio = (double)tc.getMeanSecond()/tc.getNumExecutions();
+            long ratio = tc.getMeanSecond();
             if(ratio <= green){
                 //green test case!
                 greens.add(tc);
@@ -614,7 +614,7 @@ public class ProjectAnalyser {
                 }*/
             }
         }
-        Util.createRadar(cla.replaceAll("<|>", ""), toAnalyse);
+        Util.createRadar(cla.replaceAll("<", "").replaceAll(">", "."), toAnalyse);
         Util.toCSV(all, fileCSV);
         /*System.out.println("->"+projectN);
         for(TestCase xx: traced){

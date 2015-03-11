@@ -10,11 +10,4 @@
             </bookmark>
         </file>
     </editor-bookmarks>
-    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
-        <file>file:/C:/Users/User/Documents/NetBeansProjects/GreenDroid%20Analyzer/src/greendroid/Main.java</file>
-        <file>file:/C:/Users/User/Documents/NetBeansProjects/GreenDroid%20Analyzer/src/greendroid/ProjectAnalyser.java</file>
-        <file>file:/C:/Users/User/Documents/NetBeansProjects/GreenDroid%20Analyzer/src/greendroid/trace/TracedMethod.java</file>
-        <file>file:/C:/Users/User/Documents/NetBeansProjects/GreenDroid%20Analyzer/src/greendroid/trace/TestCase.java</file>
-        <file>file:/C:/Users/User/Documents/NetBeansProjects/GreenDroid%20Analyzer/src/greendroid/tools/Util.java</file>
-    </open-files>
 </project-private>

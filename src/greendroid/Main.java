@@ -182,14 +182,14 @@ public class Main {
         System.out.println("Using "+projects.size()+" projects to be analyzed");
         if(projects.size() > 0){
             try{
-/*            //instrument();
+/**/            //instrument();
             System.out.println("INSTRUMENTATION");
             for(Project p : projects){
                 System.out.println("Instrumenting "+p.getName()+" project...");
                 instrument(p.getPathProject(), p.getPathTests());
                 System.out.println("DONE!");
             }
-/*
+/**/
             //executeTests();
             System.out.println("TEST EXECUTION");
             for(Project p : projects){
