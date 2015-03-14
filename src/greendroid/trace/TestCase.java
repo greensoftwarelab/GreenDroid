@@ -6,6 +6,7 @@ package greendroid.trace;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -95,6 +96,16 @@ public class TestCase {
         return res;
     }
     
+    public List<TracedMethod> getExecutedMethods(){
+        LinkedList<TracedMethod> res = new LinkedList<>();
+        for(String s : this.traced.keySet()){
+            for(TracedMethod t : this.traced.get(s)){
+                if(t.getExecuted() == 1) res.add(t);
+            }
+        }
+        return res;
+    }
+    
     public boolean hasMethod(String cla, String met){
         if(!traced.containsKey(cla)) return false;
         else{
@@ -110,7 +121,15 @@ public class TestCase {
     }
     
     public void copyAll(Map<String, LinkedList<TracedMethod>> all){
-        this.traced = all;
+        LinkedList<TracedMethod> list = new LinkedList<>();
+        for(String s : all.keySet()){
+            list = new LinkedList<>();
+            for(TracedMethod t : all.get(s)){
+                list.add(t.clone());
+            }
+            this.traced.put(s, list);
+        }
+//        this.traced=all;
     }
     
     public void clear(){

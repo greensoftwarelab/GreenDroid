@@ -160,4 +160,10 @@ public class TracedMethod {
         TracedMethod tm = new TracedMethod(method, executed, num_exec);
         return tm;
     }
+
+    @Override
+    public String toString() {
+        return "" + method + "[" + executed + ']';
+    }
+    
 }

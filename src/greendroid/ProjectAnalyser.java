@@ -88,7 +88,7 @@ public class ProjectAnalyser {
         fileSFLResult = resultsFolder+"SFLResult.txt";
         fileJSON = resultsFolder+projectName+".json";
         fileJSON2 = resultsFolder+projectName+"2.json";
-        fileCSV = resultsFolder+projectName+".csv";
+        fileCSV = resultsFolder+projectName+"_calls.csv";
         executionBits = "";
         numExecutions = "";
 
@@ -242,6 +242,7 @@ public class ProjectAnalyser {
             //Read File Line By Line
             while ((strLine = br.readLine()) != null) {
                 if(strLine.contains("NEW TRACE")){
+                    c++;
                     if(flagT == 1){
                         tCase.setTime(times.get(conTrace));
                         generateResults();
@@ -273,13 +274,13 @@ public class ProjectAnalyser {
                         TracedMethod tm = new TracedMethod(met, 1, num_exec);
                         if(tCase.containsKey(cla)){
                             if(!tCase.get(cla).contains(tm)){
-                                System.out.println("Detected undefined method: "+met+"@"+cla);
+                                //System.out.println("Detected undefined method: "+met+"@"+cla);
                             }else{
                                 tCase.getMethod(cla, met).setExecuted(1);
                                 tCase.getMethod(cla, met).setNum_exec(num_exec);
                             }
                         }else{
-                            System.out.println("Detected undefined class: "+cla);
+                            //System.out.println("Detected undefined class: "+cla);
                         }
                     }else{
                         System.out.println("[Warning] Bad length. Ignoring...");
@@ -349,20 +350,18 @@ public class ProjectAnalyser {
     
     /**Print all the methods of the project to the standard output */
     public void printAllMethods(){
-        String classes="";
-        String methods="";
+        /*for(TracedMethod tm : traced.get(2).getExecutedMethods()){
+            if(tm.getExecuted() == 1) System.out.println("M:  | "+tm.getMethod());
+        }*/
+
         for(String c : all.keySet()){
-            classes += c;
             for(TracedMethod t : all.get(c)){
-                methods += t.getMethod()+"\t";
-                classes += "\t";
-            }            
+                int x = t.getGreen()+t.getYellow()+t.getOrange()+t.getRed();
+                if(x>=0){
+                    System.out.println(c + ": " + t.toString());
+                }
+            }
         }
-        classes = classes.substring(0, classes.length()-1);
-        methods = methods.substring(0, methods.length()-1);
-        System.out.println(classes);
-        System.out.println(methods);
-        //return classes+"\n"+methods;
     }
     
     /**Generates the results for a test case and resets */
@@ -378,6 +377,7 @@ public class ProjectAnalyser {
     public void saveTestResults() throws IOException{
         int i = 0;
         for(TestCase c : traced){
+            i++;
             //save the average consumption for this test case
             Util.saveFile("D://meansSecond.txt", c.getMeanSecond()+"\n", true);
             for(String cl : c.getTraced().keySet()){
@@ -389,6 +389,7 @@ public class ProjectAnalyser {
             executionBits+=c.getConsumption().sum()+"\t"+c.getTime()+"\n";
             numExecutions = numExecutions.equals("") ? numExecutions : numExecutions.substring(0, numExecutions.length()-1);
             numExecutions+="\n";
+            System.out.println("Done with trace " + i + " out of " + traced.size());
         }
         
         //save SFL Matrix
@@ -424,7 +425,7 @@ public class ProjectAnalyser {
         /*'generateResults()' is invoked here to assure that the last trace is treated */
         //readFromMatrix();
         generateResults();
-        saveTestResults();
+        //saveTestResults();
     }
     
     /**Calculates the resulting statistics for the project and corresponding files */
@@ -466,18 +467,16 @@ public class ProjectAnalyser {
         ArrayList<TestCase> greens = new ArrayList<TestCase>();
         ArrayList<TestCase> yellows = new ArrayList<TestCase>();
         ArrayList<TestCase> oranges = new ArrayList<TestCase>();
-        //int green = 2;        //bellow 70%
-        int green = 215;        //bellow 70%
-        //int yellow = 3;       //between 70% and 80%
-        int yellow = 366;       //between 70% and 80%
-        //int orange = 10;       //between 80% and 90%
-        int orange = 691;       //between 80% and 90%
+        int green = 2;        //bellow 70%
+        //int green = 215;        //bellow 70%
+        int yellow = 3;       //between 70% and 80%
+        //int yellow = 366;       //between 70% and 80%
+        int orange = 10;       //between 80% and 90%
+        //int orange = 691;       //between 80% and 90%
         //int red = 1188;       //above 90%
-        //System.out.println("Yellow: "+yellow+" -> "+means.get(yellow));
-        //System.out.println("Red: "+red+" -> "+means.get(red));
         for(TestCase tc : traced){
-            //double ratio = (double)tc.getMeanSecond()/tc.getNumExecutions();
-            long ratio = tc.getMeanSecond();
+            double ratio = (double)(tc.getMeanSecond()/(tc.getNumExecutions()+1));
+            //long ratio = tc.getMeanSecond();
             if(ratio <= green){
                 //green test case!
                 greens.add(tc);
@@ -597,29 +596,26 @@ public class ProjectAnalyser {
                     toAnalyse = tm;
                     b = true;
                 }
-                if(lastR < tm.getRed()){
+                /*if(lastR < tm.getRed()){
                     lastR = tm.getRed();
                     cla = cl;
                     toAnalyse = tm;
-                }
-                /*if(i<x && tm.getExecuted() == 1){
+                }/*
+                if(i<x && tm.getExecuted() == 1){
                     cla = cl;
                     toAnalyse = tm;
-                }
-                i++;
+                }i++;*/
+                
                 //GARBAGE!
-                /*if(tm.getMethod().contains("getLeft")){
+                if(tm.getMethod().contains("recoverPublicKey") || tm.getMethod().contains("onCreate")){
                     cla = cl;
                     toAnalyse = tm;
-                }*/
+                }
             }
         }
         Util.createRadar(cla.replaceAll("<", "").replaceAll(">", "."), toAnalyse);
         Util.toCSV(all, fileCSV);
-        /*System.out.println("->"+projectN);
-        for(TestCase xx: traced){
-            System.out.println(xx.getNumExecutions());
-        }*/
+        //printAllMethods();
     }
 
     @Deprecated
