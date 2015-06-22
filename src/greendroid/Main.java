@@ -132,7 +132,7 @@ public class Main {
     }
 
     private static void extractFiles() throws IOException {
-        executeCommand("adb pull /mnt/sdcard/Pictures/MyFiles/ "+config.getLocalResDir());
+        executeCommand("adb pull "+config.getDeviceResDir()+" "+config.getLocalResDir());
     }
     
     public static void main(String[] args){
@@ -178,7 +178,7 @@ public class Main {
                 System.gc();
                 System.out.println("DONE!");
             }
-            List<Long> means = Util.readLongsFromFile("D:/meansSecond.txt");
+            List<Long> means = Util.readLongsFromFile(config.getDeviceResDir()+"meansSecond.txt");
             averageSecond = Util.average(means);
             System.out.println("Average Consumption p/ second: "+averageSecond);
 /**/
