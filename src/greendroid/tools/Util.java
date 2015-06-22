@@ -7,6 +7,9 @@ package greendroid.tools;
 import greendroid.result.ResultMethod;
 import greendroid.result.ResultClass;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import greendroid.Main;
+import static greendroid.Main.tName;
+import greendroid.project.Project;
 import greendroid.result.Result;
 import greendroid.trace.TracedMethod;
 import greendroid.result.ResultPackage;
@@ -16,6 +19,8 @@ import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -24,6 +29,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
@@ -277,5 +284,98 @@ public class Util {
         for(PackageM obj : source){
             destiny.add(obj.clone());
         }
+    }
+    
+    public static List<Project> parseProjects(String csvfile) {
+        BufferedReader br = null;
+        List<Project> projects = new LinkedList<>();
+	String line = "";
+	String cvsSplitBy = ",";
+        int cont = 0;
+        try {
+            br = new BufferedReader(new FileReader(csvfile));
+            while ((line = br.readLine()) != null) {
+                cont++;
+                // use comma as separator
+                if(!line.startsWith("#") && !line.isEmpty()){
+                    String[] tokens = line.split(cvsSplitBy);
+                    if(tokens.length != 4){
+                        System.err.println("ERROR: Bad parsing for the projects file!!!");
+                        System.out.println("W: Project described in line "+cont+" will not be considered!");
+                    }else{
+                        projects.add(new Project(tokens[0], tokens[1], tokens[2], tokens[3], tName));
+                    }    
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException e) {
+            e.printStackTrace();
+	} finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+	}
+        return projects;
+    }
+    
+    public static Config parseConfigs(String cfgFile){
+        Config conf = new Config();
+        BufferedReader br = null;
+	String line = "";
+        int cont = 0;
+        try {
+            br = new BufferedReader(new FileReader(cfgFile));
+            while ((line = br.readLine()) != null) {
+                cont++;
+                // use comma as separator
+                if(!line.startsWith("#") && !line.isEmpty()){
+                    String[] tokens = line.split(":");
+                    if(tokens.length != 2){
+                        System.err.println("ERROR: Bad parsing for the config file!!!");
+                        System.out.println("Line "+cont+": "+tokens[0] + "will not be considered");
+                    }else{
+                        switch(tokens[0]){
+                            case "JAVA_PATH":
+                                conf.setJavaPath(tokens[1]);
+                                break;
+                            case "ANT_PATH":
+                                conf.setAntPath(tokens[1]);
+                                break;
+                            case "ANDROID_TOOLS_PATH":
+                                conf.setAndroidPath(tokens[1]);
+                                break;
+                            case "LOCAL_RESULTS_DIR":
+                                conf.setLocalResDir(tokens[1]);
+                                break;
+                            case "DEVICE_RESULTS_DIR":
+                                conf.setDeviceResDir(tokens[1]);
+                                break;
+                            default:
+                                System.err.println("WARNING: Unknown configuration "+tokens[0]);
+                                System.out.println("[Ignoring...]");
+                                break;
+                        }
+                    }    
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException e) {
+            e.printStackTrace();
+	} finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+	}
+        return conf;
     }
 }

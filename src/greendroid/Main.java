@@ -5,6 +5,7 @@
 package greendroid;
 
 import greendroid.project.Project;
+import greendroid.tools.Config;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,11 +14,8 @@ import greendroid.tools.Util;
 import instrumentation.transform.InstrumentHelper;
 import instrumentation.util.FileUtils;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,51 +28,17 @@ public class Main {
     
     public static String tName = "_TRANSFORMED_";
     
-    //public static String configFile = "";
+    public static String configFile = "config.cfg";
     public static String projectsFile = "projects.csv";
     
     private static ArrayList<Project> projects = new ArrayList<Project>();
     private static LinkedList<ProjectAnalyser> analysers = new LinkedList<ProjectAnalyser>();
     
-    private static String resFolder = "";
+    //private static String resFolder = "";
+    private static Config config;
     private static String workspace = "";
     
     public static long averageSecond = 0;
-    
-    private static void parseProjects(String csvfile) {
-        BufferedReader br = null;
-	String line = "";
-	String cvsSplitBy = ",";
-        int cont = 0;
-        try {
-            br = new BufferedReader(new FileReader(csvfile));
-            while ((line = br.readLine()) != null) {
-                cont++;
-                // use comma as separator
-                if(!line.startsWith("#") && !line.isEmpty()){
-                    String[] tokens = line.split(cvsSplitBy);
-                    if(tokens.length != 4){
-                        System.err.println("ERROR: Bad parsing for the projects file!!!");
-                        System.out.println("W: Project described in line "+cont+" will not be considered!");
-                    }else{
-                        projects.add(new Project(tokens[0], tokens[1], tokens[2], tokens[3], tName));
-                    }    
-                }
-            }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException e) {
-            e.printStackTrace();
-	} finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-	}
-    }
     
     private static void instrument(String app, String tests) throws Exception{
         InstrumentHelper helper = new InstrumentHelper(tName, workspace, app, tests);
@@ -83,12 +47,12 @@ public class Main {
     }
     
     private static void executeTests(String pack, String testPack, String pathProject, String pathTests) throws IOException {
-        String resDir = "/mnt/sdcard/Pictures/MyFiles/"+pack+"/";
+        //String resDir = "/mnt/sdcard/Pictures/MyFiles/"+pack+"/";
         
-        String c0 = "adb shell mkdir "+resDir;
+        String c0 = "adb shell mkdir "+config.getDeviceResDir();
         String c1 = "android update project -p \""+pathProject+"\" -n Green && android update test-project -p \""+pathTests+"\" --main \""+pathProject+"\" && ant -f \""+pathTests+"/build.xml\" clean && ant -f \""+pathTests+"/build.xml\" debug";
         String c2 = "adb install -r \""+pathProject+"/bin/Green-debug.apk\" && adb install -r \""+pathTests+"/bin/GreenTest-debug.apk\"";
-        String c3 = "adb shell am instrument -e reportFile ALL-TEST.xml -e reportDir \""+resDir+"\" -e filterTraces false -w "+testPack+"/com.zutubi.android.junitreport.JUnitReportTestRunner";
+        String c3 = "adb shell am instrument -e reportFile ALL-TEST.xml -e reportDir \""+config.getDeviceResDir()+"\" -e filterTraces false -w "+testPack+"/com.zutubi.android.junitreport.JUnitReportTestRunner";
         String c4 = "adb shell \"echo \"1\" > /mnt/sdcard/Pictures/MyFiles/flag\"";
         String c5 = "adb shell am instrument -w "+testPack+"/com.zutubi.android.junitreport.JUnitReportTestRunner";
         String c6 = "adb shell \"echo \"-1\" > /mnt/sdcard/Pictures/MyFiles/flag\"";
@@ -117,11 +81,11 @@ public class Main {
         
         System.out.println("Creating support folder...");
         //executeCommand("mkdir "+resFolder+pack);
-        File allFolder = new File(resFolder+pack+"/all"); allFolder.mkdirs();
+        File allFolder = new File(config.getLocalResDir()+pack+"/all"); allFolder.mkdirs();
         //System.out.println("Creating support folder...");
         //executeCommand("mkdir "+resFolder+pack+"/all");
         File source = new File(pathProject+"/_aux_/AllMethods");
-        File dest = new File(resFolder+pack+"/all/AllMethods"); dest.createNewFile();
+        File dest = new File(config.getLocalResDir()+pack+"/all/AllMethods"); dest.createNewFile();
         System.out.println("Copying file with all methods");
         FileUtils.copyFile(source, dest);
         
@@ -162,22 +126,22 @@ public class Main {
     }
     
     private static void runAnalyser(String name, String pack) throws IOException {
-        ProjectAnalyser pa = new ProjectAnalyser(name, pack, resFolder);
+        ProjectAnalyser pa = new ProjectAnalyser(name, pack, config.getLocalResDir());
         analysers.add(pa);
         pa.execute();
     }
 
     private static void extractFiles() throws IOException {
-        executeCommand("adb pull /mnt/sdcard/Pictures/MyFiles/ "+resFolder);
+        executeCommand("adb pull /mnt/sdcard/Pictures/MyFiles/ "+config.getLocalResDir());
     }
     
     public static void main(String[] args){
         workspace = "C:/Users/User/workspace/";
-        resFolder = "D:\\tests\\";
+        config = Util.parseConfigs(configFile);
         
         //projects.add(new Project("benchmark", "org.zeroxlab.zeroxbenchmark", "C:/Users/User/workspace/bench/", "C:/Users/User/workspace/bench/tests/", tName));
         
-        parseProjects(projectsFile);
+        projects = (ArrayList)Util.parseProjects(projectsFile);
         System.out.println("GREENDROID - Testing Framework for Android Applications\n");
         System.out.println("Using "+projects.size()+" projects to be analyzed");
         if(projects.size() > 0){
