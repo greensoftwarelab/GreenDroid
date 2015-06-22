@@ -64,6 +64,8 @@ public class ProjectAnalyser {
     private int totalClasses;
     private int totalPackages; 
     private String projectN;
+	
+	private static String folder = "";
     
     /**
      * @param args the command line arguments
@@ -74,6 +76,7 @@ public class ProjectAnalyser {
     }
     
     public ProjectAnalyser(String projectName, String projectPath, String folder){
+		this.folder = folder;
         String path = folder+projectPath+"//";
         projectN = projectName;
         testsFolder = path;
@@ -379,7 +382,7 @@ public class ProjectAnalyser {
         for(TestCase c : traced){
             i++;
             //save the average consumption for this test case
-            Util.saveFile("D://meansSecond.txt", c.getMeanSecond()+"\n", true);
+            Util.saveFile(folder+"meansSecond.txt", c.getMeanSecond()+"\n", true);
             for(String cl : c.getTraced().keySet()){
                 for(TracedMethod t : c.get(cl)){
                     executionBits+=t.getExecuted()+"\t";
@@ -462,7 +465,7 @@ public class ProjectAnalyser {
     }
     
     private void classifyPercentageApproach(){
-        //List<Long> means = Util.readLongsFromFile("D:/meansSecond.txt");
+        //List<Long> means = Util.readLongsFromFile(folder+"meansSecond.txt");
         ArrayList<TestCase> reds = new ArrayList<TestCase>();
         ArrayList<TestCase> greens = new ArrayList<TestCase>();
         ArrayList<TestCase> yellows = new ArrayList<TestCase>();
