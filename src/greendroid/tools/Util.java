@@ -326,7 +326,7 @@ public class Util {
     public static Config parseConfigs(String cfgFile){
         Config conf = new Config();
         BufferedReader br = null;
-	String line = "";
+	String line = "", aux = "";
         int cont = 0;
         try {
             br = new BufferedReader(new FileReader(cfgFile));
@@ -334,33 +334,24 @@ public class Util {
                 cont++;
                 // use comma as separator
                 if(!line.startsWith("#") && !line.isEmpty()){
-                    String[] tokens = line.split(":");
-                    if(tokens.length != 2){
-                        System.err.println("ERROR: Bad parsing for the config file!!!");
-                        System.out.println("Line "+cont+": "+tokens[0] + "will not be considered");
+                    aux = line.substring(line.indexOf(':'));
+                    if(line.startsWith("JAVA_PATH")){
+                        conf.setJavaPath(aux);
+                    }else if(line.startsWith("ANT_PATH")){
+                        conf.setAntPath(aux);
+                    }else if(line.startsWith("ANDROID_TOOLS_PATH")){
+                        conf.setAndroidPath(aux);
+                    }else if(line.startsWith("LOCAL_RESULTS_DIR")){
+                        System.out.println("\t\tLOCAL: "+aux);
+                        conf.setLocalResDir(aux);
+                    }else if(line.startsWith("DEVICE_RESULTS_DIR")){
+                        System.out.println("\t\tDEVICE: "+aux);
+                        conf.setDeviceResDir(aux);
                     }else{
-                        switch(tokens[0]){
-                            case "JAVA_PATH":
-                                conf.setJavaPath(tokens[1]);
-                                break;
-                            case "ANT_PATH":
-                                conf.setAntPath(tokens[1]);
-                                break;
-                            case "ANDROID_TOOLS_PATH":
-                                conf.setAndroidPath(tokens[1]);
-                                break;
-                            case "LOCAL_RESULTS_DIR":
-                                conf.setLocalResDir(tokens[1]);
-                                break;
-                            case "DEVICE_RESULTS_DIR":
-                                conf.setDeviceResDir(tokens[1]);
-                                break;
-                            default:
-                                System.err.println("WARNING: Unknown configuration "+tokens[0]);
-                                System.out.println("[Ignoring...]");
-                                break;
-                        }
-                    }    
+                        String[] tokens = line.split(":");
+                        System.err.println("WARNING: Unknown configuration "+tokens[0]);
+                        System.out.println("[Ignoring...]");
+                    }
                 }
             }
         } catch (FileNotFoundException ex) {

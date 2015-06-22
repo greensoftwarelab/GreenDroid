@@ -31,7 +31,7 @@ public class Main {
     public static String configFile = "config.cfg";
     public static String projectsFile = "projects.csv";
     
-    private static ArrayList<Project> projects = new ArrayList<Project>();
+    private static LinkedList<Project> projects = new LinkedList<Project>();
     private static LinkedList<ProjectAnalyser> analysers = new LinkedList<ProjectAnalyser>();
     
     //private static String resFolder = "";
@@ -141,19 +141,19 @@ public class Main {
         
         //projects.add(new Project("benchmark", "org.zeroxlab.zeroxbenchmark", "C:/Users/User/workspace/bench/", "C:/Users/User/workspace/bench/tests/", tName));
         
-        projects = (ArrayList)Util.parseProjects(projectsFile);
+        projects = (LinkedList)Util.parseProjects(projectsFile);
         System.out.println("GREENDROID - Testing Framework for Android Applications\n");
         System.out.println("Using "+projects.size()+" projects to be analyzed");
         if(projects.size() > 0){
             try{
-/*            //instrument();
+            //instrument();
             System.out.println("INSTRUMENTATION");
             for(Project p : projects){
                 System.out.println("Instrumenting "+p.getName()+" project...");
                 instrument(p.getPathProject(), p.getPathTests());
                 System.out.println("DONE!");
             }
-/*
+
             //executeTests();
             System.out.println("TEST EXECUTION");
             for(Project p : projects){
