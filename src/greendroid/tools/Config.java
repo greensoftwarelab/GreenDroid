@@ -15,8 +15,9 @@ public class Config {
     private String androidPath;
     private String localResDir;
     private String deviceResDir;
+    private String projectWorkspaceDir;
 
-    public Config(){
+   	public Config(){
         this.javaPath = "";
         this.antPath = "";
         this.androidPath = "";
@@ -72,5 +73,13 @@ public class Config {
         this.deviceResDir = deviceResDir;
     }
     
+    public String getProjectWorkspaceDir() {
+		return projectWorkspaceDir;
+	}
+
+	public void setProjectWorkspaceDir(String projectWorkspaceDir) {
+		this.projectWorkspaceDir = projectWorkspaceDir;
+	}
+
     
 }

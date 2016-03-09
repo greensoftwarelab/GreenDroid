@@ -334,7 +334,8 @@ public class Util {
                 cont++;
                 // use comma as separator
                 if(!line.startsWith("#") && !line.isEmpty()){
-                    aux = line.substring(line.indexOf(':'));
+                    //FIX JOARI: substring must start after :
+                	aux = line.substring(line.indexOf(':')+1);
                     if(line.startsWith("JAVA_PATH")){
                         conf.setJavaPath(aux);
                     }else if(line.startsWith("ANT_PATH")){
@@ -347,6 +348,9 @@ public class Util {
                     }else if(line.startsWith("DEVICE_RESULTS_DIR")){
                         System.out.println("\t\tDEVICE: "+aux);
                         conf.setDeviceResDir(aux);
+                    }else if(line.startsWith("PROJECT_WORKSPACE_DIR")){
+                        System.out.println("\t\tWORKSPACE: "+aux);
+                        conf.setProjectWorkspaceDir(aux);
                     }else{
                         String[] tokens = line.split(":");
                         System.err.println("WARNING: Unknown configuration "+tokens[0]);
