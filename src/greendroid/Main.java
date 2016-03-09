@@ -36,12 +36,11 @@ public class Main {
     
     //private static String resFolder = "";
     private static Config config;
-    private static String workspace = "";
-    
+        
     public static long averageSecond = 0;
     
     private static void instrument(String app, String tests) throws Exception{
-        InstrumentHelper helper = new InstrumentHelper(tName, workspace, app, tests);
+        InstrumentHelper helper = new InstrumentHelper(tName, config.getProjectWorkspaceDir(), app, tests);
         helper.generateTransformedProject();
         helper.generateTransformedTests();
     }
@@ -53,9 +52,9 @@ public class Main {
         String c1 = "android update project -p \""+pathProject+"\" -n Green && android update test-project -p \""+pathTests+"\" --main \""+pathProject+"\" && ant -f \""+pathTests+"/build.xml\" clean && ant -f \""+pathTests+"/build.xml\" debug";
         String c2 = "adb install -r \""+pathProject+"/bin/Green-debug.apk\" && adb install -r \""+pathTests+"/bin/GreenTest-debug.apk\"";
         String c3 = "adb shell am instrument -e reportFile ALL-TEST.xml -e reportDir \""+config.getDeviceResDir()+"\" -e filterTraces false -w "+testPack+"/com.zutubi.android.junitreport.JUnitReportTestRunner";
-        String c4 = "adb shell \"echo \"1\" > /mnt/sdcard/Pictures/MyFiles/flag\"";
+        String c4 = "adb shell \"echo \"1\" > "+config.getDeviceResDir()+"/flag\"";
         String c5 = "adb shell am instrument -w "+testPack+"/com.zutubi.android.junitreport.JUnitReportTestRunner";
-        String c6 = "adb shell \"echo \"-1\" > /mnt/sdcard/Pictures/MyFiles/flag\"";
+        String c6 = "adb shell \"echo \"-1\" > "+config.getDeviceResDir()+"/flag\"";
         
         String[] commands = new String[7];
         commands[0]=c0; commands[1]=c1; commands[2]=c2; commands[3]=c3; commands[4]=c4; commands[5]=c5; commands[6]=c6;
@@ -136,8 +135,8 @@ public class Main {
     }
     
     public static void main(String[] args){
-        workspace = "C:/Users/User/workspace/";
-        config = Util.parseConfigs(configFile);
+        //JOARI FIX: workspace path moved to config.cfg
+    	config = Util.parseConfigs(configFile);
         
         //projects.add(new Project("benchmark", "org.zeroxlab.zeroxbenchmark", "C:/Users/User/workspace/bench/", "C:/Users/User/workspace/bench/tests/", tName));
         
