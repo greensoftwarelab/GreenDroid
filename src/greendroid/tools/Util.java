@@ -9,11 +9,13 @@ import greendroid.result.ResultClass;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import greendroid.Main;
 import static greendroid.Main.tName;
+import static greendroid.Main.localFolder;
 import greendroid.project.Project;
+import greendroid.project.TestResult;
 import greendroid.result.Result;
 import greendroid.trace.TracedMethod;
 import greendroid.result.ResultPackage;
-import instrumentation.util.PackageM;
+import greendroid.trace.Consumption;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
@@ -23,7 +25,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -38,6 +43,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.json.Json;
+import javax.json.stream.JsonParser;
+import javax.json.stream.JsonParser.Event;
+import static javax.json.stream.JsonParser.Event.*;
 /**
  *
  * @author User
@@ -61,7 +70,7 @@ public class Util {
     public static List<Double> getXMLTimes(String file){
         LinkedList<Double> res = new LinkedList<Double>();
         try {
-            String time = "";
+            String time = "", name = "";
             File fXmlFile = new File(file);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -79,7 +88,10 @@ public class Util {
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element elem = (Element) node;
                     time = elem.getAttribute("time");
-                    res.add(Double.parseDouble(time));
+                    name = elem.getAttribute("name");
+                    if(!name.contains("TestCaseSetupProperly")){
+                        res.add(Double.parseDouble(time));
+                    }
                 }
             }
 
@@ -136,8 +148,7 @@ public class Util {
         return 4;
     }
     
-    public static void createRadar(String className, TracedMethod method){
-        String filename = "D:/tests/"+className+"."+method.getMethod()+".js";
+    public static void createRadar(String className, TracedMethod method, String filename){
         System.out.println(filename);
         ArrayList<Integer> list = new ArrayList(); 
         list.add(method.getGreen()); list.add(method.getRed()); list.add(method.getYellow()); list.add(method.getOrange()); 
@@ -216,7 +227,7 @@ public class Util {
         for(Long l : list){
             sum += l;
         }
-        ret = (long)sum/list.size();
+        ret = list.isEmpty() ? 0 : (long)sum/list.size();
         return ret;
     }
     
@@ -280,11 +291,7 @@ public class Util {
         saveFile(fileCSV, content, false);
     }
 
-    public static void copyAll(List<PackageM> source, List<PackageM> destiny) {
-        for(PackageM obj : source){
-            destiny.add(obj.clone());
-        }
-    }
+
     
     public static List<Project> parseProjects(String csvfile) {
         BufferedReader br = null;
@@ -303,7 +310,7 @@ public class Util {
                         System.err.println("ERROR: Bad parsing for the projects file!!!");
                         System.out.println("W: Project described in line "+cont+" will not be considered!");
                     }else{
-                        projects.add(new Project(tokens[0], tokens[1], tokens[2], tokens[3], tName));
+                        projects.add(new Project(tokens[0], tokens[1], tokens[2], tokens[3], tName, localFolder));
                     }    
                 }
             }
@@ -368,5 +375,85 @@ public class Util {
             }
 	}
         return conf;
+    }
+    
+    public static List<Project> getProjectsFromJSON(String filename) throws IOException{
+        ArrayList<Project> projects = new ArrayList<>();
+        Project paux = new Project();
+        Double time=0.0; Long cons=0l; int test=0;
+        
+        byte[] b = Files.readAllBytes(Paths.get(filename));
+        if(b.length == 0){
+            System.out.println("[GD] WARNING: The projects database exists, but its empty.");
+            return new ArrayList<>();
+        }
+        InputStream fis = new FileInputStream(filename);
+        JsonParser jsonParser = Json.createParser(fis);
+        
+        Event lastEvent = null;
+        String lastKey = "";
+         while (jsonParser.hasNext()) {
+            Event event = jsonParser.next();
+            switch (event) {
+                case START_OBJECT:
+                    lastEvent=START_OBJECT;
+                    break;
+                case END_OBJECT:
+                    lastEvent=END_OBJECT;
+                    if(lastKey.equals("time")){
+                        paux.getTestsResults().put(test, new TestResult(cons, time));
+                    }
+                    if((lastKey.equals("results") || lastKey.equals("time")) && (jsonParser.hasNext())){
+                        projects.add(paux.clone());
+                        paux = new Project();
+                    }
+                    break;
+                case START_ARRAY:
+                    lastEvent=START_ARRAY;
+                    break;
+                case END_ARRAY:
+                    lastEvent=END_ARRAY;
+                    break;
+                case KEY_NAME:
+                    lastEvent=KEY_NAME;
+                    lastKey=jsonParser.getString();
+                    break;
+                case VALUE_STRING:
+                    switch (lastKey){
+                        case "package":
+                            paux.setPackage(jsonParser.getString());
+                            break;
+                        case "time":
+                            time = Double.parseDouble(jsonParser.getString());
+                            break;
+                        default:
+                            //do nothing
+                    }
+                    lastEvent=VALUE_STRING;
+                    break;
+                case VALUE_NUMBER:
+                    lastEvent=VALUE_NUMBER;
+                    if(lastKey.equals("consumption")){
+                        cons = jsonParser.getLong();
+                    }else if(lastKey.equals("test")){
+                        test = jsonParser.getInt();
+                    }
+                    break;
+                case VALUE_FALSE:
+                    lastEvent=VALUE_FALSE;
+                    break;
+                case VALUE_TRUE:
+                    lastEvent=VALUE_TRUE;
+                    break;
+                case VALUE_NULL:
+                    lastEvent=VALUE_NULL;
+                    break;
+                default:
+                    // we are not looking for other events
+            }
+        }
+        fis.close();
+        jsonParser.close();
+        return projects;
     }
 }

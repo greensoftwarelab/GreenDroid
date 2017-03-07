@@ -2,13 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package instrumentation.util;
+package greendroid.tools;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -37,13 +35,13 @@ public class XMLParser {
     
     private static ArrayList<String> editedProjects = new ArrayList<String>();
     
-    private static String permExt = "android.permission.WRITE_EXTERNAL_STORAGE";
-    private static String permInt = "android.permission.INTERNET";
-    private static String permLoc = "android.permission.ACCESS_FINE_LOCATION";
-    private static String permWifi = "android.permission.ACCESS_WIFI_STATE";
-    private static String permPhone = "android.permission.READ_PHONE_STATE";
-    private static String permNet = "android.permission.ACCESS_NETWORK_STATE";
-    private static String permBoot = "android.permission.RECEIVE_BOOT_COMPLETED";
+    private static final String permExt = "android.permission.WRITE_EXTERNAL_STORAGE";
+    private static final String permInt = "android.permission.INTERNET";
+    private static final String permLoc = "android.permission.ACCESS_FINE_LOCATION";
+    private static final String permWifi = "android.permission.ACCESS_WIFI_STATE";
+    private static final String permPhone = "android.permission.READ_PHONE_STATE";
+    private static final String permNet = "android.permission.ACCESS_NETWORK_STATE";
+    private static final String permBoot = "android.permission.RECEIVE_BOOT_COMPLETED";
 
     public static String getXmlPropertyValue(String element, String property, String file){
         String res = "";

@@ -4,6 +4,7 @@
  */
 package greendroid;
 
+import greendroid.project.TestResult;
 import greendroid.trace.Consumption;
 import greendroid.trace.TracedMethod;
 import greendroid.trace.TestCase;
@@ -17,6 +18,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -25,7 +27,7 @@ import java.util.Random;
  *
  * @author User
  */
-public class ProjectAnalyser {
+public class ProjectAnalyzer {
     //Files with the traces of the different tests collected, and with the consumptions
     private String testsFolder;
     private String traceFile;
@@ -71,16 +73,16 @@ public class ProjectAnalyser {
      * @param args the command line arguments
      */
     
-    public ProjectAnalyser(){
+    public ProjectAnalyzer(){
         
     }
     
-    public ProjectAnalyser(String projectName, String projectPath, String folder){
-		this.folder = folder;
-        String path = folder+projectPath+"//";
+    public ProjectAnalyzer(String projectName, String projectPath, String folder){
+	this.folder = folder;
+        String path = folder+projectPath+"/";
         projectN = projectName;
         testsFolder = path;
-        allFolder = testsFolder+"all//";
+        allFolder = testsFolder+"all/";
         traceFile = allFolder+"traceAll";
         consumptionFile = testsFolder+"measuring";
         timingFile = testsFolder+"ALL-TEST.xml";
@@ -110,7 +112,7 @@ public class ProjectAnalyser {
         conTrace = 0;
         totalMethods = 0;
         totalClasses = 0;
-        totalPackages = 0; 
+        totalPackages = 0;
     }
     
     /**Concat the result files into one big file */
@@ -179,10 +181,11 @@ public class ProjectAnalyser {
             }
     }
     
-    /**Loads the measures of each test the specific file */
+    /**Loads the measures of each test from the specific file */
     public void getMeasures(){
         Consumption cons = new Consumption();
         long l=0, c=0, w=0,g=0,gp=0,a=0;
+        int counter = 0;
         try{
             // Open the file that is the first 
             // command line parameter
@@ -208,7 +211,8 @@ public class ProjectAnalyser {
                         g = Integer.parseInt(g3.split(":")[1]);
                         gp = Integer.parseInt(gps.split(":")[1]);
                         a = Integer.parseInt(audio.split(":")[1]);
-                        cons = new Consumption(l, c, w, g, gp, a);
+                        cons = new Consumption(l, c, w, g, gp, a, times.get(counter));
+                        counter++;
                     }else{
                         System.err.println("Error in measures: Unexpected length");
                     }
@@ -221,7 +225,8 @@ public class ProjectAnalyser {
             //Close the input stream
             in.close();
             }catch (Exception e){//Catch exception if any
-                System.err.println("Error: " + e);
+                //System.err.println("Error: " + e);
+                System.out.println("[GD] WARNING: No consumption measures found for project "+this.projectN);
             }
     }
     
@@ -247,14 +252,10 @@ public class ProjectAnalyser {
                 if(strLine.contains("NEW TRACE")){
                     c++;
                     if(flagT == 1){
-                        tCase.setTime(times.get(conTrace));
+                        //tCase.setTime(times.get(conTrace));
                         generateResults();
-                        /*tCase.clear();
-                        tCase = new TestCase();
-                        tCase.copyAll(all);*/
                     }else{
                         tCase.copyAll(all);
-                        //tCase.print();
                     }
                 /*}else if(strLine.contains("{")){
                     flagT = 1;
@@ -268,7 +269,6 @@ public class ProjectAnalyser {
                         String met=x[1];
                         String cla=x[2];
                         if(!cla.startsWith("<")){
-                            cla.lastIndexOf(".");
                             String a = cla.substring(0, cla.lastIndexOf("."));
                             String b = cla.substring(cla.lastIndexOf(".")+1, cla.length());
                             cla = "<"+a+">"+b;
@@ -370,10 +370,28 @@ public class ProjectAnalyser {
     /**Generates the results for a test case and resets */
     private void generateResults(){
         //inspectMethods();
-        tCase.setConsumption(consumptions.get(conTrace));
-        //times.add(time);
-        conTrace++;
-        clearAll();
+        if(consumptions.size() > conTrace){
+            tCase.setConsumption(consumptions.get(conTrace));
+            conTrace++;
+            clearAll();
+        }else if (traced.isEmpty()){
+            System.out.println("[GD] WARNING: No test cases found for project "+this.projectN);
+        }else{
+            System.err.println("[GD] Error: Number of consumption measures does not match the number of test cases.");
+            System.err.println("            Please, check the result files at "+this.resultsFolder+" for inconsistencies.");
+        }
+    }
+    
+    public Map<Integer, TestResult> getAllTestResults(){
+        HashMap<Integer, TestResult> res = new HashMap<>();
+        int i = 0;
+        for(TestCase c : traced){
+            i++;
+            long cons = c.getConsumption().sum();
+            double time = c.getConsumption().getTime();
+            res.put(i, new TestResult(cons, time));
+        }
+        return res;
     }
     
     /**Saves the results previously generated into a file that has the SFL Matrix */
@@ -381,8 +399,6 @@ public class ProjectAnalyser {
         int i = 0;
         for(TestCase c : traced){
             i++;
-            //save the average consumption for this test case
-            Util.saveFile(folder+"meansSecond.txt", c.getMeanSecond()+"\n", true);
             for(String cl : c.getTraced().keySet()){
                 for(TracedMethod t : c.get(cl)){
                     executionBits+=t.getExecuted()+"\t";
@@ -425,8 +441,10 @@ public class ProjectAnalyser {
         getTimes();
         getMeasures();
         getTrace();
+        System.out.println("Test Cases: "+this.traced.size());
         /*'generateResults()' is invoked here to assure that the last trace is treated */
         //readFromMatrix();
+        saveTestResults();
         generateResults();
         //saveTestResults();
     }
@@ -443,11 +461,8 @@ public class ProjectAnalyser {
             String c = (String)all.keySet().toArray()[x];
             int y = rand.nextInt(all.get(c).size());
             TracedMethod m = all.get(c).get(y);
-            Util.createRadar(c.replaceAll("<|>", ""), m);
+            Util.createRadar(c.replaceAll("<|>", ""), m, this.resultsFolder+m.getMethod());
         }
-        /** */
-        //loadSFLResult();    //?
-        
     }
     
     private void classifyMethods(String metric){
@@ -616,53 +631,11 @@ public class ProjectAnalyser {
                 }
             }
         }
-        Util.createRadar(cla.replaceAll("<", "").replaceAll(">", "."), toAnalyse);
+        //This instruction is just to create a radar for a method
+        //Util.createRadar(cla.replaceAll("<", "").replaceAll(">", "."), toAnalyse);
+        
         Util.toCSV(all, fileCSV);
         //printAllMethods();
-    }
-
-    @Deprecated
-    private void readFromMatrix() {
-        String result="", result2="";
-        try{
-            // Open the file that is the first 
-            // command line parameter
-            FileInputStream fstream = new FileInputStream("D:\\tests\\org.zeroxlab.zeroxbenchmark\\results\\testResults.txt");
-            // Get the object of DataInputStream
-            DataInputStream in = new DataInputStream(fstream);
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            String strLine="";
-            String [] x;
-            long c=0;
-            //Read File Line By Line
-            while ((strLine = br.readLine()) != null) {
-                LinkedHashMap<String, LinkedList<TracedMethod>> allN = new LinkedHashMap<String, LinkedList<TracedMethod>>();
-                copy(all, allN);
-                LinkedList<TracedMethod> aux = new LinkedList<TracedMethod>();
-                for(String k : allN.keySet()){
-                    aux.addAll(allN.get(k));
-                }
-                TestCase t = new TestCase();
-                String[] tok = strLine.split("\t");
-                int size = tok.length;
-                int cpu = Integer.parseInt(tok[size-2]);
-                double time = Double.parseDouble(tok[size-1]);
-                t.setConsumption(new Consumption(0, cpu, 0, 0, 0, 0));
-                t.setTime(time);
-                
-                for(int i=0; i<size-2; i++){
-                    if(Integer.parseInt(tok[i]) == 1){
-                        aux.get(i).setExecuted(1);
-                    }
-                }
-                t.setTraced(allN);
-                traced.add(t);
-            }
-            
-            //Close the input stream
-        }catch (Exception e){//Catch exception if any
-            System.err.println("Error: " + e);
-        }
     }
     
     public void copy(LinkedHashMap<String, LinkedList<TracedMethod>> org, LinkedHashMap<String, LinkedList<TracedMethod>> dest){

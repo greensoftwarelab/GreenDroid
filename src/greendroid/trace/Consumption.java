@@ -15,6 +15,7 @@ public class Consumption {
     private long g3;
     private long gps;
     private long audio;
+    private double time;
     
     public Consumption(){
         this.lcd = 0;
@@ -25,13 +26,14 @@ public class Consumption {
         this.audio = 0;
     }
     
-    public Consumption(long lcd, long cpu, long wifi, long g3, long gps, long audio) {
+    public Consumption(long lcd, long cpu, long wifi, long g3, long gps, long audio, double time) {
         this.lcd = lcd;
         this.cpu = cpu;
         this.wifi = wifi;
         this.g3 = g3;
         this.gps = gps;
         this.audio = audio;
+        this.time = time;
     }
 
     public long getLcd() {
@@ -86,8 +88,16 @@ public class Consumption {
         long ret = lcd + cpu + wifi + g3 + gps + audio;
         return ret;
     }
+
+    public double getTime() {
+        return time;
+    }
+
+    public void setTime(double time) {
+        this.time = time;
+    }
     
     public Consumption clone(){
-        return new Consumption(lcd, cpu, wifi, g3, gps, audio);
+        return new Consumption(lcd, cpu, wifi, g3, gps, audio, time);
     }
 }
