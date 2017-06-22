@@ -8,6 +8,7 @@ class ManifestHandler( xml.sax.ContentHandler ):
       self.CurrentData = ""
       self.target = ""
       self.package = ""
+      self.launcher = False
 
    # Call when an element starts
    def startElement(self, tag, attributes):
@@ -18,10 +19,18 @@ class ManifestHandler( xml.sax.ContentHandler ):
       elif tag == "manifest":
          if "package" in attributes:
             self.package = attributes["package"]
+      elif tag == "category":
+         if attributes["android:name"]:
+            if attributes["android:name"] == "android.intent.category.LAUNCHER":
+               self.launcher = True
 
+def getLauncher(handlers):
+   for h in handlers:
+      if h.launcher:
+         return h.path, h.package
   
 def main(argv):
-   list = []
+   lst = []
    for arg in argv:
       path = arg.replace("/AndroidManifest.xml", "")
       # create an XMLReader
@@ -35,20 +44,21 @@ def main(argv):
       
       parser.parse(arg)
 
-      list.append(handler)
+      lst.append(handler)
+      lst_cpy = lst
       #print(handler.package)
 
    p, source, tests, package, testPack="","","","",""
    #count=0
-   for h in list:
+   for h in lst:
       if h.target != "":
-         #test project founded!!
+         #test project found!!
          tests=h.path
          p=h.target
-         list.remove(h)
+         lst.remove(h)
          #count+=1
          if p != "":
-            for x in list:
+            for x in lst:
                isSubstring = (x.package in p) and (x.package != "") and (x.target == "")
                if isSubstring:
                   testPack=h.package
@@ -57,6 +67,10 @@ def main(argv):
                   break
       if source != "":
          break
+   
+   if (source == "") & (package == ""):
+      source, package = getLauncher(lst_cpy)
+
    print(source)
    print(tests)
    print(package)

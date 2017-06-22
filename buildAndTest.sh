@@ -6,7 +6,7 @@ tName="_TRANSFORMED_"
 deviceDir=""
 deviceExternal=""
 localDir="/home/marco/GDResults"
-trace=$1  ##RR
+trace="-TraceMethods" #trace=$1  ##RR
 GD_ANALYZER="analyzer/Analyzer-1.0-SNAPSHOT.jar"  # "analyzer/greenDroidAnalyzer.jar"
 trepnLib="TrepnLibrary-release.aar"
 
@@ -15,7 +15,7 @@ DIR=/home/marco/tests/androidProjects/testproj/*
 #TESTS_SRC=...
 #f=...
 
-adb kill-server
+#adb kill-server
 DEVICE=$(adb devices -l | egrep "device .+ product:")
 if [ -z "$DEVICE" ]; then
 	echo "$TAG Error: Could not find any attached device. Check and try again..."
@@ -54,6 +54,8 @@ else
 					TESTS_SRC=${RESULT[1]}
 					PACKAGE=${RESULT[2]}
 					TESTPACKAGE=${RESULT[3]}
+					MANIF_S="${RESULT[0]}/AndroidManifest.xml"
+					MANIF_T="-"
 				else
 					MANIF_S=${MANIFESTS[0]}
 					MANIF_T="-"
@@ -68,8 +70,8 @@ else
 				rm -rf $FOLDER/$tName
 				#instrument
 				java -jar "jInst/jInst-1.0.jar" "-gradle" $tName "X" $FOLDER $MANIF_S $MANIF_T $trace ##RR
-				exit 0
-				#copy the test runner
+				
+				#copy the trace/measure lib
 				for D in `find $FOLDER$tName/ -maxdepth 2 -type d`; do  ##RR
 				    if [ -d "${D}" ]; then  ##RR
 				      mkdir ${D}/libs  ##RR
@@ -85,6 +87,7 @@ else
 				if [[ "$RET" != "0" ]]; then
 					break
 				fi
+				exit 0
 				#install on device
 				./install.sh $FOLDER/$tName "X" "GRADLE" $PACKAGE $localDir  #COMMENT, EVENTUALLY...
 				RET=$(echo $?)
