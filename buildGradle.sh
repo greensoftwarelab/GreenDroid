@@ -16,11 +16,6 @@ BUILD_VERSIONS=($(ls /home/marco/android-sdk-linux/build-tools/))
 TARGET_VERSIONS=($(ls /home/marco/android-sdk-linux/platforms/))
 
 echo "$TAG GRADLE PROJECT"
-echo "##################"
-echo "##################"
-echo "##################"
-echo "##################"
-echo "##################"
 
 NEW_RUNNER_JAR=$FOLDER/libs/android-junit-report-1.5.8.jar
 NEW_RUNNER="android.test.InstrumentationTestRunner" # "com.zutubi.android.junitreport.JUnitReportTestRunner"
@@ -183,7 +178,6 @@ for x in ${BUILDS[@]}; do
 				break
 			elif [[ (("${t:8:2}" < "$old_target")) ]]; then
 				new_target=${t:8:2}
-				echo "here! ${t:8:2}"
 			elif ! [[ ${old_target:0:1} =~ [0-9]{1} ]]; then
 				new_target=21
 				break
@@ -192,7 +186,6 @@ for x in ${BUILDS[@]}; do
 				break
 			fi
 		done
-		echo "[T] $target | [OT] $old_target | [NT] $new_target"
 		if [ "$correct" == "0" ]; then
 			#new_buildv=21.1.2
 			sed -ri.bak "s#([ \t]*)targetSdkVersion .+#\1targetSdkVersion "$new_target"#g" $x
@@ -211,7 +204,6 @@ for x in ${BUILDS[@]}; do
 		if [ -n "$HAS_DEPEND" ]; then
 			DEPEND_LINE=$(egrep -n "dependencies( ?){" $x | cut -f1 -d: | tail -1)
 			((DEPEND_LINE++))
-			echo "LASL $DEPEND_LINE"
 			#sed -i.bak ""$DEPEND_LINE"i compile files('$NEW_RUNNER_JAR')" $x
 			#((DEPEND_LINE++))
 			#sed -i.bak ""$DEPEND_LINE"i compile files('$GREENDROID')" $x
