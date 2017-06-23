@@ -1,5 +1,8 @@
 Analyzer/Consumption.class
+Analyzer/MethodOriented.class
+Analyzer/PairMetodoInt.class
 Analyzer/tester.class
+Analyzer/PairMethodIntComparator.class
 Analyzer/Analyzer$1.class
 Analyzer/Analyzer.class
 Analyzer/ConsumptionComparator.class

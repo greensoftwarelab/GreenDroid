@@ -17,7 +17,7 @@ TARGET_VERSIONS=($(ls /home/marco/android-sdk-linux/platforms/))
 
 echo "$TAG GRADLE PROJECT"
 
-NEW_RUNNER_JAR=$FOLDER/libs/android-junit-report-1.5.8.jar
+NEW_RUNNER_JAR=libs/android-junit-report-1.5.8.jar # unused
 NEW_RUNNER="android.test.InstrumentationTestRunner" # "com.zutubi.android.junitreport.JUnitReportTestRunner"
 #GREENDROID=$FOLDER/libs/greenDroidTracker.jar
 GREENDROID=$FOLDER/libs/TrepnLibrary-release.aar  ##RR
@@ -250,12 +250,17 @@ STATUS_OK=$(grep "BUILD SUCCESS" buildStatus.log)
 
 if [ -n "$STATUS_NOK" ]; then
 	minSDKerror=$(egrep "uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in" buildStatus.log)
-	while [ -n "$minSDKerror" ]; do
+	buildSDKerror=$(egrep "The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)" buildStatus.log)
+	while [[ (-n "$minSDKerror") || (-n "$buildSDKerror") ]]; do
 		unmatchVers=($(sed -nr "s/(.+)uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in (.+)$/\2\n\3/p" buildStatus.log))
+		unmatchbuilds=($(sed -nr "s/(.+)The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)$/\2\n\4/p" buildStatus.log))
 		oldV=${unmatchVers[0]}
 		newV=${unmatchVers[1]}
+		oldBuild=${unmatchbuilds[0]}
+		newBuild=${unmatchbuilds[1]}
 		#change the build files again
 		for x in ${BUILDS[@]}; do
+			#correct minSdkVersion
 			gradleFolder=${x//build.gradle}
 			if [[ "$minSDKerror" == *"$gradleFolder"* ]]; then
 				#found the troublesome build.gradle, replace!
@@ -270,11 +275,18 @@ if [ -n "$STATUS_NOK" ]; then
 					fi
 				fi
 			fi
+
+			#correct buildToolsVersion
+			if [[ -n $oldBuild ]]; then
+				sed -ri.bak "s#buildToolsVersion ('\")$oldBuild('\")#buildToolsVersion \1$newBuild\2#g" $x
+			fi
+			
 		done
 
 		gradle -b $GRADLE clean build &> buildStatus.log
 
-		minSDKerror=$(egrep "uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in" $FOLDER/buildStatus.log)
+		minSDKerror=$(egrep "uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in" buildStatus.log)
+		buildSDKerror=$(egrep "The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)" buildStatus.log)
 		STATUS_NOK=$(grep "BUILD FAILED" buildStatus.log)
 		STATUS_OK=$(grep "BUILD SUCCESS" buildStatus.log)
 		
@@ -284,6 +296,7 @@ if [ -n "$STATUS_NOK" ]; then
 			break
 		fi
 	done
+
 	if [ -n "$STATUS_NOK" ]; then
 		#the build failed
 		echo "$TAG Unable to build project $ID"
