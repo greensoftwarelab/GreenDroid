@@ -72,10 +72,10 @@ else
 				java -jar "jInst/jInst-1.0.jar" "-gradle" $tName "X" $FOLDER $MANIF_S $MANIF_T $trace ##RR
 				
 				#copy the trace/measure lib
-				for D in `find $FOLDER$tName/ -maxdepth 2 -type d`; do  ##RR
+				for D in `find $FOLDER/$tName/ -maxdepth 2 -type d`; do  ##RR
 				    if [ -d "${D}" ]; then  ##RR
 				      mkdir ${D}/libs  ##RR
-				      cp libsAdded/$trepnLib $ ${D}/libs  ##RR
+				      cp libsAdded/$trepnLib ${D}/libs  ##RR
 				    fi  ##RR
 				done  ##RR
 

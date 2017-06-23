@@ -9,10 +9,18 @@ FOLDER=$2
 GRADLE=$3
 
 #list of available build tools versions
-BUILD_VERSIONS=($(ls /usr/local/android-sdk-linux/build-tools/))
-TARGET_VERSIONS=($(ls /usr/local/android-sdk-linux/platforms/))
+GRADLE_VERSION=$(gradle --version | grep "Gradle" | cut -f2 -d\ ) # "3.4.1"
+GRADLE_PLUGIN="2.0.0" #TODO - Find a better way to determine this value (see https://developer.android.com/studio/releases/gradle-plugin.html#updating-gradle)
+
+BUILD_VERSIONS=($(ls /home/marco/android-sdk-linux/build-tools/))
+TARGET_VERSIONS=($(ls /home/marco/android-sdk-linux/platforms/))
 
 echo "$TAG GRADLE PROJECT"
+echo "##################"
+echo "##################"
+echo "##################"
+echo "##################"
+echo "##################"
 
 NEW_RUNNER_JAR=$FOLDER/libs/android-junit-report-1.5.8.jar
 NEW_RUNNER="android.test.InstrumentationTestRunner" # "com.zutubi.android.junitreport.JUnitReportTestRunner"
@@ -20,7 +28,7 @@ NEW_RUNNER="android.test.InstrumentationTestRunner" # "com.zutubi.android.junitr
 GREENDROID=$FOLDER/libs/TrepnLibrary-release.aar  ##RR
 
 #Change the main build file
-sed -ri.bak "s#classpath ([\"]|[\'])com.android.tools.build:gradle:(.+)([\"]|[\'])#classpath 'com.android.tools.build:gradle:2.0.0'#g" $GRADLE
+sed -ri.bak "s#classpath ([\"]|[\'])com.android.tools.build:gradle:(.+)([\"]|[\'])#classpath 'com.android.tools.build:gradle:$GRADLE_PLUGIN'#g" $GRADLE
 #change the other build files
 BUILDS=($(find $FOLDER -name "build.gradle" | egrep -v "/build/"))
 for x in ${BUILDS[@]}; do
@@ -28,7 +36,7 @@ for x in ${BUILDS[@]}; do
 	dexOpt=$(egrep -n "dexOptions( ?){" $x | cut -f1 -d:)
 	if [ -n "$dexOpt" ]; then
 		((dexOpt++))
-		echo "found dexOpt!"
+		#echo "found dexOpt!"
 		preDex=$(egrep "preDexLibraries(( )|( ?=? ?))" $x)
 		if [ -n "$preDex" ]; then
 			sed -ri.bak "s#preDexLibraries(( )|( ?=? ?))(.+)#preDexLibraries = false#g" $x
@@ -44,7 +52,7 @@ for x in ${BUILDS[@]}; do
 			((dexOpt++))
 		fi
 	else
-		echo "adding dexOpt"
+		#echo "adding dexOpt"
 		ANDROID_LINE=($(egrep -n "android( ?){" $x | cut -f1 -d:))
 		if [ -n "${ANDROID_LINE[0]}" ]; then
 			((ANDROID_LINE[0]++))
@@ -85,7 +93,7 @@ for x in ${BUILDS[@]}; do
 	sed -ri.bak "s#packageName (.+)#applicationId \1#g" $x
 	sed -ri.bak "s#testPackageName (.+)#testApplicationId \1#g" $x
 	#Change the classpath variable, if necessary
-	sed -ri.bak "s#classpath ([\"]|[\'])com.android.tools.build:gradle:(.+)([\"]|[\'])#classpath 'com.android.tools.build:gradle:2.0.0'#g" $x
+	sed -ri.bak "s#classpath ([\"]|[\'])com.android.tools.build:gradle:(.+)([\"]|[\'])#classpath 'com.android.tools.build:gradle:$GRADLE_PLUGIN'#g" $x
 	#Check if it is necessary to change the version of the SDK compiler
 	sed -ri.bak 's#([ \t]*)compileSdkVersion(( )|( ?= ?))(android-)?(1?[0-9]{1}|20|[^0-9]+)$#\1compileSdkVersion\221#g' $x
 	#Check if it is necessary to change the tag for the Proguard
@@ -170,11 +178,12 @@ for x in ${BUILDS[@]}; do
 		IFS=$(echo -en "\n\b")
 		correct=0
 		for t in ${TARGET_VERSIONS[@]}; do
-			if [ "${t:7:2}" == "$old_target" ] || [ "$old_target" == "" ]; then
+			if [ "${t:8:2}" == "$old_target" ] || [ "$old_target" == "" ]; then
 				correct=1
 				break
-			elif [[ (("${t:7:2}" < "$old_target")) ]]; then
-				new_target=${t:7:2}
+			elif [[ (("${t:8:2}" < "$old_target")) ]]; then
+				new_target=${t:8:2}
+				echo "here! ${t:8:2}"
 			elif ! [[ ${old_target:0:1} =~ [0-9]{1} ]]; then
 				new_target=21
 				break
@@ -183,6 +192,7 @@ for x in ${BUILDS[@]}; do
 				break
 			fi
 		done
+		echo "[T] $target | [OT] $old_target | [NT] $new_target"
 		if [ "$correct" == "0" ]; then
 			#new_buildv=21.1.2
 			sed -ri.bak "s#([ \t]*)targetSdkVersion .+#\1targetSdkVersion "$new_target"#g" $x
@@ -199,8 +209,9 @@ for x in ${BUILDS[@]}; do
 		fi
 		HAS_DEPEND=$(egrep "dependencies( ?){" $x)
 		if [ -n "$HAS_DEPEND" ]; then
-			DEPEND_LINE=$(egrep -n "dependencies( ?){" $x | cut -f1 -d:)
+			DEPEND_LINE=$(egrep -n "dependencies( ?){" $x | cut -f1 -d: | tail -1)
 			((DEPEND_LINE++))
+			echo "LASL $DEPEND_LINE"
 			#sed -i.bak ""$DEPEND_LINE"i compile files('$NEW_RUNNER_JAR')" $x
 			#((DEPEND_LINE++))
 			#sed -i.bak ""$DEPEND_LINE"i compile files('$GREENDROID')" $x
@@ -232,7 +243,7 @@ fi
 WRAPPER=$(find $FOLDER -name "gradle-wrapper.properties")
 if [ -n "$WRAPPER" ]; then
 	WRAPPER=${WRAPPER// /\\ }
-	sed -ri.bak "s#distributionUrl.+#distributionUrl=http\://services.gradle.org/distributions/gradle-2.12-all.zip#g" $WRAPPER
+	sed -ri.bak "s#distributionUrl.+#distributionUrl=http\://services.gradle.org/distributions/gradle-$GRADLE_VERSION-all.zip#g" $WRAPPER
 fi
 
 gradle -b $GRADLE clean build assembleAndroidTest &> buildStatus.log
