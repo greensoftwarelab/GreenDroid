@@ -14,7 +14,8 @@ if [ "$projtype" == "SDK" ]; then
 	testAPK=($(find $pathTests -name "*-debug.apk"))
 elif [ "$projtype" == "GRADLE" ]; then
 	appAPK=($(find $pathProject -name "*-debug.apk"))
-	testAPK=($(find $pathProject -name "*-debug-androidTest-*.apk"))
+	pAux=$(echo $appAPK | sed -r "s#\/[a-zA-Z0-9-]+-debug.apk#/#g")
+	testAPK=($(find $pAux -name "*-debug-androidTest-*.apk"))
 fi
 
 if [ "${#appAPK[@]}" != 1 ] || [ "${#testAPK[@]}" != 1 ]; then
@@ -28,6 +29,7 @@ else
 
 	echo "$TAG Creating support folder..."
 	mkdir -p $resDir/$package/all
-	cp $pathProject/_aux_/AllMethods $resDir/$package/all
+	#cp $pathProject/_aux_/AllMethods $resDir/$package/all
+	cp ./allMethods.txt $resDir/$package/all
 fi
 exit 0

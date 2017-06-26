@@ -4,7 +4,7 @@ DIR=$1
 PCK="-"
 TPCK="-"
 
-BUILDS=($(find $DIR -name "build.gradle" | egrep -v "/build/"))
+BUILDS=($(find $DIR -name "build.gradle" | grep -v "/build/"))
 for x in ${BUILDS[@]}; do
 	RES=$(grep "testApplicationId" $x)
 	if [ -n "$RES" ] && [ "$TPCK" == "-" ]; then

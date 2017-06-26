@@ -29,7 +29,7 @@ else
 	#Strat Trepn
 	adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1
 
-	deviceDir=$deviceExternal/trepn  #GreenDroid
+	deviceDir="$deviceExternal/trepn"  #GreenDroid
 	adb shell mkdir $deviceDir
 	adb shell rm -rf $deviceDir/*.csv  ##RR
 	adb shell rm -rf $deviceDir/Traces/*  ##RR
@@ -49,21 +49,17 @@ else
 				# Maven porjects are not considered yet...
 			elif [ -n "${GRADLE[0]}" ]; then
 				MANIFESTS=($(find $f -name "AndroidManifest.xml" | egrep -v "/build/|$tName"))
-				if [[ "${#MANIFESTS[@]}" > 1 ]]; then
+				if [[ "${#MANIFESTS[@]}" > 0 ]]; then
 					RESULT=($(python manifestParser.py ${MANIFESTS[*]}))
 					TESTS_SRC=${RESULT[1]}
 					PACKAGE=${RESULT[2]}
-					TESTPACKAGE=${RESULT[3]}
+					if [[ "${RESULT[3]}" != "-" ]]; then
+						TESTPACKAGE=${RESULT[3]}
+					else
+						TESTPACKAGE="$PACKAGE.test"
+					fi
 					MANIF_S="${RESULT[0]}/AndroidManifest.xml"
 					MANIF_T="-"
-				else
-					MANIF_S=${MANIFESTS[0]}
-					MANIF_T="-"
-					PACKS=($(./searchPackage.sh $f))
-					PACKAGE=${PACKS[0]}
-					TESTPACKAGE=${PACKS[1]}
-					#this line will be necessary only now
-					TESTS_SRC=""
 				fi
 				FOLDER=${f}/latest #$f
 				#delete previously instrumented project, if any
@@ -81,19 +77,20 @@ else
 
 				#build
 				#GRADLE=$(find $FOLDER/$tName -maxdepth 1 -name "build.gradle")
-				GRADLE=($(find $FOLDER/$tName -name "build.gradle" -print | xargs grep "buildscript" | cut -f1 -d:))
+				GRADLE=($(find $FOLDER/$tName -name "build.gradle" -print | xargs grep -L "com.android.library" | xargs grep -l "buildscript" | cut -f1 -d:))
 				./buildGradle.sh $ID $FOLDER/$tName ${GRADLE[0]}
 				RET=$(echo $?)
 				if [[ "$RET" != "0" ]]; then
 					break
 				fi
-				exit 0
+				
 				#install on device
 				./install.sh $FOLDER/$tName "X" "GRADLE" $PACKAGE $localDir  #COMMENT, EVENTUALLY...
 				RET=$(echo $?)
 				if [[ "$RET" != "0" ]]; then
 					break
 				fi
+				
 				#run tests
 				projLocalDir=$localDir/$ID
 				mkdir -p $projLocalDir
@@ -102,6 +99,7 @@ else
 				if [[ "$RET" != "0" ]]; then
 					break
 				fi
+				exit 0
 				#uninstall the app & tests
 				./uninstall.sh $PACKAGE $TESTPACKAGE
 				RET=$(echo $?)

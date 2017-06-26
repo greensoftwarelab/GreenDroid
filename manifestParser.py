@@ -70,6 +70,7 @@ def main(argv):
    
    if (source == "") & (package == ""):
       source, package = getLauncher(lst_cpy)
+      tests, testPack = "-", "-"
 
    print(source)
    print(tests)

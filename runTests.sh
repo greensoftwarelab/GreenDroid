@@ -23,12 +23,17 @@ else
 	adb shell rm -rf "$deviceExternal/trepn/*.csv"  ##RR
 	
 	echo "$TAG Running the tests (Tracing)"
-	#?adb shell "echo -1 > $deviceDir/flag"
+	adb shell "echo -1 > $deviceDir/GDflag"
 	#adb shell am instrument -e reportFile ALL-TEST.xml -e reportDir $deviceDir/$pack -e filterTraces false -w $testPack/com.zutubi.android.junitreport.JUnitReportTestRunner
 	adb shell am instrument -w $testPack/$runner
+
+	#Stop the app, if it is still running
+	adb shell am force-stop $pack
+	adb shell am force-stop $testPack
+	adb shell am start -a android.intent.action.MAIN -c android.intent.category.HOME > /dev/null 2>&1
 	
 	echo "$TAG Running the tests (Measuring)"
-	#?adb shell "echo 1 > $deviceDir/flag"
+	adb shell "echo 1 > $deviceDir/GDflag"
 	#adb shell am instrument -w $testPack/com.zutubi.android.junitreport.JUnitReportTestRunner
 	adb shell am instrument -w $testPack/$runner
 

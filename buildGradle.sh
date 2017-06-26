@@ -252,17 +252,18 @@ if [ -n "$STATUS_NOK" ]; then
 	minSDKerror=$(egrep "uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in" buildStatus.log)
 	buildSDKerror=$(egrep "The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)" buildStatus.log)
 	while [[ (-n "$minSDKerror") || (-n "$buildSDKerror") ]]; do
+		echo "$TAG Common Error. Trying again..."
 		unmatchVers=($(sed -nr "s/(.+)uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in (.+)$/\2\n\3/p" buildStatus.log))
-		unmatchbuilds=($(sed -nr "s/(.+)The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)$/\2\n\4/p" buildStatus.log))
+		unmatchBuilds=($(sed -nr "s/(.+)The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)$/\2\n\4/p" buildStatus.log))
 		oldV=${unmatchVers[0]}
 		newV=${unmatchVers[1]}
-		oldBuild=${unmatchbuilds[0]}
-		newBuild=${unmatchbuilds[1]}
+		oldBuild=${unmatchBuilds[0]}
+		newBuild=${unmatchBuilds[1]}
 		#change the build files again
 		for x in ${BUILDS[@]}; do
 			#correct minSdkVersion
 			gradleFolder=${x//build.gradle}
-			if [[ "$minSDKerror" == *"$gradleFolder"* ]]; then
+			if [[ -n "$oldV" ]]; then #"$minSDKerror" == *"$gradleFolder"* ]]; then
 				#found the troublesome build.gradle, replace!
 				minSDK=$(grep "minSdkVersion " $x)
 				if [ -n "$minSDK" ]; then
@@ -277,13 +278,13 @@ if [ -n "$STATUS_NOK" ]; then
 			fi
 
 			#correct buildToolsVersion
-			if [[ -n $oldBuild ]]; then
+			if [[ -n "$oldBuild" ]]; then
 				sed -ri.bak "s#buildToolsVersion ('\")$oldBuild('\")#buildToolsVersion \1$newBuild\2#g" $x
 			fi
 			
 		done
 
-		gradle -b $GRADLE clean build &> buildStatus.log
+		gradle -b $GRADLE clean build assembleAndroidTest &> buildStatus.log # gradle -b $GRADLE clean build &> buildStatus.log
 
 		minSDKerror=$(egrep "uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in" buildStatus.log)
 		buildSDKerror=$(egrep "The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)" buildStatus.log)
