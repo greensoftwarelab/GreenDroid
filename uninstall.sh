@@ -5,6 +5,7 @@ PACKAGE=$1
 TESTPACKAGE=$2
 
 TAG="[APP REMOVER]"
+echo ""
 
 i_echo "$TAG Uninstalling previously installed apps"
 

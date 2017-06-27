@@ -1,7 +1,6 @@
 #!/bin/bash
 source settings.sh
 
-TAG="[APP BUILDER]"
 
 OLDIFS=$IFS
 IFS=$(echo -en "\n\b")
@@ -14,6 +13,9 @@ ID=$1
 PACKAGE=$2
 PROJECT_FOLDER=$3
 TEST_FOLDER=$4
+
+TAG="[APP BUILDER]"
+echo ""
 
 
 BUILD_P=$(find $PROJECT_FOLDER -name "build.xml")

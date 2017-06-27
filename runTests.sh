@@ -1,5 +1,4 @@
 #!/bin/bash
-TAG="[APP RUNNER]"
 source settings.sh
 
 pack=$1
@@ -7,6 +6,9 @@ testPack=$2
 deviceDir=$3
 localDir=$4
 projType=$5
+
+TAG="[APP RUNNER]"
+echo ""
 
 #runner="com.zutubi.android.junitreport.JUnitReportTestRunner"
 runner="android.test.InstrumentationTestRunner"

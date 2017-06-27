@@ -8,6 +8,7 @@ package=$4
 resDir=$5
 
 TAG="[APP INSTALLER]"
+echo ""
 
 i_echo "$TAG Installing the apps on the device"
 #find the apk files

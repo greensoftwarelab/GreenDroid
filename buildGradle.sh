@@ -1,14 +1,15 @@
 #!/bin/bash
 source settings.sh
 
-TAG="[APP BUILDER]"
-
 OLDIFS=$IFS
 IFS=$(echo -en "\n\b")
 
 ID=$1
 FOLDER=$2
 GRADLE=$3
+
+TAG="[APP BUILDER]"
+echo ""
 
 #list of available build tools versions
 GRADLE_VERSION=$(gradle --version | grep "Gradle" | cut -f2 -d\ ) # "3.4.1"
