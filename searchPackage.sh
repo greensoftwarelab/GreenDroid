@@ -1,4 +1,5 @@
 #!/bin/bash
+source settings.sh
 
 DIR=$1
 PCK="-"

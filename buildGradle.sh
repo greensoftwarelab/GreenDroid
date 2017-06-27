@@ -1,4 +1,6 @@
 #!/bin/bash
+source settings.sh
+
 TAG="[APP BUILDER]"
 
 OLDIFS=$IFS
@@ -15,7 +17,7 @@ GRADLE_PLUGIN="2.0.0" #TODO - Find a better way to determine this value (see htt
 BUILD_VERSIONS=($(ls /home/marco/android-sdk-linux/build-tools/))
 TARGET_VERSIONS=($(ls /home/marco/android-sdk-linux/platforms/))
 
-echo "$TAG GRADLE PROJECT"
+i_echo "$TAG GRADLE PROJECT"
 
 NEW_RUNNER_JAR=libs/android-junit-report-1.5.8.jar # unused
 NEW_RUNNER="android.test.InstrumentationTestRunner" # "com.zutubi.android.junitreport.JUnitReportTestRunner"
@@ -252,7 +254,7 @@ if [ -n "$STATUS_NOK" ]; then
 	minSDKerror=$(egrep "uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in" buildStatus.log)
 	buildSDKerror=$(egrep "The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)" buildStatus.log)
 	while [[ (-n "$minSDKerror") || (-n "$buildSDKerror") ]]; do
-		echo "$TAG Common Error. Trying again..."
+		w_echo "$TAG Common Error. Trying again..."
 		unmatchVers=($(sed -nr "s/(.+)uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in (.+)$/\2\n\3/p" buildStatus.log))
 		unmatchBuilds=($(sed -nr "s/(.+)The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)$/\2\n\4/p" buildStatus.log))
 		oldV=${unmatchVers[0]}
@@ -293,22 +295,22 @@ if [ -n "$STATUS_NOK" ]; then
 		
 		if [ -n "$STATUS_OK" ]; then
 			#the build was successful
-			echo "$TAG Build successful for project $ID"
+			i_echo "$TAG Build successful for project $ID"
 			break
 		fi
 	done
 
 	if [ -n "$STATUS_NOK" ]; then
 		#the build failed
-		echo "$TAG Unable to build project $ID"
-		echo "[ERROR] Aborting"
+		e_echo "$TAG Unable to build project $ID"
+		e_echo "[ERROR] Aborting"
 		exit 1
 	fi
 elif [ -n "$STATUS_OK" ]; then
-	echo "$TAG Build successful for project $ID"
+	i_echo "$TAG Build successful for project $ID"
 else
-	echo "$TAG Unable to build project $ID"
-	echo "[ERROR] Aborting"
+	e_echo "$TAG Unable to build project $ID"
+	e_echo "[ERROR] Aborting"
 	exit 1
 fi
 exit 0

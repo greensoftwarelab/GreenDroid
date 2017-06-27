@@ -1,4 +1,6 @@
 #!/bin/bash
+source settings.sh
+
 TAG="[GD]"
 
 OLDIFS=$IFS
@@ -18,16 +20,16 @@ DIR=/home/marco/tests/androidProjects/testproj/*
 #adb kill-server
 DEVICE=$(adb devices -l | egrep "device .+ product:")
 if [ -z "$DEVICE" ]; then
-	echo "$TAG Error: Could not find any attached device. Check and try again..."
+	e_echo "$TAG Error: Could not find any attached device. Check and try again..."
 else
 	deviceExternal=$(adb shell 'echo -n $EXTERNAL_STORAGE')
 	if [ -z "$deviceExternal" ]; then
-		echo "$TAG Could not determine the device's external storage. Check and try again..."
+		e_echo "$TAG Could not determine the device's external storage. Check and try again..."
 		exit
 	fi
 
 	#Strat Trepn
-	adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1
+	adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
 
 	deviceDir="$deviceExternal/trepn"  #GreenDroid
 	adb shell mkdir $deviceDir
@@ -85,30 +87,32 @@ else
 				fi
 				
 				#install on device
-				./install.sh $FOLDER/$tName "X" "GRADLE" $PACKAGE $localDir  #COMMENT, EVENTUALLY...
+				projLocalDir=$localDir/$ID
+				mkdir -p $projLocalDir
+				./install.sh $FOLDER/$tName "X" "GRADLE" $PACKAGE $projLocalDir  #COMMENT, EVENTUALLY...
 				RET=$(echo $?)
 				if [[ "$RET" != "0" ]]; then
 					break
 				fi
 				
 				#run tests
-				projLocalDir=$localDir/$ID
-				mkdir -p $projLocalDir
 				./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir # "-gradle" $FOLDER/$tName
 				RET=$(echo $?)
 				if [[ "$RET" != "0" ]]; then
 					break
 				fi
-				exit 0
+				
 				#uninstall the app & tests
 				./uninstall.sh $PACKAGE $TESTPACKAGE
 				RET=$(echo $?)
 				if [[ "$RET" != "0" ]]; then
 					break
 				fi
+				
 				#Run greendoid!
 				#java -jar $GD_ANALYZER $ID $PACKAGE $TESTPACKAGE $FOLDER $FOLDER/tName $localDir
-				java -jar $GD_ANALYZER $trace $projLocalDir/ *.csv  ##RR
+				java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/*.csv  ##RR
+				exit 0
 				#break
 			else
 				#search for the manifests
@@ -156,10 +160,10 @@ else
 						break
 					fi
 					#Run greendoid!
-					java -jar $GD_ANALYZER $trace $projLocalDir/ *.csv  ##RR
+					java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/*.csv  ##RR
 					#break
 				else
-					echo "$TAG ERROR!"
+					e_echo "$TAG ERROR!"
 				fi
 			fi
 	    	

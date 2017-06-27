@@ -1,4 +1,6 @@
 #!/bin/bash
+source settings.sh
+
 TAG="[APP BUILDER]"
 
 OLDIFS=$IFS
@@ -16,7 +18,7 @@ TEST_FOLDER=$4
 
 BUILD_P=$(find $PROJECT_FOLDER -name "build.xml")
 BUILD_T=$(find $TEST_FOLDER -name "build.xml")
-echo "$TAG SDK PROJECT"
+i_echo "$TAG SDK PROJECT"
 
 STATUS_NOK="FAILED"
 if [ -n "$BUILD_P" ] && [ -n "$BUILD_T" ]; then
@@ -30,7 +32,7 @@ if [ -n "$STATUS_NOK" ]; then
 	echo "$TAG Updating Project"
 	UPDATE_P=$(android update project -p $PROJECT_FOLDER -t 1 -n Green --subprojects)
 
-	echo "[APP BUILDER] Updating Tests"
+	echo "$TAG Updating Tests"
 	UPDATE_T=$(android update test-project -p $TEST_FOLDER --main $PROJECT_FOLDER)
 	ant -f $TEST_FOLDER/build.xml clean debug &> buildStatus.log
 fi
@@ -40,11 +42,11 @@ STATUS_NOK=$(grep "BUILD FAILED" buildStatus.log)
 STATUS_OK=$(grep "BUILD SUCCESS" buildStatus.log)
 
 if [ -n "$STATUS_NOK" ]; then
-	echo "$TAG Unable to build project $ID" 
-	echo "[ERROR] Aborting"
+	e_echo "$TAG Unable to build project $ID" 
+	e_echo "[ERROR] Aborting"
 	exit 1
 elif [ -n "$STATUS_OK" ]; then
-	echo "$TAG Build successful for project $ID"
+	i_echo "$TAG Build successful for project $ID"
 else
 	echo "$TAG Unable to build project $ID"
 	echo "[ERROR] Aborting"
