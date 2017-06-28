@@ -111,7 +111,7 @@ else
 				
 				#Run greendoid!
 				#java -jar $GD_ANALYZER $ID $PACKAGE $TESTPACKAGE $FOLDER $FOLDER/tName $localDir
-				java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/*.csv  ##RR
+				java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/allMethods.txt $projLocalDir/*.csv  ##RR
 				exit 0
 				#break
 			else
@@ -160,7 +160,7 @@ else
 						break
 					fi
 					#Run greendoid!
-					java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/*.csv  ##RR
+					java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/allMethods.txt $projLocalDir/*.csv  ##RR
 					#break
 				else
 					e_echo "$TAG ERROR!"
