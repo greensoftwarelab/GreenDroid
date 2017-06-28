@@ -44,11 +44,16 @@ class AppData(object):
 				method = aux[1]
 				
 				filtered_pkg = [pkg for pkg in self._packages['packages'] if pkg['name'] == package]
-				if len(filtered_pkg) > 0: ### not any(p['name'] == package for p in self._packages['packages']):
-					filtered_cls = [cl for cl in filtered_pkg if cl['name'] == package]
+				if len(filtered_pkg) > 0:
+					filtered_cls = [cl for cl in filtered_pkg[0]['classes'] if cl['name'] == class_name]
+					if len(filtered_cls) > 0:
+						if method not in filtered_cls[0]['methods']:
+							filtered_cls[0]['methods'].append(method)
+					else:
+						filtered_pkg[0]['classes'].append({'name' : class_name, 'methods' : [method]})
 				else:
-					self._packages['packages'].append({'name' : package, 'classes' : set({'name' : class_name, 'methods' : [method]})})
-					print(str(self._packages))
+					self._packages['packages'].append({'name' : package, 'classes' : [{'name' : class_name, 'methods' : [method]}]})
+		print(str(self._packages))
 		return file
 
 	def init_packages(self):
