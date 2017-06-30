@@ -11,6 +11,7 @@ localDir="/home/marco/GDResults"
 trace="-TraceMethods" #trace=$1  ##RR
 GD_ANALYZER="analyzer/Analyzer-1.0-SNAPSHOT.jar"  # "analyzer/greenDroidAnalyzer.jar"
 trepnLib="TrepnLibrary-release.aar"
+trepnJar="TrepnLibrary-release.jar"
 
 DIR=/home/marco/tests/androidProjects/testproj/*
 #Normally, the vars TESTS_SRC and f would already been setted
@@ -112,7 +113,6 @@ else
 				#Run greendoid!
 				#java -jar $GD_ANALYZER $ID $PACKAGE $TESTPACKAGE $FOLDER $FOLDER/tName $localDir
 				java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/allMethods.txt $projLocalDir/*.csv  ##RR
-				exit 0
 				#break
 			else
 				#search for the manifests
@@ -126,12 +126,12 @@ else
 					#delete previously instrumented project, if any
 					rm -rf $SOURCE/$tName
 					#instrument
-					java -jar "jInst/jInst-1.0.jar" -sdk $tName "X" $SOURCE $TESTS
+					java -jar "jInst/jInst-1.0.jar" "-sdk" $tName "X" $SOURCE $TESTS $trace
 					#copy the test runner
 					mkdir $SOURCE/$tName/libs
 					mkdir $SOURCE/$tName/tests/libs
-					cp libsAdded/$trepnLib $SOURCE/$tName/libs
-					cp libsAdded/$trepnLib $SOURCE/$tName/tests/libs
+					cp libsAdded/$trepnJar $SOURCE/$tName/libs
+					cp libsAdded/$trepnJar $SOURCE/$tName/tests/libs
 
 					#build
 					./buildSDK.sh $ID $PACKAGE $SOURCE/$tName $SOURCE/$tName/tests
