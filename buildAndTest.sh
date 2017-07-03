@@ -151,6 +151,7 @@ else
 					./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir
 					RET=$(echo $?)
 					if [[ "$RET" != "0" ]]; then
+						rm -rf $projLocalDir
 						break
 					fi
 					#uninstall the app & tests
