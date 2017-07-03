@@ -212,7 +212,7 @@ for x in ${BUILDS[@]}; do
 		if [ -n "$HAS_DEPEND" ]; then
 			DEPEND_LINE=$(egrep -n "dependencies( ?){" $x | cut -f1 -d: | tail -1)
 			if [ -n "$AUX_BS" ]; then
-				matching_brackets "$x" AUX_BS
+				matching_brackets "$x" "$AUX_BS"
 				AUX_BS_2=$?
 				if [[ "$AUX_BS" -lt "$DEPEND_LINE" && "$DEPEND_LINE" -lt "$AUX_BS_2" ]]; then
 					DEPEND_LINE_2=$(egrep -n "dependencies( ?){" $x | cut -f1 -d: | head -1)
