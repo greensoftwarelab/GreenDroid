@@ -7,7 +7,7 @@ OLDIFS=$IFS
 tName="_TRANSFORMED_"
 deviceDir=""
 deviceExternal=""
-localDir="/home/marco/GDResults"
+localDir="~/GDResults"
 trace="-TraceMethods" #trace=$1  ##RR
 GD_ANALYZER="analyzer/Analyzer-1.0-SNAPSHOT.jar"  # "analyzer/greenDroidAnalyzer.jar"
 trepnLib="TrepnLibrary-release.aar"
@@ -155,13 +155,13 @@ else
 					./buildSDK.sh $ID $PACKAGE $SOURCE/$tName $SOURCE/$tName/tests
 					RET=$(echo $?)
 					if [[ "$RET" != "0" ]]; then
-						break
+						continue
 					fi
 					#install on device
 					./install.sh $SOURCE/$tName $SOURCE/$tName/tests "SDK" $PACKAGE $localDir
 					RET=$(echo $?)
 					if [[ "$RET" != "0" ]]; then
-						break
+						continue
 					fi
 					#run tests
 					projLocalDir=$localDir/$ID
@@ -170,13 +170,13 @@ else
 					RET=$(echo $?)
 					if [[ "$RET" != "0" ]]; then
 						rm -rf $projLocalDir
-						break
+						continue
 					fi
 					#uninstall the app & tests
 					./uninstall.sh $PACKAGE $TESTPACKAGE
 					RET=$(echo $?)
 					if [[ "$RET" != "0" ]]; then
-						break
+						continue
 					fi
 					#Run greendoid!
 					java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/allMethods.txt $projLocalDir/*.csv  ##RR

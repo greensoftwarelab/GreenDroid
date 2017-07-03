@@ -15,8 +15,8 @@ echo ""
 GRADLE_VERSION=$(gradle --version | grep "Gradle" | cut -f2 -d\ ) # "3.4.1"
 GRADLE_PLUGIN="2.0.0" #TODO - Find a better way to determine this value (see https://developer.android.com/studio/releases/gradle-plugin.html#updating-gradle)
 
-BUILD_VERSIONS=($(ls /home/marco/android-sdk-linux/build-tools/))
-TARGET_VERSIONS=($(ls /home/marco/android-sdk-linux/platforms/))
+BUILD_VERSIONS=($(ls ~/android-sdk-linux/build-tools/))
+TARGET_VERSIONS=($(ls ~/android-sdk-linux/platforms/))
 
 i_echo "$TAG GRADLE PROJECT"
 
