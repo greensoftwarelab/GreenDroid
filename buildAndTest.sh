@@ -13,7 +13,7 @@ GD_ANALYZER="analyzer/Analyzer-1.0-SNAPSHOT.jar"  # "analyzer/greenDroidAnalyzer
 trepnLib="TrepnLibrary-release.aar"
 trepnJar="TrepnLibrary-release.jar"
 
-DIR=/home/marco/tests/androidProjects/testproj/*
+DIR=~/tests/androidProjects/testproj/*
 #Normally, the vars TESTS_SRC and f would already been setted
 #TESTS_SRC=...
 #f=...
@@ -102,7 +102,7 @@ else
 				./buildGradle.sh $ID $FOLDER/$tName ${GRADLE[0]}
 				RET=$(echo $?)
 				if [[ "$RET" != "0" ]]; then
-					break
+					continue
 				fi
 				
 				#install on device
@@ -111,21 +111,21 @@ else
 				./install.sh $FOLDER/$tName "X" "GRADLE" $PACKAGE $projLocalDir  #COMMENT, EVENTUALLY...
 				RET=$(echo $?)
 				if [[ "$RET" != "0" ]]; then
-					break
+					continue
 				fi
 				
 				#run tests
 				./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir # "-gradle" $FOLDER/$tName
 				RET=$(echo $?)
 				if [[ "$RET" != "0" ]]; then
-					break
+					continue
 				fi
 				
 				#uninstall the app & tests
 				./uninstall.sh $PACKAGE $TESTPACKAGE
 				RET=$(echo $?)
 				if [[ "$RET" != "0" ]]; then
-					break
+					continue
 				fi
 				
 				#Run greendoid!
