@@ -39,7 +39,7 @@ else
 	adb shell am force-stop $testPack
 	adb shell am start -a android.intent.action.MAIN -c android.intent.category.HOME > /dev/null 2>&1
 	
-	echo "$TAG Running the tests (Testing)"
+	echo "$TAG Running the tests (Tracing)"
 	adb shell "echo -1 > $deviceDir/GDflag"
 	#adb shell am instrument -w $testPack/com.zutubi.android.junitreport.JUnitReportTestRunner
 	adb shell am instrument -w $testPack/$runner
