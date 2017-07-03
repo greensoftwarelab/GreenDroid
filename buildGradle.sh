@@ -35,22 +35,22 @@ for x in ${BUILDS[@]}; do
 	sed -ri.bak "s#\r##g" $x
 
 	#change the garbage collector settings
-	dexOpt=$(egrep -n "dexOptions( ?){" $x | cut -f1 -d:)
+	dexOpt=$(egrep -n "dexOptions( ?){" $x)
+	dexLine=$(egrep -n "dexOptions( ?){" $x | cut -f1 -d:)
 	if [ -n "$dexOpt" ]; then
-		((dexOpt++))
-		#echo "found dexOpt!"
+		((dexLine++))
 		preDex=$(egrep "preDexLibraries(( )|( ?=? ?))" $x)
 		if [ -n "$preDex" ]; then
 			sed -ri.bak "s#preDexLibraries(( )|( ?=? ?))(.+)#preDexLibraries = false#g" $x
 		else
-			sed -i.bak ""$dexopt"i preDexLibraries = false" $x
-			((dexOpt++))
+			sed -i.bak ""$dexLine"i preDexLibraries = false" $x
+			((dexLine++))
 		fi
 		heapMaxDex=$(egrep "javaMaxHeapSize(( )|( ?=? ?))" $x)
 		if [ -n "$heapMaxDex" ]; then
 			sed -ri.bak "s#javaMaxHeapSize(( )|( ?=? ?))(.+)#javaMaxHeapSize \"2g\"#g" $x
 		else
-			sed -i.bak ""$dexopt"i javaMaxHeapSize \"2g\""
+			sed -i.bak ""$dexLine"i javaMaxHeapSize \"2g\""
 			((dexOpt++))
 		fi
 	else
@@ -208,10 +208,11 @@ for x in ${BUILDS[@]}; do
 		fi
 		#Add TrepnLib dependency to build.gradle
 		HAS_DEPEND=$(egrep "dependencies( ?){" $x)
-		AUX_BS=$(egrep "buildscript *{" $x | cut -f1 -d: | tail -1)
+		AUX=$(egrep "buildscript *\{" $x)
+		AUX_BS=$(egrep -n "buildscript *\{" $x | cut -f1 -d: | tail -1)
 		if [ -n "$HAS_DEPEND" ]; then
 			DEPEND_LINE=$(egrep -n "dependencies( ?){" $x | cut -f1 -d: | tail -1)
-			if [ -n "$AUX_BS" ]; then
+			if [ -n "$AUX" ]; then
 				matching_brackets "$x" "$AUX_BS"
 				AUX_BS_2=$?
 				if [[ "$AUX_BS" -lt "$DEPEND_LINE" && "$DEPEND_LINE" -lt "$AUX_BS_2" ]]; then
@@ -220,7 +221,8 @@ for x in ${BUILDS[@]}; do
 			fi
 
 			if [[ "$DEPEND_LINE" == "$DEPEND_LINE_2" ]]; then
-				DEPEND_LINE=$(wc -l $x | cut -f1 -d:\ )
+				DEPEND_LINE=$(wc -l $x | cut -f1 -d\ )
+				echo "" >> $x
 				((DEPEND_LINE++))
 				sed -i.bak ""$DEPEND_LINE"i dependencies {" $x
 				((DEPEND_LINE++))
@@ -239,7 +241,8 @@ for x in ${BUILDS[@]}; do
 				#HAS_ABORT=$(egrep "abortOnError (true|false)" $x)
 			fi
 		else
-			DEPEND_LINE=$(wc -l $x | cut -f1 -d:\ )
+			DEPEND_LINE=$(wc -l $x | cut -f1 -d\ )
+			echo "" >> $x
 			((DEPEND_LINE++))
 			sed -i.bak ""$DEPEND_LINE"i dependencies {" $x
 			((DEPEND_LINE++))

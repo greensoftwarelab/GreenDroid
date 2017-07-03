@@ -20,3 +20,14 @@ function matching_brackets {
 		return $line
 	fi
 }
+
+matching_brackets "aux.txt" "1"
+echo $?
+
+A="1"
+B="40"
+C="100"
+
+if [[ "$A" -lt "$B" && "$B" -lt "$C" ]]; then
+	echo "yap"
+fi
