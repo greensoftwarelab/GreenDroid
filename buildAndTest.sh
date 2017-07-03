@@ -91,7 +91,7 @@ else
 				#copy the trace/measure lib
 				for D in `find $FOLDER/$tName/ -maxdepth 2 -type d`; do  ##RR
 				    if [ -d "${D}" ]; then  ##RR
-				      mkdir ${D}/libs  ##RR
+				      mkdir -p ${D}/libs  ##RR
 				      cp libsAdded/$trepnLib ${D}/libs  ##RR
 				    fi  ##RR
 				done  ##RR
