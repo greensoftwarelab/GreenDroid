@@ -25,12 +25,16 @@ class ManifestHandler( xml.sax.ContentHandler ):
                self.launcher = True
 
 def getLauncher(handlers):
-   for h in handlers:
-      if h.launcher:
-         return h.path, h.package
+   if len(handlers) > 0:
+      for h in handlers:
+         if h.launcher:
+            return h.path, h.package
+   else:
+      return "", ""
   
 def main(argv):
    lst = []
+   lst_cpy = []
    for arg in argv:
       path = arg.replace("/AndroidManifest.xml", "")
       # create an XMLReader

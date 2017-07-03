@@ -18,6 +18,24 @@ DIR=/home/marco/tests/androidProjects/testproj/*
 #TESTS_SRC=...
 #f=...
 
+#Quickly check the folder containing the apps to be tested for inconsistencies
+if [ "${DIR: -1}" == "*" ]; then
+	TEST_DIR="${DIR:0:-1}"
+else 
+	TEST_DIR=$DIR
+fi
+
+
+if [ ! -d $TEST_DIR ]; then
+	e_echo "$TAG Error: Folder $TEST_DIR does not exist"
+	exit 1
+fi
+
+if [ -z "$(ls -A $TEST_DIR)" ]; then
+	e_echo "$TAG Error: Folder $TEST_DIR is empty"
+	exit 1
+fi
+
 #adb kill-server
 DEVICE=$(adb devices -l | egrep "device .+ product:")
 if [ -z "$DEVICE" ]; then
@@ -26,7 +44,7 @@ else
 	deviceExternal=$(adb shell 'echo -n $EXTERNAL_STORAGE')
 	if [ -z "$deviceExternal" ]; then
 		e_echo "$TAG Could not determine the device's external storage. Check and try again..."
-		exit
+		exit 1
 	fi
 
 	#Strat Trepn
