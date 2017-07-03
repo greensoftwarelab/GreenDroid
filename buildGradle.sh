@@ -30,6 +30,9 @@ sed -ri.bak "s#classpath ([\"]|[\'])com.android.tools.build:gradle:(.+)([\"]|[\'
 #change the other build files
 BUILDS=($(find $FOLDER -name "build.gradle" | egrep -v "/build/"))
 for x in ${BUILDS[@]}; do
+	#remove \r characters
+	sed -ri.bak "s#\r##g" $x
+
 	#change the garbage collector settings
 	dexOpt=$(egrep -n "dexOptions( ?){" $x | cut -f1 -d:)
 	if [ -n "$dexOpt" ]; then
