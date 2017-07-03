@@ -210,16 +210,30 @@ for x in ${BUILDS[@]}; do
 		if [ -n "$HAS_DEPEND" ]; then
 			DEPEND_LINE=$(egrep -n "dependencies( ?){" $x | cut -f1 -d: | tail -1)
 			if [ -n "$AUX_BS" ]; then
-				if [[ (("$AUX_BS" < "$DEPEND_LINE")) ]]; then
-					DEPEND_LINE=$(egrep -n "dependencies( ?){" $x | cut -f1 -d: | head -1)
+				if [[ ??? ]]; then
+					DEPEND_LINE_2=$(egrep -n "dependencies( ?){" $x | cut -f1 -d: | head -1)
 				fi
 			fi
-			((DEPEND_LINE++))
-			#sed -i.bak ""$DEPEND_LINE"i compile files('$NEW_RUNNER_JAR')" $x
-			#((DEPEND_LINE++))
-			#sed -i.bak ""$DEPEND_LINE"i compile files('$GREENDROID')" $x
-			sed -i.bak ""$DEPEND_LINE"i compile (name:'TrepnLibrary-release', ext:'aar')" $x
-			#HAS_ABORT=$(egrep "abortOnError (true|false)" $x)
+
+			if [[ "$DEPEND_LINE" == "$DEPEND_LINE_2" ]]; then
+				DEPEND_LINE=$(wc -l $x | cut -f1 -d:\ )
+				((DEPEND_LINE++))
+				sed -i.bak ""$DEPEND_LINE"i dependencies {" $x
+				((DEPEND_LINE++))
+				#sed -i.bak ""$DEPEND_LINE"i compile files('$NEW_RUNNER_JAR')" $x
+				#((DEPEND_LINE++))
+				#sed -i.bak ""$DEPEND_LINE"i compile files('$GREENDROID')" $x
+				sed -i.bak ""$DEPEND_LINE"i compile (name:'TrepnLibrary-release', ext:'aar')" $x
+				((DEPEND_LINE++))
+				sed -i.bak ""$DEPEND_LINE"i }" $x
+			else
+				((DEPEND_LINE++))
+				#sed -i.bak ""$DEPEND_LINE"i compile files('$NEW_RUNNER_JAR')" $x
+				#((DEPEND_LINE++))
+				#sed -i.bak ""$DEPEND_LINE"i compile files('$GREENDROID')" $x
+				sed -i.bak ""$DEPEND_LINE"i compile (name:'TrepnLibrary-release', ext:'aar')" $x
+				#HAS_ABORT=$(egrep "abortOnError (true|false)" $x)
+			fi
 		else
 			DEPEND_LINE=$(wc -l $x | cut -f1 -d:\ )
 			((DEPEND_LINE++))
