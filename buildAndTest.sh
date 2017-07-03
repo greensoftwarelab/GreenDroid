@@ -18,7 +18,6 @@ DIR=$HOME/tests/androidProjects/testproj/*
 #TESTS_SRC=...
 #f=...
 
-exit 0
 #Quickly check the folder containing the apps to be tested for inconsistencies
 if [ "${DIR: -1}" == "*" ]; then
 	TEST_DIR="${DIR:0:-1}"

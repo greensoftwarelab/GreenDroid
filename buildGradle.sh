@@ -206,8 +206,14 @@ for x in ${BUILDS[@]}; do
 			sed -i.bak ""$ANDROID_LINE"i testInstrumentationRunner \"$NEW_RUNNER\"" $x
 		fi
 		HAS_DEPEND=$(egrep "dependencies( ?){" $x)
+		AUX_BS=$(egrep "buildscript *{" $x | cut -f1 -d: | tail -1)
 		if [ -n "$HAS_DEPEND" ]; then
 			DEPEND_LINE=$(egrep -n "dependencies( ?){" $x | cut -f1 -d: | tail -1)
+			if [ -n "$AUX_BS" ]; then
+				if [[ (("$AUX_BS" < "$DEPEND_LINE")) ]]; then
+					DEPEND_LINE=$(egrep -n "dependencies( ?){" $x | cut -f1 -d: | head -1)
+				fi
+			fi
 			((DEPEND_LINE++))
 			#sed -i.bak ""$DEPEND_LINE"i compile files('$NEW_RUNNER_JAR')" $x
 			#((DEPEND_LINE++))
