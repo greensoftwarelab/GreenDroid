@@ -7,17 +7,18 @@ OLDIFS=$IFS
 tName="_TRANSFORMED_"
 deviceDir=""
 deviceExternal=""
-localDir="~/GDResults"
+localDir="$HOME/GDResults"
 trace="-TraceMethods" #trace=$1  ##RR
 GD_ANALYZER="analyzer/Analyzer-1.0-SNAPSHOT.jar"  # "analyzer/greenDroidAnalyzer.jar"
 trepnLib="TrepnLibrary-release.aar"
 trepnJar="TrepnLibrary-release.jar"
 
-DIR=~/tests/androidProjects/testproj/*
+DIR=$HOME/tests/androidProjects/testproj/*
 #Normally, the vars TESTS_SRC and f would already been setted
 #TESTS_SRC=...
 #f=...
 
+exit 0
 #Quickly check the folder containing the apps to be tested for inconsistencies
 if [ "${DIR: -1}" == "*" ]; then
 	TEST_DIR="${DIR:0:-1}"
