@@ -1,5 +1,6 @@
 #!/bin/bash
 source settings.sh
+source util.sh
 
 OLDIFS=$IFS
 IFS=$(echo -en "\n\b")
@@ -205,12 +206,15 @@ for x in ${BUILDS[@]}; do
 			((ANDROID_LINE[0]++))
 			sed -i.bak ""$ANDROID_LINE"i testInstrumentationRunner \"$NEW_RUNNER\"" $x
 		fi
+		#Add TrepnLib dependency to build.gradle
 		HAS_DEPEND=$(egrep "dependencies( ?){" $x)
 		AUX_BS=$(egrep "buildscript *{" $x | cut -f1 -d: | tail -1)
 		if [ -n "$HAS_DEPEND" ]; then
 			DEPEND_LINE=$(egrep -n "dependencies( ?){" $x | cut -f1 -d: | tail -1)
 			if [ -n "$AUX_BS" ]; then
-				if [[ ??? ]]; then
+				matching_brackets "$x" AUX_BS
+				AUX_BS_2=$?
+				if [[ "$AUX_BS" -lt "$DEPEND_LINE" && "$DEPEND_LINE" -lt "$AUX_BS_2" ]]; then
 					DEPEND_LINE_2=$(egrep -n "dependencies( ?){" $x | cut -f1 -d: | head -1)
 				fi
 			fi
