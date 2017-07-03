@@ -193,7 +193,6 @@ for x in ${BUILDS[@]}; do
 			fi
 		done
 		if [ "$correct" == "0" ]; then
-			#new_buildv=21.1.2
 			sed -ri.bak "s#([ \t]*)targetSdkVersion .+#\1targetSdkVersion "$new_target"#g" $x
 		fi
 	fi
