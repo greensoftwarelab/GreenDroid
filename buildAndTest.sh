@@ -102,6 +102,7 @@ else
 				./buildGradle.sh $ID $FOLDER/$tName ${GRADLE[0]}
 				RET=$(echo $?)
 				if [[ "$RET" != "0" ]]; then
+					echo "$ID" >> errorBuild.log
 					continue
 				fi
 				
@@ -111,6 +112,7 @@ else
 				./install.sh $FOLDER/$tName "X" "GRADLE" $PACKAGE $projLocalDir  #COMMENT, EVENTUALLY...
 				RET=$(echo $?)
 				if [[ "$RET" != "0" ]]; then
+					echo "$ID" >> errorInstall.log
 					continue
 				fi
 				
@@ -118,6 +120,7 @@ else
 				./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir # "-gradle" $FOLDER/$tName
 				RET=$(echo $?)
 				if [[ "$RET" != "0" ]]; then
+					echo "$ID" >> errorPull.log
 					continue
 				fi
 				
@@ -125,6 +128,7 @@ else
 				./uninstall.sh $PACKAGE $TESTPACKAGE
 				RET=$(echo $?)
 				if [[ "$RET" != "0" ]]; then
+					echo "$ID" >> errorUninstall.log
 					continue
 				fi
 				
@@ -155,12 +159,14 @@ else
 					./buildSDK.sh $ID $PACKAGE $SOURCE/$tName $SOURCE/$tName/tests
 					RET=$(echo $?)
 					if [[ "$RET" != "0" ]]; then
+						echo "$ID" >> errorBuild.log
 						continue
 					fi
 					#install on device
 					./install.sh $SOURCE/$tName $SOURCE/$tName/tests "SDK" $PACKAGE $localDir
 					RET=$(echo $?)
 					if [[ "$RET" != "0" ]]; then
+						echo "$ID" >> errorInstall.log
 						continue
 					fi
 					#run tests
@@ -169,6 +175,7 @@ else
 					./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir
 					RET=$(echo $?)
 					if [[ "$RET" != "0" ]]; then
+						echo "$ID" >> errorPull.log
 						rm -rf $projLocalDir
 						continue
 					fi
@@ -176,6 +183,7 @@ else
 					./uninstall.sh $PACKAGE $TESTPACKAGE
 					RET=$(echo $?)
 					if [[ "$RET" != "0" ]]; then
+						echo "$ID" >> errorUninstall.log
 						continue
 					fi
 					#Run greendoid!

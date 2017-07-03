@@ -183,9 +183,9 @@ for x in ${BUILDS[@]}; do
 				correct=1
 				break
 			elif [[ (("${t:8:2}" < "$old_target")) ]]; then
-				new_target=${t:8:2}
+				new_target="${t:8:2}"
 			elif ! [[ ${old_target:0:1} =~ [0-9]{1} ]]; then
-				new_target=21
+				new_target="21"
 				break
 			else
 				new_target=$v
