@@ -89,10 +89,11 @@ else
 				java -jar "jInst/jInst-1.0.jar" "-gradle" $tName "X" $FOLDER $MANIF_S $MANIF_T $trace ##RR
 				
 				#copy the trace/measure lib
-				for D in `find $FOLDER/$tName/ -type d | egrep -v "\/res|\/gen|\/build"|\/.git|\/src|\/.gradle`; do  ##RR
-				    if [ -d "${D}"]; then  ##RR
-				      mkdir -p ${D}/libs  ##RR
-				      cp libsAdded/$trepnLib ${D}/libs  ##RR
+				#folds=($(find $FOLDER/$tName/ -type d | egrep -v "\/res|\/gen|\/build|\/.git|\/src|\/.gradle"))
+				for D in `find $FOLDER/$tName/ -type d | egrep -v "\/res|\/gen|\/build|\/.git|\/src|\/.gradle"`; do  ##RR
+				    if [ -d "${D}" ]; then  ##RR
+				    	mkdir -p ${D}/libs  ##RR
+				     	cp libsAdded/$trepnLib ${D}/libs  ##RR
 				    fi  ##RR
 				done  ##RR
 

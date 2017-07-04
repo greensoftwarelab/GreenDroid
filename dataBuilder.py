@@ -26,3 +26,5 @@ if __name__ == "__main__":
 	if len(sys.argv) > 1:
 		main_folder = sys.argv[1]
 		main(main_folder)
+
+# interesting app: 059ffbed-ae13-4eea-924c-78d27c5ef448
