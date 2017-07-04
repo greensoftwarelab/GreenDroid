@@ -162,7 +162,7 @@ else
 						echo "$ID" >> errorBuild.log
 						continue
 					fi
-					exit 0
+					
 					#install on device
 					./install.sh $SOURCE/$tName $SOURCE/$tName/tests "SDK" $PACKAGE $localDir
 					RET=$(echo $?)
