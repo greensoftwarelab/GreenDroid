@@ -189,12 +189,12 @@ for x in ${BUILDS[@]}; do
 				new_target="21"
 				break
 			else
-				new_target=$v
+				new_target=$t
 				break
 			fi
 		done
 		if [ "$correct" == "0" ]; then
-			sed -ri.bak "s#([ \t]*)targetSdkVersion .+#\1targetSdkVersion "$new_target"#g" $x
+			sed -ri.bak "s#([ \t]*)targetSdkVersion *(=?) *.+#\1targetSdkVersion \2 "$new_target"#g" $x
 		fi
 	fi
 
@@ -281,9 +281,11 @@ STATUS_NOK=$(grep "BUILD FAILED" buildStatus.log)
 STATUS_OK=$(grep "BUILD SUCCESS" buildStatus.log)
 
 if [ -n "$STATUS_NOK" ]; then
+	try="5"
 	minSDKerror=$(egrep "uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in" buildStatus.log)
 	buildSDKerror=$(egrep "The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)" buildStatus.log)
 	while [[ (-n "$minSDKerror") || (-n "$buildSDKerror") ]]; do
+		((try--))
 		w_echo "$TAG Common Error. Trying again..."
 		unmatchVers=($(sed -nr "s/(.+)uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in (.+)$/\2\n\3/p" buildStatus.log))
 		unmatchBuilds=($(sed -nr "s/(.+)The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)$/\2\n\4/p" buildStatus.log))
@@ -299,7 +301,12 @@ if [ -n "$STATUS_NOK" ]; then
 				#found the troublesome build.gradle, replace!
 				minSDK=$(grep "minSdkVersion " $x)
 				if [ -n "$minSDK" ]; then
-					sed -ri.bak "s#minSdkVersion $oldV#minSdkVersion $newV#g" $x
+					vrs=($(sed -nr "s#minSdkVersion +(.+)#\1#p" $x))
+					if ! [[ ${vrs[0]} =~ "'[0-9 ]+$" ]] ; then
+						sed -ri.bak "s#minSdkVersion (.+)#minSdkVersion $newV#g" $x
+					else
+						sed -ri.bak "s#minSdkVersion $oldV#minSdkVersion $newV#g" $x
+					fi
 				else
 					ANDROID_LINE=($(egrep -n "defaultConfig( ?){" $x | cut -f1 -d:))
 					if [ -n "${ANDROID_LINE[0]}" ]; then
@@ -316,7 +323,7 @@ if [ -n "$STATUS_NOK" ]; then
 			
 		done
 
-		gradle -b $GRADLE clean build assembleAndroidTest &> buildStatus.log # gradle -b $GRADLE clean build &> buildStatus.log
+		gradle -b $GRADLE clean build assembleAndroidTest &> buildStatus.log
 
 		minSDKerror=$(egrep "uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in" buildStatus.log)
 		buildSDKerror=$(egrep "The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)" buildStatus.log)
@@ -326,6 +333,10 @@ if [ -n "$STATUS_NOK" ]; then
 		if [ -n "$STATUS_OK" ]; then
 			#the build was successful
 			i_echo "$TAG Build successful for project $ID"
+			break
+		fi
+
+		if [[ "$try" -eq "0" ]]; then
 			break
 		fi
 	done
