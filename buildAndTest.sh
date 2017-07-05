@@ -171,6 +171,7 @@ else
 						echo "$ID" >> errorInstall.log
 						continue
 					fi
+					echo "$ID" > success.log
 					#run tests
 					projLocalDir=$localDir/$ID
 					mkdir -p $projLocalDir
