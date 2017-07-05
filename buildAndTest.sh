@@ -13,7 +13,8 @@ GD_ANALYZER="analyzer/Analyzer-1.0-SNAPSHOT.jar"  # "analyzer/greenDroidAnalyzer
 trepnLib="TrepnLibrary-release.aar"
 trepnJar="TrepnLibrary-release.jar"
 
-DIR=$HOME/tests/androidProjects/testproj/*
+DIR=/media/data/android_apps/success/*
+#DIR=$HOME/tests/androidProjects/testproj/*
 #Normally, the vars TESTS_SRC and f would already been setted
 #TESTS_SRC=...
 #f=...
