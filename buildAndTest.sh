@@ -63,7 +63,7 @@ else
 		if [ "$ID" != "success" ] && [ "$ID" != "failed" ] && [ "$ID" != "unknown" ]; then
 			#first, check if this is a gradle or a maven project
 			#GRADLE=$(find ${f}/latest -maxdepth 1 -name "build.gradle")
-			GRADLE=($(find ${f}/latest -name "build.gradle" -print | xargs -I{} grep "buildscript" {} /dev/null | cut -f1 -d:))
+			GRADLE=($(find ${f}/latest -name "*.gradle" -type f -print | grep -v "settings.gradle" | xargs -I{} grep "buildscript" {} /dev/null | cut -f1 -d:))
 			POM=$(find ${f}/latest -maxdepth 1 -name "pom.xml")
 			if [ -n "$POM" ]; then
 				POM=${POM// /\\ }
@@ -99,7 +99,7 @@ else
 
 				#build
 				#GRADLE=$(find $FOLDER/$tName -maxdepth 1 -name "build.gradle")
-				GRADLE=($(find $FOLDER/$tName -name "build.gradle" -print | xargs grep -L "com.android.library" | xargs grep -l "buildscript" | cut -f1 -d:))
+				GRADLE=($(find $FOLDER/$tName -name "*.gradle" -type f -print | grep -v "settings.gradle" | xargs grep -L "com.android.library" | xargs grep -l "buildscript" | cut -f1 -d:))
 				./buildGradle.sh $ID $FOLDER/$tName ${GRADLE[0]}
 				RET=$(echo $?)
 				if [[ "$RET" != "0" ]]; then

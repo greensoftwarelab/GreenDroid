@@ -189,7 +189,7 @@ for x in ${BUILDS[@]}; do
 				new_target="21"
 				break
 			else
-				new_target=$t
+				new_target=${t:8:2}
 				break
 			fi
 		done
