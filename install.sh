@@ -24,20 +24,22 @@ OK="0"
 
 if [ "${#appAPK[@]}" != 1 ] || [ "${#testAPK[@]}" != 1 ]; then
 
-	if [ "${#appAPK[@]}" > 1 && "${#testAPK[@]}" == 1 ]; then
+	if [ "${#appAPK[@]}" > 1 ] && [ "${#testAPK[@]}" == 1 ]; then
 		pAux=$(echo "${testAPK[0]}" | sed -r "s#\/[a-zA-Z0-9-]+-debug.+.apk#/#g")
 		appAPK=($(find $pAux -name "*-debug.apk"))
 		if [ "${#appAPK[@]}" == 1 ]; then
 			OK="1"
 		fi
 
-	elif [ "${#appAPK[@]}" == 1 && "${#testAPK[@]}" > 1 ]; then
+	elif [ "${#appAPK[@]}" == 1 ] && [ "${#testAPK[@]}" > 1 ]; then
 		pAux=$(echo "${appAPK[0]}" | sed -r "s#\/[a-zA-Z0-9-]+-debug.+.apk#/#g")
 		testAPK=($(find $pAux -name "*-debug-androidTest-*.apk"))
 		if [ "${#testAPK[@]}" == 1 ]; then
 			OK="1"
 		fi
 	else
+		#Either there's no apk files found for the app and/or tests, 
+		#or there are 2 or more apks for both app and tests
 		OK="0"
 	fi
 else

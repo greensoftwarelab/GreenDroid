@@ -130,7 +130,7 @@ else
 				RET=$(echo $?)
 				if [[ "$RET" != "0" ]]; then
 					echo "$ID" >> errorUninstall.log
-					continue
+					#continue
 				fi
 				
 				#Run greendoid!

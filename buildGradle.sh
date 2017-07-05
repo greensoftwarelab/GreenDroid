@@ -281,10 +281,11 @@ STATUS_NOK=$(grep "BUILD FAILED" buildStatus.log)
 STATUS_OK=$(grep "BUILD SUCCESS" buildStatus.log)
 
 if [ -n "$STATUS_NOK" ]; then
-	try="5"
+	try="6"
+	libsError=$(egrep "No signature of method: java.util.ArrayList.call() is applicable for argument types: (java.lang.String) values: [libs]" buildStatus.log)
 	minSDKerror=$(egrep "uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in" buildStatus.log)
 	buildSDKerror=$(egrep "The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)" buildStatus.log)
-	while [[ (-n "$minSDKerror") || (-n "$buildSDKerror") ]]; do
+	while [[ (-n "$minSDKerror") || (-n "$buildSDKerror") || (-n "$libsError") ]]; do
 		((try--))
 		w_echo "$TAG Common Error. Trying again..."
 		unmatchVers=($(sed -nr "s/(.+)uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in (.+)$/\2\n\3/p" buildStatus.log))
@@ -320,11 +321,17 @@ if [ -n "$STATUS_NOK" ]; then
 			if [[ -n "$oldBuild" ]]; then
 				sed -ri.bak "s#buildToolsVersion ('\")$oldBuild('\")#buildToolsVersion \1$newBuild\2#g" $x
 			fi
+
+			if [[ -n "$libsError" ]]; then
+				sed -i.bak "s#dirs.each#directories#g" $x
+				sed -ri.bak "s#(.+) +dirs *= *\[#\1 directories = [#g" $x
+			fi
 			
 		done
 
 		gradle -b $GRADLE clean build assembleAndroidTest &> buildStatus.log
 
+		libsError=$(egrep "No signature of method: java.util.ArrayList.call() is applicable for argument types: (java.lang.String) values: [libs]" buildStatus.log)
 		minSDKerror=$(egrep "uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in" buildStatus.log)
 		buildSDKerror=$(egrep "The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)" buildStatus.log)
 		STATUS_NOK=$(grep "BUILD FAILED" buildStatus.log)
