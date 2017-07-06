@@ -35,7 +35,7 @@ if [ -z "$(ls -A $TEST_DIR)" ]; then
 	exit 1
 fi
 
-#adb kill-server
+adb kill-server
 DEVICE=$(adb devices -l | egrep "device .+ product:")
 if [ -z "$DEVICE" ]; then
 	e_echo "$TAG Error: Could not find any attached device. Check and try again..."
@@ -197,7 +197,7 @@ else
 					RET=$(echo $?)
 					if [[ "$RET" != "0" ]]; then
 						echo "$ID" >> errorUninstall.log
-						continue
+						#continue
 					fi
 					#Run greendoid!
 					java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv  ##RR

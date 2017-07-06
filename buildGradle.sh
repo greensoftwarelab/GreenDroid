@@ -71,7 +71,6 @@ for x in ${BUILDS[@]}; do
 	HAS_LINT=$(egrep "lintOptions( ?){" $x)
 	if [ -n "$HAS_LINT" ]; then
 		LINT_LINE=($(egrep -n "lintOptions( ?){" $x | cut -f1 -d:))
-		echo "$x -> LINE: | $LINT_LINE |"
 		for i in ${LINT_LINE[@]}; do
 			((i++))
 			HAS_ABORT=$(egrep "abortOnError (true|false)" $x)
