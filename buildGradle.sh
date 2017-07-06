@@ -70,14 +70,17 @@ for x in ${BUILDS[@]}; do
 	#check for the lintOptions, and change the file if they are not properly set
 	HAS_LINT=$(egrep "lintOptions( ?){" $x)
 	if [ -n "$HAS_LINT" ]; then
-		LINT_LINE=$(egrep -n "lintOptions( ?){" $x | cut -f1 -d:)
-		((LINT_LINE++))
-		HAS_ABORT=$(egrep "abortOnError (true|false)" $x)
-		if [ -n "$HAS_ABORT" ]; then
-			sed -ri.bak "s#abortOnError true#abortOnError false#g" $x
-		else
-			sed -i.bak ""$LINT_LINE"i abortOnError false" $x
-		fi
+		LINT_LINE=($(egrep -n "lintOptions( ?){" $x | cut -f1 -d:))
+		echo "$x -> LINE: | $LINT_LINE |"
+		for i in ${LINT_LINE[@]}; do
+			((i++))
+			HAS_ABORT=$(egrep "abortOnError (true|false)" $x)
+			if [ -n "$HAS_ABORT" ]; then
+				sed -ri.bak "s#abortOnError true#abortOnError false#g" $x
+			else
+				sed -i.bak ""$i"i abortOnError false" $x
+			fi
+		done
 	else
 		ANDROID_LINE=($(egrep -n "android( ?){" $x | cut -f1 -d:))
 		if [ -n "${ANDROID_LINE[0]}" ]; then
@@ -282,7 +285,7 @@ STATUS_OK=$(grep "BUILD SUCCESS" buildStatus.log)
 
 if [ -n "$STATUS_NOK" ]; then
 	try="6"
-	libsError=$(egrep "No signature of method: java.util.ArrayList.call() is applicable for argument types: (java.lang.String) values: [libs]" buildStatus.log)
+	libsError=$(grep "No signature of method: java.util.ArrayList.call() is applicable for argument types: (java.lang.String) values: \[libs\]" buildStatus.log)
 	minSDKerror=$(egrep "uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in" buildStatus.log)
 	buildSDKerror=$(egrep "The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)" buildStatus.log)
 	while [[ (-n "$minSDKerror") || (-n "$buildSDKerror") || (-n "$libsError") ]]; do
@@ -323,7 +326,7 @@ if [ -n "$STATUS_NOK" ]; then
 			fi
 
 			if [[ -n "$libsError" ]]; then
-				sed -i.bak "s#dirs.each#directories#g" $x
+				sed -i.bak "s#dirs.each#directories.each#g" $x
 				sed -ri.bak "s#(.+) +dirs *= *\[#\1 directories = [#g" $x
 			fi
 			
