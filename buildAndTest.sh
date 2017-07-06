@@ -8,16 +8,14 @@ tName="_TRANSFORMED_"
 deviceDir=""
 deviceExternal=""
 localDir="$HOME/GDResults"
-trace="-TraceMethods" #trace=$1  ##RR
+trace="-TraceMethods"   #trace=$2  ##RR
 GD_ANALYZER="analyzer/Analyzer-1.0-SNAPSHOT.jar"  # "analyzer/greenDroidAnalyzer.jar"
 trepnLib="TrepnLibrary-release.aar"
 trepnJar="TrepnLibrary-release.jar"
 
-DIR=/media/data/android_apps/success/*
+DIR=/media/data/android_apps/failed/*   #DIR=$1
+#DIR=/media/data/android_apps/success/*
 #DIR=$HOME/tests/androidProjects/testproj/*
-#Normally, the vars TESTS_SRC and f would already been setted
-#TESTS_SRC=...
-#f=...
 
 #Quickly check the folder containing the apps to be tested for inconsistencies
 if [ "${DIR: -1}" == "*" ]; then
@@ -142,7 +140,7 @@ else
 				
 				#Run greendoid!
 				#java -jar $GD_ANALYZER $ID $PACKAGE $TESTPACKAGE $FOLDER $FOLDER/tName $localDir
-				java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/allMethods.txt $projLocalDir/*.csv  ##RR
+				java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv  ##RR
 				#break
 			else
 				#search for the manifests
@@ -202,7 +200,7 @@ else
 						continue
 					fi
 					#Run greendoid!
-					java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/allMethods.txt $projLocalDir/*.csv  ##RR
+					java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv  ##RR
 					#break
 				else
 					e_echo "$TAG ERROR!"
