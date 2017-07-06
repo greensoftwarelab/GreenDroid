@@ -108,9 +108,14 @@ else
 					continue
 				fi
 				
-				#install on device
+				#create results support folder
 				projLocalDir=$localDir/$ID
+				echo "$TAG Creating support folder..."
 				mkdir -p $projLocalDir
+				mkdir -p $projLocalDir/all
+				cp ./allMethods.txt $projLocalDir/all
+
+				#install on device
 				./install.sh $FOLDER/$tName "X" "GRADLE" $PACKAGE $projLocalDir  #COMMENT, EVENTUALLY...
 				RET=$(echo $?)
 				if [[ "$RET" != "0" ]]; then
@@ -174,14 +179,19 @@ else
 						continue
 					fi
 					echo "$ID" >> success.log
-					#run tests
+
+					#create results support folder
 					projLocalDir=$localDir/$ID
+					echo "$TAG Creating support folder..."
 					mkdir -p $projLocalDir
+					mkdir -p $projLocalDir/all
+					cp ./allMethods.txt $projLocalDir/all
+
+					#run tests
 					./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir
 					RET=$(echo $?)
 					if [[ "$RET" != "0" ]]; then
 						echo "$ID" >> errorPull.log
-						rm -rf $projLocalDir
 						continue
 					fi
 					#uninstall the app & tests

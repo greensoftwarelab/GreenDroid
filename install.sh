@@ -55,9 +55,5 @@ else
 	adb install -r ${appAPK[0]}
 	adb install -r ${testAPK[0]}
 
-	echo "$TAG Creating support folder..."
-	mkdir -p $resDir/all
-	#cp $pathProject/_aux_/AllMethods $resDir/$package/all
-	cp ./allMethods.txt $resDir/all
 fi
 exit 0
