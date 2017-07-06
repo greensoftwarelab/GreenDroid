@@ -117,6 +117,7 @@ else
 					echo "$ID" >> errorInstall.log
 					continue
 				fi
+				echo "$ID" >> success.log
 				
 				#run tests
 				./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir # "-gradle" $FOLDER/$tName
@@ -172,7 +173,7 @@ else
 						echo "$ID" >> errorInstall.log
 						continue
 					fi
-					echo "$ID" > success.log
+					echo "$ID" >> success.log
 					#run tests
 					projLocalDir=$localDir/$ID
 					mkdir -p $projLocalDir
