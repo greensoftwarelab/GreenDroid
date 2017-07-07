@@ -43,7 +43,7 @@ def load_consumptions(path):
 				firstline = False
 				continue
 			if (is_number(row[0])) & (len(row) >= 5):
-				result.append({'energy' : row[1], 'power' : row[2], 'time' : row[3], 'coverage' : row[4]})
+				result.append({'test' : row[0], 'energy' : row[1], 'power' : row[2], 'time' : row[3], 'coverage' : row[4]})
 	return result
 	
 def is_number(s):

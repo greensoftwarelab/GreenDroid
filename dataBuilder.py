@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
 import re, sys, os
+
+from subprocess import call, check_output, Popen, PIPE
 from lazyme.string import color_print
 from pandas import *
 
@@ -10,6 +12,15 @@ from gd_analysis import *
 
 TAG="[DATA BUILDER]"
 
+def run_analyzer(path):
+	cmd = "java -jar analyzer/Analyzer-1.0-SNAPSHOT.jar -TraceMethods " + path + " " + path + "/all/ " + path +"/*.csv"
+	pipes = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+	std_out, std_err = pipes.communicate()
+	if pipes.returncode != 0:
+		err_msg = "%s. Code: %s" % (std_err.strip(), pipes.returncode)
+		color_print('[E] Error on ' + root + ': ', color='red', bold=True)
+		print(err_msg)
+
 def main(mf):
 	color_print(TAG, color='green', bold=True)
 	#for c in mf:
@@ -17,10 +28,19 @@ def main(mf):
 	all_apps = []
 	all_energy = []
 	for path in all_apps_path:
+		print(path)
+		#run Analyzer
+		run_analyzer(path)
+      	#get the results & store it in classes
 		app = AppData(path, mf)
 		all_apps.append(app)
-		all_energy += app.consumptions_over_trace()
+		all_energy += app.consumptions_over_trace()	#other options available
 	print(str(all_energy))
+	print("Calculating the quantiles")
+	df = DataFrame(Series(all_energy))
+	percentiles = df.quantile(np.linspace(.1, 1, num=10, endpoint=True))
+	#percentiles[.1][0] <= the value of quantile 0.1, for column 0 (first one)
+	print(str(percentiles))
 
 if __name__ == "__main__":
 	if len(sys.argv) > 1:

@@ -68,6 +68,30 @@ class AppData(object):
 			res.append((t.get_consumption())/len(t.get_trace()))
 		return res
 
+	def consumptions_over_time_over_trace(self):
+		res = []
+		for t in self._test_cases:
+			res.append((t.get_consumption())/t.get_time()/len(t.get_trace()))
+		return res
+
+	def consumptions_on_time(self):
+		res = []
+		for t in self._test_cases:
+			res.append((t.get_consumption())*t.get_time())
+		return res
+
+	def consumptions_on_trace(self):
+		res = []
+		for t in self._test_cases:
+			res.append((t.get_consumption())*len(t.get_trace()))
+		return res
+
+	def consumptions_on_time_on_trace(self):
+		res = []
+		for t in self._test_cases:
+			res.append((t.get_consumption())*t.get_time()*len(t.get_trace()))
+		return res
+
 	#auxiliar private methods
 	def _load_packages(self):
 		file = os.path.join(self._path, "all/allMethods.txt")
@@ -102,10 +126,11 @@ class AppData(object):
 		results = load_consumptions(self._path)
 		for f in files:
 			number = re.sub(r'\/TracedMethods|\.txt|'+self._path, r'', f)
-			#print(str(number))
-			trace = self._load_trace_file(f)
-			values = results[int(number)]
-			energy = float(values['energy'])
-			time = values['time']
-			tc = TestCase(number, energy, time, trace)
-			self._test_cases.append(tc)
+			values = [r for r in results if r['test'] == number]
+			if len(values):
+				v = values[0]
+				energy = float(v['energy'])
+				time = v['time']
+				trace = self._load_trace_file(f)
+				tc = TestCase(number, energy, time, trace)
+				self._test_cases.append(tc)
