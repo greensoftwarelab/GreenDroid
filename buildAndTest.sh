@@ -13,9 +13,9 @@ GD_ANALYZER="analyzer/Analyzer-1.0-SNAPSHOT.jar"  # "analyzer/greenDroidAnalyzer
 trepnLib="TrepnLibrary-release.aar"
 trepnJar="TrepnLibrary-release.jar"
 
-DIR=/media/data/android_apps/failed/*   #DIR=$1
-#DIR=/media/data/android_apps/success/*
-#DIR=$HOME/tests/androidProjects/testproj/*
+#DIR=/media/data/android_apps/failed/*   #DIR=$1
+DIR=/media/data/android_apps/success/*
+#DIR=$HOME/tests/*
 
 #Quickly check the folder containing the apps to be tested for inconsistencies
 if [ "${DIR: -1}" == "*" ]; then
@@ -51,7 +51,7 @@ else
 
 	deviceDir="$deviceExternal/trepn"  #GreenDroid
 	adb shell mkdir $deviceDir
-	adb shell rm -rf $deviceDir/*.csv  ##RR
+	adb shell rm -rf $deviceDir/Measures/*  ##RR
 	adb shell rm -rf $deviceDir/Traces/*  ##RR
 	
 	#for each app in $DIR folder...

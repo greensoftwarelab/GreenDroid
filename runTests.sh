@@ -24,8 +24,8 @@ else
 
 	echo "$TAG Cleaning previous files"  ##RR
 	adb shell rm -rf "$deviceDir/trepn/allMethods.txt"  ##RR
-	adb shell rm -rf "$deviceDir/trepn/Traces/*txt"  ##RR
-	adb shell rm -rf "$deviceDir/trepn/*.csv"  ##RR
+	adb shell rm -rf "$deviceDir/trepn/Traces/*"  ##RR
+	adb shell rm -rf "$deviceDir/trepn/Measures/*"  ##RR
 
 	rm -rf $localDir/*.csv
 	
@@ -51,7 +51,7 @@ fi
 i_echo "$TAG Pulling result files"
 #adb pull $deviceDir $localDir
 
-adb shell ls "$deviceDir" | sed -r 's/[\r]+//g' | egrep "*.csv" |  xargs -I{} adb pull $deviceDir/{} $localDir
+adb shell ls "$deviceDir/Measures/" | sed -r 's/[\r]+//g' | egrep "*.csv" |  xargs -I{} adb pull $deviceDir/Measures/{} $localDir
 #adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
 adb shell ls "$deviceDir/Traces/" | sed -r 's/[\r]+//g' | egrep "*.txt" | xargs -I{} adb pull $deviceDir/Traces/{} $localDir
 exit
