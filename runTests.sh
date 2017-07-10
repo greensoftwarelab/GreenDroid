@@ -23,9 +23,9 @@ if [ "$projType" == "-gradle" ]; then
 else
 
 	echo "$TAG Cleaning previous files"  ##RR
-	adb shell rm -rf "$deviceExternal/trepn/allMethods.txt"  ##RR
-	adb shell rm -rf "$deviceExternal/trepn/Traces/*txt"  ##RR
-	adb shell rm -rf "$deviceExternal/trepn/*.csv"  ##RR
+	adb shell rm -rf "$deviceDir/trepn/allMethods.txt"  ##RR
+	adb shell rm -rf "$deviceDir/trepn/Traces/*txt"  ##RR
+	adb shell rm -rf "$deviceDir/trepn/*.csv"  ##RR
 
 	rm -rf $localDir/*.csv
 	

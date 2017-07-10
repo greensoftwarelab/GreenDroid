@@ -65,13 +65,21 @@ class AppData(object):
 	def consumptions_over_trace(self):
 		res = []
 		for t in self._test_cases:
-			res.append((t.get_consumption())/len(t.get_trace()))
+			if len(t.get_trace()) > 0:
+				size = len(t.get_trace())
+			else:
+				size = 1
+			res.append((t.get_consumption())/size)
 		return res
 
 	def consumptions_over_time_over_trace(self):
 		res = []
 		for t in self._test_cases:
-			res.append((t.get_consumption())/t.get_time()/len(t.get_trace()))
+			if len(t.get_trace()) > 0:
+				size = len(t.get_trace())
+			else:
+				size = 1
+			res.append((t.get_consumption())/t.get_time()/size)
 		return res
 
 	def consumptions_on_time(self):
@@ -83,13 +91,21 @@ class AppData(object):
 	def consumptions_on_trace(self):
 		res = []
 		for t in self._test_cases:
-			res.append((t.get_consumption())*len(t.get_trace()))
+			if len(t.get_trace()) > 0:
+				size = len(t.get_trace())
+			else:
+				size = 1
+			res.append((t.get_consumption())*size)
 		return res
 
 	def consumptions_on_time_on_trace(self):
 		res = []
 		for t in self._test_cases:
-			res.append((t.get_consumption())*t.get_time()*len(t.get_trace()))
+			if len(t.get_trace()) > 0:
+				size = len(t.get_trace())
+			else:
+				size = 1
+			res.append((t.get_consumption())*t.get_time()*size)
 		return res
 
 	#auxiliar private methods
@@ -132,5 +148,7 @@ class AppData(object):
 				energy = float(v['energy'])
 				time = v['time']
 				trace = self._load_trace_file(f)
+				if len(trace) == 0:
+					print("NULL TRACE: " + str(number))
 				tc = TestCase(number, energy, time, trace)
 				self._test_cases.append(tc)

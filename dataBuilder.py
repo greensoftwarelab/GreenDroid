@@ -23,7 +23,7 @@ def run_analyzer(path):
 
 def main(mf):
 	color_print(TAG, color='green', bold=True)
-	#for c in mf:
+	
 	all_apps_path = childDirs(mf)
 	all_apps = []
 	all_energy = []
@@ -35,12 +35,18 @@ def main(mf):
 		app = AppData(path, mf)
 		all_apps.append(app)
 		all_energy += app.consumptions_over_trace()	#other options available
+	
 	print(str(all_energy))
 	print("Calculating the quantiles")
 	df = DataFrame(Series(all_energy))
-	percentiles = df.quantile(np.linspace(.1, 1, num=10, endpoint=True))
-	#percentiles[.1][0] <= the value of quantile 0.1, for column 0 (first one)
-	print(str(percentiles))
+	quantiles = df.quantile(np.linspace(.1, 1, num=10, endpoint=True))
+	#quantiles[.1][0] <= the value of quantile 0.1, for column 0 (first one)
+	red_test = quantiles[.9][0]
+	yellow_test = quantiles[.8][0]
+	green_test = quantiles[.7][0]
+	
+	quantiles_dict = {'green': green_test, 'yellow' : yellow_test, 'red' : red_test}
+	print(str(quantiles_dict))
 
 if __name__ == "__main__":
 	if len(sys.argv) > 1:
