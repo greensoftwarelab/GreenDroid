@@ -53,9 +53,17 @@ else
 	adb shell mkdir $deviceDir
 	adb shell rm -rf $deviceDir/*.csv  ##RR
 	adb shell rm -rf $deviceDir/Traces/*  ##RR
+	
 	#for each app in $DIR folder...
 	for f in $DIR/
 	do
+		#clean previous list of all methods and device results
+		rm -rf ./allMethods.txt
+
+		adb shell rm -rf "$deviceDir/allMethods.txt"
+		adb shell rm -rf "$deviceDir/Traces/*"
+		adb shell rm -rf "$deviceDir/*.csv"
+
 		IFS='/' read -ra arr <<< "$f"
 		ID=${arr[-1]}
 		IFS=$(echo -en "\n\b")
