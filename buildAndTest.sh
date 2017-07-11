@@ -61,8 +61,9 @@ else
 		rm -rf ./allMethods.txt
 
 		adb shell rm -rf "$deviceDir/allMethods.txt"
+		adb shell rm -rf "$deviceDir/TracedMethods.txt"
 		adb shell rm -rf "$deviceDir/Traces/*"
-		adb shell rm -rf "$deviceDir/*.csv"
+		adb shell rm -rf "$deviceDir/Measures/*"
 
 		IFS='/' read -ra arr <<< "$f"
 		ID=${arr[-1]}
