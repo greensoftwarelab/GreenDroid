@@ -22,7 +22,7 @@ TARGET_VERSIONS=($(ls $HOME/android-sdk-linux/platforms/))
 i_echo "$TAG GRADLE PROJECT"
 
 NEW_RUNNER_JAR=libs/android-junit-report-1.5.8.jar # unused
-NEW_RUNNER="android.test.InstrumentationTestRunner" # "com.zutubi.android.junitreport.JUnitReportTestRunner"
+NEW_RUNNER= "android.support.test.runner.AndroidJUnitRunner" # "android.test.InstrumentationTestRunner"
 #GREENDROID=$FOLDER/libs/greenDroidTracker.jar
 GREENDROID=$FOLDER/libs/TrepnLibrary-release.aar  ##RR
 
@@ -206,7 +206,12 @@ for x in ${BUILDS[@]}; do
 		ANDROID_LINE=($(egrep -n "defaultConfig( ?){$" $x | cut -f1 -d:))
 		if [ -n "${ANDROID_LINE[0]}" ]; then
 			((ANDROID_LINE[0]++))
-			sed -i.bak ""$ANDROID_LINE"i testInstrumentationRunner \"$NEW_RUNNER\"" $x
+			HAS_RUNNER=$(egrep -n "testInstrumentationRunner $x")
+			if [[ -n "$HAS_RUNNER" ]]; then
+				sed -ri.bak "s#([ \t]*)testInstrumentationRunner .+#\1testInstrumentationRunner \"$NEW_RUNNER\"#g" $x
+			else
+				sed -i.bak ""$ANDROID_LINE"i testInstrumentationRunner \"$NEW_RUNNER\"" $x
+			fi
 		fi
 		#Add TrepnLib dependency to build.gradle
 		HAS_DEPEND=$(egrep "dependencies( ?){" $x)
