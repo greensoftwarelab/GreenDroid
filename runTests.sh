@@ -32,8 +32,22 @@ else
 	
 	echo "$TAG Running the tests (Measuring)"
 	adb shell "echo 1 > $deviceDir/GDflag"
-	#adb shell am instrument -e reportFile ALL-TEST.xml -e reportDir $deviceDir/$pack -e filterTraces false -w $testPack/com.zutubi.android.junitreport.JUnitReportTestRunner
-	adb shell am instrument -w $testPack/$runner
+	
+	adb shell am instrument -w $testPack/$runner &> runStatus.log
+
+	missingInstrumentation=$(grep "Unable to find instrumentation info for" runStatus.log)
+	flagInst="0"
+	if [[ -n "$missingInstrumentation" ]]; then
+		# Something went wrong during instalation and run. 
+		# Let's try running all existing instrumentations (should not be bigger than one)
+		flagInst="1"
+		allInstrumentations=($(adb shell pm list instrumentation | cut -f2 -d: | cut -f1 -d\ ))
+		if [[ "${#allInstrumentation[@]}" == "1" ]]; then
+			for i in ${allInstrumentation[@]}; do
+				adb shell am instrument -w $i &> runStatus.log
+			done
+		fi
+	fi
 
 	#Stop the app, if it is still running
 	adb shell am force-stop $pack
@@ -42,9 +56,17 @@ else
 	
 	echo "$TAG Running the tests (Tracing)"
 	adb shell "echo -1 > $deviceDir/GDflag"
-	#adb shell am instrument -w $testPack/com.zutubi.android.junitreport.JUnitReportTestRunner
-	adb shell am instrument -w $testPack/$runner
-
+	
+	if [[ "$flagInst" == 1 ]]; then
+		allInstrumentations=($(adb shell pm list instrumentation | cut -f2 -d: | cut -f1 -d\ ))
+		if [[ "${#allInstrumentation[@]}" == "1" ]]; then
+			for i in ${allInstrumentation[@]}; do
+				adb shell am instrument -w $i &> runStatus.log
+			done
+		fi
+	else
+		adb shell am instrument -w $testPack/$runner &> runStatus.log
+	fi
 	adb shell am start -a android.intent.action.MAIN -c android.intent.category.HOME > /dev/null 2>&1
 
 fi
@@ -56,3 +78,20 @@ adb shell ls "$deviceDir/Measures/" | sed -r 's/[\r]+//g' | egrep "*.csv" |  xar
 #adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
 adb shell ls "$deviceDir/Traces/" | sed -r 's/[\r]+//g' | egrep "*.txt" | xargs -I{} adb pull $deviceDir/Traces/{} $localDir
 exit
+
+# In case the missing instrumentation error occured, let's remove all apps with instrumentations now!
+# if [[ "$flagInst" == 1 ]]; then
+	instTests=($(adb shell pm list instrumentation | cut -f2 -d: | cut -f1 -d\ | cut -f1 -d/))
+	for i in ${instTests[@]}; do
+		a=${i/%.test/}
+		adb shell pm uninstall $a
+		adb shell pm uninstall $i
+		if [[ condition ]]; then
+			a=${i/%.tests/}
+			adb shell pm uninstall $a
+			adb shell pm uninstall $i
+		fi
+	done
+# fi
+
+# TODO: include something to check whether the results stored in runStatus.log indicates a run error or not!

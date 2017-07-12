@@ -8,13 +8,15 @@ class TestCase(object):
 		self._time = 0
 		self._classification = ""
 		self._trace = []
+		self._method_count = 0
 
-	def __init__(self, index, consumption, time, trace):
+	def __init__(self, index, consumption, time, trace, method_count):
 		self._index = index
 		self._consumption = consumption
 		self._time = time
 		self._classification = ""
 		self._trace = trace
+		self._method_count = method_count
 
 	#get methods
 	def get_consumption(self):
@@ -42,6 +44,9 @@ class TestCase(object):
 	def set_trace(self, trace):
 		self._trace = trace
 	
+	def method_count(self):
+		return self._method_count
+
 	def classify(self, quantiles, method=""):
 		if method == "consumptions_over_time":
 			value = self._consumption/self_time
