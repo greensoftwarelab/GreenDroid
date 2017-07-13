@@ -206,7 +206,7 @@ for x in ${BUILDS[@]}; do
 		ANDROID_LINE=($(egrep -n "defaultConfig( ?){$" $x | cut -f1 -d:))
 		if [ -n "${ANDROID_LINE[0]}" ]; then
 			((ANDROID_LINE[0]++))
-			HAS_RUNNER=$(egrep -n "testInstrumentationRunner $x")
+			HAS_RUNNER=$(egrep -n "testInstrumentationRunner " $x)
 			if [[ -n "$HAS_RUNNER" ]]; then
 				sed -ri.bak "s#([ \t]*)testInstrumentationRunner .+#\1testInstrumentationRunner \"$NEW_RUNNER\"#g" $x
 			else
