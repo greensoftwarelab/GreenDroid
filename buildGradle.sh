@@ -22,7 +22,13 @@ TARGET_VERSIONS=($(ls $HOME/android-sdk-linux/platforms/))
 i_echo "$TAG GRADLE PROJECT"
 
 NEW_RUNNER_JAR=libs/android-junit-report-1.5.8.jar # unused
-NEW_RUNNER="android.support.test.runner.AndroidJUnitRunner" # "android.test.InstrumentationTestRunner"
+NEW_RUNNER="android.test.InstrumentationTestRunner" # "android.support.test.runner.AndroidJUnitRunner" # 
+
+RUNNER_VERSION="0.5"      # ${ANDROID_HOME}/extras/android/m2repository/com/android/support/test/runner
+RUNNER_RULES="0.5"        # ${ANDROID_HOME}/extras/android/m2repository/com/android/support/test/rules
+RUNNER_ESPRESSO="2.2.2"   # ${ANDROID_HOME}/extras/android/m2repository/com/android/support/test/espresso/espresso-cores
+RUNNER_AUTOMATOR="2.1.2"  # ${ANDROID_HOME}/extras/android/m2repository/com/android/support/test/uiautomator/uiautomator-v18
+
 #GREENDROID=$FOLDER/libs/greenDroidTracker.jar
 GREENDROID=$FOLDER/libs/TrepnLibrary-release.aar  ##RR
 
@@ -233,19 +239,57 @@ for x in ${BUILDS[@]}; do
 				((DEPEND_LINE++))
 				sed -i.bak ""$DEPEND_LINE"i dependencies {" $x
 				((DEPEND_LINE++))
-				#sed -i.bak ""$DEPEND_LINE"i compile files('$NEW_RUNNER_JAR')" $x
-				#((DEPEND_LINE++))
-				#sed -i.bak ""$DEPEND_LINE"i compile files('$GREENDROID')" $x
 				sed -i.bak ""$DEPEND_LINE"i compile (name:'TrepnLibrary-release', ext:'aar')" $x
 				((DEPEND_LINE++))
+				###
+				# For when we decide to use the new runner, this will be needed
+				# sed -i.bak ""$DEPEND_LINE"i androidTestCompile 'com.android.support.test:runner:$RUNNER_VERSION'" $x
+				# ((DEPEND_LINE++))
+  				# #// Set this dependency to use JUnit 4 rules
+  				# sed -i.bak ""$DEPEND_LINE"i androidTestCompile 'com.android.support.test:rules:$RUNNER_RULES'" $x
+  				# ((DEPEND_LINE++))
+  				# #// Set this dependency to build and run Espresso tests
+  				# sed -i.bak ""$DEPEND_LINE"i androidTestCompile 'com.android.support.test.espresso:$RUNNER_ESPRESSO'" $x
+  				# ((DEPEND_LINE++))
+  				# #// Set this dependency to build and run UI Automator tests
+  				# sed -i.bak ""$DEPEND_LINE"i androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:$RUNNER_AUTOMATOR'" $x
+  				# ((DEPEND_LINE++))
+  				###
 				sed -i.bak ""$DEPEND_LINE"i }" $x
 			else
 				((DEPEND_LINE++))
-				#sed -i.bak ""$DEPEND_LINE"i compile files('$NEW_RUNNER_JAR')" $x
-				#((DEPEND_LINE++))
-				#sed -i.bak ""$DEPEND_LINE"i compile files('$GREENDROID')" $x
 				sed -i.bak ""$DEPEND_LINE"i compile (name:'TrepnLibrary-release', ext:'aar')" $x
-				#HAS_ABORT=$(egrep "abortOnError (true|false)" $x)
+				###
+				# For when we decide to use the new runner, this will be needed
+				# TEST_CHECK=$(grep "androidTestCompile 'com.android.support.test:runner" $x)
+				# if [[ -n "$TEST_CHECK" ]]; then
+				#	sed -ri.bak "s#(androidTestCompile 'com\.android\.support\.test:runner):.+#\1:$RUNNER_VERSION#g" $x
+				# else
+				# 	sed -i.bak ""$DEPEND_LINE"i androidTestCompile 'com.android.support.test:runner:$RUNNER_VERSION'" $x
+				# 	((DEPEND_LINE++))
+  				# 	#// Set this dependency to use JUnit 4 rules
+  				# TEST_CHECK=$(grep "androidTestCompile 'com.android.support.test:rules" $x)
+  				# if [[ -n "$TEST_CHECK" ]]; then
+  				#	sed -ri.bak "s#(androidTestCompile 'com\.android\.support\.test:rules):.+#\1:$RUNNER_RULES#g" $x
+  				# else
+  				# 	sed -i.bak ""$DEPEND_LINE"i androidTestCompile 'com.android.support.test:rules:$RUNNER_RULES'" $x
+  				# 	((DEPEND_LINE++))
+  				# 	#// Set this dependency to build and run Espresso tests
+  				# TEST_CHECK=$(grep "androidTestCompile 'com.android.support.test.espresso:espresso-core" $x)
+  				# if [[ -n "$TEST_CHECK" ]]; then
+  				#	sed -ri.bak "s#(androidTestCompile 'com.android.support.test.espresso:espresso-core):.+#\1:$RUNNER_ESPRESSO#g" $x
+  				# else
+  				# 	sed -i.bak ""$DEPEND_LINE"i androidTestCompile 'com.android.support.test.espresso:espresso-core:$RUNNER_ESPRESSO'" $x
+  				# 	((DEPEND_LINE++))
+  				# 	#// Set this dependency to build and run UI Automator tests
+  				# TEST_CHECK=$(grep "androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18'" $x)
+  				# if [[ -n "$TEST_CHECK" ]]; then
+  				#	sed -ri.bak "s#(androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18'):.+#\1:$RUNNER_AUTOMATOR#g" $x
+  				# else
+  				# 	sed -i.bak ""$DEPEND_LINE"i androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:$RUNNER_AUTOMATOR'" $x
+  				# 	((DEPEND_LINE++))
+  				##	#
+
 			fi
 		else
 			DEPEND_LINE=$(wc -l $x | cut -f1 -d\ )
@@ -253,11 +297,22 @@ for x in ${BUILDS[@]}; do
 			((DEPEND_LINE++))
 			sed -i.bak ""$DEPEND_LINE"i dependencies {" $x
 			((DEPEND_LINE++))
-			#sed -i.bak ""$DEPEND_LINE"i compile files('$NEW_RUNNER_JAR')" $x
-			#((DEPEND_LINE++))
-			#sed -i.bak ""$DEPEND_LINE"i compile files('$GREENDROID')" $x
 			sed -i.bak ""$DEPEND_LINE"i compile (name:'TrepnLibrary-release', ext:'aar')" $x
 			((DEPEND_LINE++))
+			###
+			# For when we decide to use the new runner, this will be needed
+			# sed -i.bak ""$DEPEND_LINE"i androidTestCompile 'com.android.support.test:runner:$RUNNER_VERSION'" $x
+			# ((DEPEND_LINE++))
+  			# #// Set this dependency to use JUnit 4 rules
+  			# sed -i.bak ""$DEPEND_LINE"i androidTestCompile 'com.android.support.test:rules:$RUNNER_RULES'" $x
+  			# ((DEPEND_LINE++))
+  			# #// Set this dependency to build and run Espresso tests
+  			# sed -i.bak ""$DEPEND_LINE"i androidTestCompile 'com.android.support.test.espresso:espresso-core:$RUNNER_ESPRESSO'" $x
+  			# ((DEPEND_LINE++))
+  			# #// Set this dependency to build and run UI Automator tests
+  			# sed -i.bak ""$DEPEND_LINE"i androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:$RUNNER_AUTOMATOR'" $x
+  			# ((DEPEND_LINE++))
+  			###
 			sed -i.bak ""$DEPEND_LINE"i }" $x
 		fi
 	fi

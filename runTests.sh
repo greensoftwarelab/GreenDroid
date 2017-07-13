@@ -10,7 +10,7 @@ projType=$5
 TAG="[APP RUNNER]"
 echo ""
 
-#runner="com.zutubi.android.junitreport.JUnitReportTestRunner"
+#runner="android.support.test.runner.AndroidJUnitRunner"
 runner="android.test.InstrumentationTestRunner"
 
 i_echo "$TAG Running"
@@ -42,12 +42,12 @@ else
 		# Let's try running all existing instrumentations (should not be bigger than one)
 		flagInst="1"
 		allInstrumentations=($(adb shell pm list instrumentation | cut -f2 -d: | cut -f1 -d\ ))
-		if [[ "${#allInstrumentation[@]}" == "1" ]]; then
-			for i in ${allInstrumentation[@]}; do
+		if [[ "${#allInstrumentations[@]}" == "1" ]]; then
+			for i in ${allInstrumentations[@]}; do
 				adb shell am instrument -w $i &> runStatus.log
 			done
 		else
-			e_echo "$TAG Wrong number of instrumentations: Found ${#allInstrumentation[@]}, Expected 1."
+			e_echo "$TAG Wrong number of instrumentations: Found ${#allInstrumentations[@]}, Expected 1."
 		fi
 	fi
 
@@ -61,12 +61,12 @@ else
 	
 	if [[ "$flagInst" == 1 ]]; then
 		allInstrumentations=($(adb shell pm list instrumentation | cut -f2 -d: | cut -f1 -d\ ))
-		if [[ "${#allInstrumentation[@]}" == "1" ]]; then
-			for i in ${allInstrumentation[@]}; do
+		if [[ "${#allInstrumentations[@]}" == "1" ]]; then
+			for i in ${allInstrumentations[@]}; do
 				adb shell am instrument -w $i &> runStatus.log
 			done
 		else
-			e_echo "$TAG Wrong number of instrumentations: Found ${#allInstrumentation[@]}, Expected 1."
+			e_echo "$TAG Wrong number of instrumentations: Found ${#allInstrumentations[@]}, Expected 1."
 		fi
 	else
 		adb shell am instrument -w $testPack/$runner &> runStatus.log
@@ -81,7 +81,6 @@ i_echo "$TAG Pulling result files"
 adb shell ls "$deviceDir/Measures/" | sed -r 's/[\r]+//g' | egrep "*.csv" |  xargs -I{} adb pull $deviceDir/Measures/{} $localDir
 #adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
 adb shell ls "$deviceDir/Traces/" | sed -r 's/[\r]+//g' | egrep "*.txt" | xargs -I{} adb pull $deviceDir/Traces/{} $localDir
-exit
 
 # In case the missing instrumentation error occured, let's remove all apps with instrumentations now!
 # if [[ "$flagInst" == 1 ]]; then
@@ -93,8 +92,8 @@ exit
 		
 		a=${i/%.tests/}
 		adb shell pm uninstall $a
-		adb shell pm uninstall $i
 	done
 # fi
 
+exit
 # TODO: include something to check whether the results stored in runStatus.log indicates a run error or not!
