@@ -22,7 +22,7 @@ TARGET_VERSIONS=($(ls $HOME/android-sdk-linux/platforms/))
 i_echo "$TAG GRADLE PROJECT"
 
 NEW_RUNNER_JAR=libs/android-junit-report-1.5.8.jar # unused
-NEW_RUNNER= "android.support.test.runner.AndroidJUnitRunner" # "android.test.InstrumentationTestRunner"
+NEW_RUNNER="android.support.test.runner.AndroidJUnitRunner" # "android.test.InstrumentationTestRunner"
 #GREENDROID=$FOLDER/libs/greenDroidTracker.jar
 GREENDROID=$FOLDER/libs/TrepnLibrary-release.aar  ##RR
 
