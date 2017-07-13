@@ -46,6 +46,8 @@ else
 			for i in ${allInstrumentation[@]}; do
 				adb shell am instrument -w $i &> runStatus.log
 			done
+		else
+			e_echo "$TAG Wrong number of instrumentations: Found ${#allInstrumentation[@]}, Expected 1."
 		fi
 	fi
 
@@ -63,6 +65,8 @@ else
 			for i in ${allInstrumentation[@]}; do
 				adb shell am instrument -w $i &> runStatus.log
 			done
+		else
+			e_echo "$TAG Wrong number of instrumentations: Found ${#allInstrumentation[@]}, Expected 1."
 		fi
 	else
 		adb shell am instrument -w $testPack/$runner &> runStatus.log
@@ -86,11 +90,10 @@ exit
 		a=${i/%.test/}
 		adb shell pm uninstall $a
 		adb shell pm uninstall $i
-		if [[ condition ]]; then
-			a=${i/%.tests/}
-			adb shell pm uninstall $a
-			adb shell pm uninstall $i
-		fi
+		
+		a=${i/%.tests/}
+		adb shell pm uninstall $a
+		adb shell pm uninstall $i
 	done
 # fi
 
