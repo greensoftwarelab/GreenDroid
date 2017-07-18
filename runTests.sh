@@ -7,6 +7,8 @@ deviceDir=$3
 localDir=$4
 projType=$5
 
+TIMEOUT="1200" #20 minutes (60*20)
+
 TAG="[APP RUNNER]"
 echo ""
 
@@ -44,7 +46,12 @@ else
 		allInstrumentations=($(adb shell pm list instrumentation | cut -f2 -d: | cut -f1 -d\ ))
 		if [[ "${#allInstrumentations[@]}" == "1" ]]; then
 			for i in ${allInstrumentations[@]}; do
-				adb shell am instrument -w $i &> runStatus.log
+				timeout -s 9 $TIMEOUT adb shell am instrument -w $i &> runStatus.log
+				RET=$(echo $?)
+				if [[ "$RET" != 0 ]]; then
+					./forceUninstall.sh
+					exit -1
+				fi
 			done
 		else
 			e_echo "$TAG Wrong number of instrumentations: Found ${#allInstrumentations[@]}, Expected 1."
@@ -63,7 +70,12 @@ else
 		allInstrumentations=($(adb shell pm list instrumentation | cut -f2 -d: | cut -f1 -d\ ))
 		if [[ "${#allInstrumentations[@]}" == "1" ]]; then
 			for i in ${allInstrumentations[@]}; do
-				adb shell am instrument -w $i &> runStatus.log
+				timeout -s 9 $TIMEOUT adb shell am instrument -w $i &> runStatus.log
+				RET=$(echo $?)
+				if [[ "$RET" != 0 ]]; then
+					./forceUninstall.sh
+					exit -1
+				fi
 			done
 		else
 			e_echo "$TAG Wrong number of instrumentations: Found ${#allInstrumentations[@]}, Expected 1."

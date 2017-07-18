@@ -135,7 +135,7 @@ else
 				./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir # "-gradle" $FOLDER/$tName
 				RET=$(echo $?)
 				if [[ "$RET" != "0" ]]; then
-					echo "$ID" >> errorPull.log
+					echo "$ID" >> errorRun.log
 					continue
 				fi
 				
@@ -198,7 +198,7 @@ else
 					./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir
 					RET=$(echo $?)
 					if [[ "$RET" != "0" ]]; then
-						echo "$ID" >> errorPull.log
+						echo "$ID" >> errorRun.log
 						continue
 					fi
 					#uninstall the app & tests
