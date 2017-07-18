@@ -7,7 +7,7 @@ deviceDir=$3
 localDir=$4
 projType=$5
 
-TIMEOUT="1200" #20 minutes (60*20)
+TIMEOUT="900" #15 minutes (60*15)
 
 TAG="[APP RUNNER]"
 echo ""
