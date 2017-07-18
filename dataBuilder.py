@@ -103,6 +103,5 @@ if __name__ == "__main__":
 		main_folder = sys.argv[1]
 		main(main_folder)
 
-# interesting app: 059ffbed-ae13-4eea-924c-78d27c5ef448 
-#| 852996dd-c256-49ce-becc-c1f41e25bb7d 
-#| 9b18958d-3c52-4e07-bd88-883ea879b56b
+# interesting app: 
+# 059ffbed-ae13-4eea-924c-78d27c5ef448 

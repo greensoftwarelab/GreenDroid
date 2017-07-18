@@ -75,6 +75,8 @@ else
 
 fi
 
+# TODO: Include output check from 'adb shell instrument' to assert that the tests were actually executed.
+
 i_echo "$TAG Pulling result files"
 #adb pull $deviceDir $localDir
 
@@ -95,5 +97,4 @@ adb shell ls "$deviceDir/Traces/" | sed -r 's/[\r]+//g' | egrep "*.txt" | xargs 
 	done
 # fi
 
-exit
-# TODO: include something to check whether the results stored in runStatus.log indicates a run error or not!
+exit 0
