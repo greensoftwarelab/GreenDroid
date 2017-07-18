@@ -13,6 +13,8 @@ GD_ANALYZER="analyzer/Analyzer-1.0-SNAPSHOT.jar"  # "analyzer/greenDroidAnalyzer
 trepnLib="TrepnLibrary-release.aar"
 trepnJar="TrepnLibrary-release.jar"
 
+flagStatus="on"
+
 #DIR=/media/data/android_apps/failed/*   #DIR=$1
 DIR=/media/data/android_apps/success/*
 #DIR=$HOME/tests/*
@@ -53,6 +55,10 @@ else
 	adb shell mkdir $deviceDir
 	adb shell rm -rf $deviceDir/Measures/*  ##RR
 	adb shell rm -rf $deviceDir/Traces/*  ##RR
+
+	if [[ -n "$flagStatus" ]]; then
+		mkdir debugBuilg
+	fi
 	
 	#for each app in $DIR folder...
 	for f in $DIR/
@@ -218,5 +224,8 @@ else
 	    	
 	    fi
 	done
+	if [[ -n "$flagStatus" ]]; then
+		cp buildStatus.log $ID.log
+	fi
 	IFS=$OLDIFS
 fi

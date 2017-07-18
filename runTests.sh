@@ -35,7 +35,7 @@ else
 	echo "$TAG Running the tests (Measuring)"
 	adb shell "echo 1 > $deviceDir/GDflag"
 	
-	adb shell am instrument -w $testPack/$runner &> runStatus.log
+	timeout -s 9 $TIMEOUT adb shell am instrument -w $testPack/$runner &> runStatus.log
 
 	missingInstrumentation=$(grep "Unable to find instrumentation info for" runStatus.log)
 	flagInst="0"
@@ -81,7 +81,7 @@ else
 			e_echo "$TAG Wrong number of instrumentations: Found ${#allInstrumentations[@]}, Expected 1."
 		fi
 	else
-		adb shell am instrument -w $testPack/$runner &> runStatus.log
+		timeout -s 9 $TIMEOUT adb shell am instrument -w $testPack/$runner &> runStatus.log
 	fi
 	adb shell am start -a android.intent.action.MAIN -c android.intent.category.HOME > /dev/null 2>&1
 
