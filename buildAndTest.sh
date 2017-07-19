@@ -57,7 +57,7 @@ else
 	adb shell rm -rf $deviceDir/Traces/*  ##RR
 
 	if [[ -n "$flagStatus" ]]; then
-		mkdir debugBuilg
+		mkdir debugBuild
 	fi
 	
 	#for each app in $DIR folder...
@@ -223,9 +223,9 @@ else
 			fi
 	    	
 	    fi
+	    if [[ -n "$flagStatus" ]]; then
+			cp buildStatus.log debugBuild/$ID.log
+		fi
 	done
-	if [[ -n "$flagStatus" ]]; then
-		cp buildStatus.log debugBuild/$ID.log
-	fi
 	IFS=$OLDIFS
 fi
