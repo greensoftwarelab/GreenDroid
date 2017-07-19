@@ -21,6 +21,7 @@ echo ""
 BUILD_P=$(find $PROJECT_FOLDER -name "build.xml")
 BUILD_T=$(find $TEST_FOLDER -name "build.xml")
 i_echo "$TAG SDK PROJECT"
+w_echo "#SDK#"
 
 STATUS_NOK="FAILED"
 if [ -n "$BUILD_P" ] && [ -n "$BUILD_T" ]; then
@@ -39,14 +40,34 @@ if [ -n "$STATUS_NOK" ]; then
 	ant -f $TEST_FOLDER/build.xml clean debug &> buildStatus.log
 fi
 IFS=$OLDIFS
-#STATUS=$(cat $2/buildStatus.log | tail -n 2 | awk 'NR==1')
+
 STATUS_NOK=$(grep "BUILD FAILED" buildStatus.log)
 STATUS_OK=$(grep "BUILD SUCCESS" buildStatus.log)
 
 if [ -n "$STATUS_NOK" ]; then
-	e_echo "$TAG Unable to build project $ID" 
-	e_echo "[ERROR] Aborting"
-	exit 1
+	# Let's first try to run the tests directly from the project
+	# First, let's clean previous config files
+	rm -rf $PROJECT_FOLDER/build.xml $PROJECT_FOLDER/project.properties $PROJECT_FOLDER/local.properties $PROJECT_FOLDER/proguard-project.txt $PROJECT_FOLDER/ant.properties
+	rm -rf $TEST_FOLDER/build.xml $TEST_FOLDER/project.properties $TEST_FOLDER/local.properties $TEST_FOLDER/proguard-project.txt $TEST_FOLDER/ant.properties
+	
+	# And execute the clean and build tasks, along with install and test tasks
+	UPDATE_P=$(android update project -p $TEST_FOLDER -t 1 -s)
+	ant -f $TEST_FOLDER/build.xml clean debug &> buildStatus.log
+
+	# Now, let's check if the error is maintained
+	STATUS_NOK=$(grep "BUILD FAILED" buildStatus.log)
+	STATUS_OK=$(grep "BUILD SUCCESS" buildStatus.log)
+	if [ -n "$STATUS_NOK" ]; then
+		e_echo "$TAG Unable to build project $ID" 
+		e_echo "[ERROR] Aborting"
+		exit 1
+	elif [ -n "$STATUS_OK" ]; then
+		i_echo "$TAG Build successful for project $ID"
+	else
+		echo "$TAG Unable to build project $ID"
+		echo "[ERROR] Aborting"
+		exit 1
+	fi
 elif [ -n "$STATUS_OK" ]; then
 	i_echo "$TAG Build successful for project $ID"
 else

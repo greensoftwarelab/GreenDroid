@@ -53,6 +53,7 @@ def main(argv):
       #print(handler.package)
 
    p, source, tests, package, testPack="","","","",""
+   res=[]
    #count=0
    for h in lst:
       if h.target != "":
@@ -65,21 +66,22 @@ def main(argv):
             for x in lst:
                isSubstring = (x.package in p) and (x.package != "") and (x.target == "")
                if isSubstring:
+                  #found a match!
                   testPack=h.package
                   source=x.path
                   package=x.package
-                  break
+                  res.append(source + ":" tests + ":" package + ":" + testPack)
+                  #break
       if source != "":
          break
    
-   if (source == "") & (package == ""):
+   if len(res) == 0:
       source, package = getLauncher(lst_cpy)
       tests, testPack = "-", "-"
+      res.append(source + ":" tests + ":" package + ":" + testPack)
 
-   print(source)
-   print(tests)
-   print(package)
-   print(testPack)
+   for a in res:
+      print(a)
 
 if __name__ == "__main__":
    main(sys.argv[1:])
