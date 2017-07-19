@@ -230,10 +230,10 @@ else
 						#Run greendoid!
 						java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv  ##RR
 						#break
-					done
-				else
-					e_echo "$TAG ERROR!"
-				fi
+					else
+						e_echo "$TAG ERROR!"
+					fi
+				done
 			fi
 	    	
 	    fi
