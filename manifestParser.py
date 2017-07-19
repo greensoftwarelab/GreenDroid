@@ -70,7 +70,7 @@ def main(argv):
                   testPack=h.package
                   source=x.path
                   package=x.package
-                  res.append(source + ":" tests + ":" package + ":" + testPack)
+                  res.append(source + ":" + tests + ":" + package + ":" + testPack)
                   #break
       if source != "":
          break
@@ -78,7 +78,7 @@ def main(argv):
    if len(res) == 0:
       source, package = getLauncher(lst_cpy)
       tests, testPack = "-", "-"
-      res.append(source + ":" tests + ":" package + ":" + testPack)
+      res.append(source + ":" + tests + ":" + package + ":" + testPack)
 
    for a in res:
       print(a)
