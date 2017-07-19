@@ -118,6 +118,9 @@ else
 				RET=$(echo $?)
 				if [[ "$RET" != "0" ]]; then
 					echo "$ID" >> errorBuild.log
+					if [[ -n "$flagStatus" ]]; then
+						cp buildStatus.log debugBuild/$ID.log
+					fi
 					continue
 				fi
 				
@@ -181,6 +184,9 @@ else
 					RET=$(echo $?)
 					if [[ "$RET" != "0" ]]; then
 						echo "$ID" >> errorBuild.log
+						if [[ -n "$flagStatus" ]]; then
+							cp buildStatus.log debugBuild/$ID.log
+						fi
 						continue
 					fi
 					
@@ -223,9 +229,6 @@ else
 			fi
 	    	
 	    fi
-	    if [[ -n "$flagStatus" ]]; then
-			cp buildStatus.log debugBuild/$ID.log
-		fi
 	done
 	IFS=$OLDIFS
 fi
