@@ -225,7 +225,7 @@ else
 	    fi
 	done
 	if [[ -n "$flagStatus" ]]; then
-		cp buildStatus.log $ID.log
+		cp buildStatus.log debugBuild/$ID.log
 	fi
 	IFS=$OLDIFS
 fi
