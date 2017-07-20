@@ -168,7 +168,6 @@ else
 				#search for the manifests
 				MANIFESTS=($(find $f -name "AndroidManifest.xml" | egrep -v "/bin/|$tName"))
 				MP=($(python manifestParser.py ${MANIFESTS[*]}))
-				w_echo "#MP# => ${MP[@]}"
 				for R in ${MP[@]}; do
 					RESULT=($(echo "$R" | tr ':' '\n'))
 					SOURCE=${RESULT[0]}

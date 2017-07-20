@@ -21,7 +21,9 @@ echo ""
 BUILD_P=$(find $PROJECT_FOLDER -name "build.xml")
 BUILD_T=$(find $TEST_FOLDER -name "build.xml")
 i_echo "$TAG SDK PROJECT"
+
 w_echo "#SDK#"
+w_echo "#$PROJECT_FOLDER# | #$TEST_FOLDER#"
 
 STATUS_NOK="FAILED"
 if [ -n "$BUILD_P" ] && [ -n "$BUILD_T" ]; then
@@ -53,7 +55,7 @@ if [ -n "$STATUS_NOK" ]; then
 	
 	# And execute the clean and build tasks, along with install and test tasks
 	UPDATE_P=$(android update project -p $TEST_FOLDER -t 1 -s)
-	ant -f $TEST_FOLDER/build.xml clean debug &> buildStatus.log
+	ant -f $TEST_FOLDER/build.xml clean debug install test &> buildStatus.log
 
 	# Now, let's check if the error is maintained
 	STATUS_NOK=$(grep "BUILD FAILED" buildStatus.log)
