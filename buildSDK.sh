@@ -23,7 +23,6 @@ BUILD_T=$(find $TEST_FOLDER -name "build.xml")
 i_echo "$TAG SDK PROJECT"
 
 w_echo "#SDK#"
-w_echo "#$PROJECT_FOLDER# | #$TEST_FOLDER#"
 
 STATUS_NOK="FAILED"
 if [ -n "$BUILD_P" ] && [ -n "$BUILD_T" ]; then

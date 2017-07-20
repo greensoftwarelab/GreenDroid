@@ -174,6 +174,7 @@ else
 					TESTS=${RESULT[1]}
 					PACKAGE=${RESULT[2]}
 					TESTPACKAGE=${RESULT[3]}
+					w_echo "#$SOURCE# | #$TESTS#"
 					if [ "$SOURCE" != "" ] && [ "$TESTS" != "" ] && [ "$f" != "" ]; then
 						#delete previously instrumented project, if any
 						rm -rf $SOURCE/$tName
