@@ -13,7 +13,7 @@ GD_ANALYZER="analyzer/Analyzer-1.0-SNAPSHOT.jar"  # "analyzer/greenDroidAnalyzer
 trepnLib="TrepnLibrary-release.aar"
 trepnJar="TrepnLibrary-release.jar"
 
-flagStatus="on"
+#flagStatus="on"
 
 #DIR=/media/data/android_apps/failed/*   #DIR=$1
 #DIR=/media/data/android_apps/success/*
@@ -88,11 +88,6 @@ else
 					MP=($(python manifestParser.py ${MANIFESTS[*]}))
 					for R in ${MP[@]}; do
 						RESULT=($(echo "$R" | tr ':' '\n'))
-						w_echo "#R# [0] => ${RESULT[0]}"
-						w_echo "#R# [1] => ${RESULT[1]}"
-						w_echo "#R# [2] => ${RESULT[2]}"
-						w_echo "#R# [3] => ${RESULT[3]}"
-						w_echo "#R# [4] => ${RESULT[4]}"
 						TESTS_SRC=${RESULT[1]}
 						PACKAGE=${RESULT[2]}
 						if [[ "${RESULT[3]}" != "-" ]]; then
@@ -176,11 +171,6 @@ else
 				w_echo "#MP# => ${MP[@]}"
 				for R in ${MP[@]}; do
 					RESULT=($(echo "$R" | tr ':' '\n'))
-					w_echo "#R# [0] => ${RESULT[0]}"
-					w_echo "#R# [1] => ${RESULT[1]}"
-					w_echo "#R# [2] => ${RESULT[2]}"
-					w_echo "#R# [3] => ${RESULT[3]}"
-					w_echo "#R# [4] => ${RESULT[4]}"
 					SOURCE=${RESULT[0]}
 					TESTS=${RESULT[1]}
 					PACKAGE=${RESULT[2]}
