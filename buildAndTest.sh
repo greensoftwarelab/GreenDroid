@@ -188,8 +188,8 @@ else
 						fi
 
 						#copy the test runner
-						mkdir $SOURCE/$tName/libs
-						mkdir $SOURCE/$tName/tests/libs
+						mkdir -p $SOURCE/$tName/libs
+						mkdir -p $SOURCE/$tName/tests/libs
 						cp libsAdded/$trepnJar $SOURCE/$tName/libs
 						cp libsAdded/$trepnJar $SOURCE/$tName/tests/libs
 	
