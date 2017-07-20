@@ -30,8 +30,8 @@ if [ -n "$BUILD_P" ] && [ -n "$BUILD_T" ]; then
 	STATUS_NOK=$(grep "BUILD FAILED" buildStatus.log)
 fi
 if [ -n "$STATUS_NOK" ]; then
-	rm -rf $PROJECT_FOLDER/build.xml $PROJECT_FOLDER/ant.properties $PROJECT_FOLDER/local.properties $PROJECT_FOLDER/project.properties
-	rm -rf $TEST_FOLDER/build.xml $TEST_FOLDER/ant.properties $TEST_FOLDER/local.properties $TEST_FOLDER/project.properties
+	rm -rf $PROJECT_FOLDER/build.xml $PROJECT_FOLDER/project.properties $PROJECT_FOLDER/local.properties $PROJECT_FOLDER/proguard-project.txt $PROJECT_FOLDER/ant.properties
+	rm -rf $TEST_FOLDER/build.xml $TEST_FOLDER/project.properties $TEST_FOLDER/local.properties $TEST_FOLDER/proguard-project.txt $TEST_FOLDER/ant.properties
 	echo "$TAG Updating Project"
 	UPDATE_P=$(android update project -p $PROJECT_FOLDER -t 1 -n Green --subprojects)
 
@@ -45,6 +45,7 @@ STATUS_NOK=$(grep "BUILD FAILED" buildStatus.log)
 STATUS_OK=$(grep "BUILD SUCCESS" buildStatus.log)
 
 if [ -n "$STATUS_NOK" ]; then
+	w_echo "$TAG Retrying..."
 	# Let's first try to run the tests directly from the project
 	# First, let's clean previous config files
 	rm -rf $PROJECT_FOLDER/build.xml $PROJECT_FOLDER/project.properties $PROJECT_FOLDER/local.properties $PROJECT_FOLDER/proguard-project.txt $PROJECT_FOLDER/ant.properties

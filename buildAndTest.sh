@@ -16,8 +16,8 @@ trepnJar="TrepnLibrary-release.jar"
 flagStatus="on"
 
 #DIR=/media/data/android_apps/failed/*   #DIR=$1
-DIR=/media/data/android_apps/success/*
-#DIR=$HOME/tests/*
+#DIR=/media/data/android_apps/success/*
+DIR=$HOME/tests/androidProjects/*
 
 #Quickly check the folder containing the apps to be tested for inconsistencies
 if [ "${DIR: -1}" == "*" ]; then
@@ -168,9 +168,14 @@ else
 				#search for the manifests
 				MANIFESTS=($(find $f -name "AndroidManifest.xml" | egrep -v "/bin/|$tName"))
 				MP=($(python manifestParser.py ${MANIFESTS[*]}))
+				w_echo "#MP# => ${MP[@]}"
 				for R in ${MP[@]}; do
 					RESULT=($(echo "$R" | tr ':' '\n'))
-					w_echo "#R# $R => [1] ${RESULT[1]}"
+					w_echo "#R# [0] => ${RESULT[0]}"
+					w_echo "#R# [1] => ${RESULT[1]}"
+					w_echo "#R# [2] => ${RESULT[2]}"
+					w_echo "#R# [3] => ${RESULT[3]}"
+					w_echo "#R# [4] => ${RESULT[4]}"
 					SOURCE=${RESULT[1]}
 					TESTS=${RESULT[2]}
 					PACKAGE=${RESULT[3]}
