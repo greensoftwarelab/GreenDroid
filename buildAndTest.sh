@@ -194,7 +194,7 @@ else
 						cp libsAdded/$trepnJar $SOURCE/$tName/tests/libs
 	
 						#build
-						./buildSDK.sh $ID $PACKAGE $SOURCE/$tName $SOURCE/$tName/tests $deviceDir
+						./buildSDK.sh $ID $PACKAGE $SOURCE/$tName $SOURCE/$tName/tests $deviceDir $localDir
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
 							echo "$ID" >> errorBuild.log

@@ -15,6 +15,7 @@ PROJECT_FOLDER=$3
 TEST_FOLDER=$4
 
 deviceDir=$5
+localDir=$6
 
 TAG="[APP BUILDER]"
 echo ""
