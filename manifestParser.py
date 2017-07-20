@@ -60,11 +60,10 @@ def main(argv):
          #test project found!!
          tests=h.path
          p=h.target
-         lst.remove(h)
          #count+=1
          if p != "":
             for x in lst:
-               isSubstring = (x.package in p) and (x.package != "") and (x.target == "")
+               isSubstring = (x.package in p) and (x.package != "")   # and (x.target == "")
                if isSubstring:
                   #found a match!
                   testPack=h.package
@@ -72,6 +71,7 @@ def main(argv):
                   package=x.package
                   res.append(source + ":" + tests + ":" + package + ":" + testPack)
                   #break
+         #lst.remove(h)
 
    
    if len(res) == 0:

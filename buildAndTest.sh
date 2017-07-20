@@ -174,12 +174,19 @@ else
 					TESTS=${RESULT[1]}
 					PACKAGE=${RESULT[2]}
 					TESTPACKAGE=${RESULT[3]}
-					w_echo "#$SOURCE# | #$TESTS#"
 					if [ "$SOURCE" != "" ] && [ "$TESTS" != "" ] && [ "$f" != "" ]; then
 						#delete previously instrumented project, if any
 						rm -rf $SOURCE/$tName
 						#instrument
-						java -jar "jInst/jInst-1.0.jar" "-sdk" $tName "X" $SOURCE $TESTS $trace
+						if [[ condition ]]; then
+							java -jar "jInst/jInst-1.0.jar" "-sdk" $tName "X" $SOURCE $TESTS $trace
+						else
+							MANIF_S="${SOURCE}/AndroidManifest.xml"
+							MANIF_T="-"
+							java -jar "jInst/jInst-1.0.jar" "-gradle" $tName "X" $SOURCE $MANIF_S $MANIF_T $trace ##RR
+							exit 0
+						fi
+
 						#copy the test runner
 						mkdir $SOURCE/$tName/libs
 						mkdir $SOURCE/$tName/tests/libs
