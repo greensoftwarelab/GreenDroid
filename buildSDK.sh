@@ -61,12 +61,12 @@ if [ -n "$STATUS_NOK" ]; then
 	echo "$TAG Running the tests (Measuring)"
 	adb shell "echo 1 > $deviceDir/GDflag"
 	UPDATE_P=$(android update project -p $TEST_FOLDER -t 1 -s)
-	ant -f $TEST_FOLDER/build.xml clean debug install test uninstall &> buildStatus.log
+	ant -f $TEST_FOLDER/build.xml clean instrument install test uninstall &> buildStatus.log
 
 	echo "$TAG Running the tests (Tracing)"
 	adb shell "echo -1 > $deviceDir/GDflag"
 	UPDATE_P=$(android update project -p $TEST_FOLDER -t 1 -s)
-	ant -f $TEST_FOLDER/build.xml clean debug install test uninstall &> buildStatus.log
+	ant -f $TEST_FOLDER/build.xml clean instrument install test uninstall &> buildStatus.log
 
 	# And remove the install apk's
 	./forceUninstall.sh
