@@ -75,6 +75,8 @@ else
 		ID=${arr[-1]}
 		IFS=$(echo -en "\n\b")
 		if [ "$ID" != "success" ] && [ "$ID" != "failed" ] && [ "$ID" != "unknown" ]; then
+			projLocalDir=$localDir/$ID
+			rm -rf $projLocalDir/all/*
 			#first, check if this is a gradle or a maven project
 			#GRADLE=$(find ${f}/latest -maxdepth 1 -name "build.gradle")
 			GRADLE=($(find ${f}/latest -name "*.gradle" -type f -print | grep -v "settings.gradle" | xargs -I{} grep "buildscript" {} /dev/null | cut -f1 -d:))
@@ -127,11 +129,10 @@ else
 						fi
 						
 						#create results support folder
-						projLocalDir=$localDir/$ID
 						echo "$TAG Creating support folder..."
 						mkdir -p $projLocalDir
 						mkdir -p $projLocalDir/all
-						cp ./allMethods.txt $projLocalDir/all
+						cat ./allMethods.txt >> $projLocalDir/all/allMethods.txt
 		
 						#install on device
 						./install.sh $FOLDER/$tName "X" "GRADLE" $PACKAGE $projLocalDir  #COMMENT, EVENTUALLY...
@@ -178,7 +179,7 @@ else
 						#delete previously instrumented project, if any
 						rm -rf $SOURCE/$tName
 						#instrument
-						if [[ condition ]]; then
+						if [[ "$SOURCE" != "$TESTS" ]]; then
 							java -jar "jInst/jInst-1.0.jar" "-sdk" $tName "X" $SOURCE $TESTS $trace
 						else
 							MANIF_S="${SOURCE}/AndroidManifest.xml"
@@ -198,12 +199,18 @@ else
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
 							echo "$ID" >> errorBuild.log
-							if [[ -n "$flagStatus" ]]; then
+							if [[ "$RET" == "10" ]]; then
+								#everything went well, at second try
+								#let's create the results support files
+								mkdir -p $projLocalDir
+								mkdir -p $projLocalDir/all
+								cat ./allMethods.txt >> $projLocalDir/all/allMethods.txt
+								echo "$ID" >> success.log
+							elif [[ -n "$flagStatus" ]]; then
 								cp buildStatus.log debugBuild/$ID.log
 							fi
 							continue
 						fi
-						continue
 						
 						#install on device
 						./install.sh $SOURCE/$tName $SOURCE/$tName/tests "SDK" $PACKAGE $localDir
@@ -215,11 +222,10 @@ else
 						echo "$ID" >> success.log
 	
 						#create results support folder
-						projLocalDir=$localDir/$ID
 						echo "$TAG Creating support folder..."
 						mkdir -p $projLocalDir
 						mkdir -p $projLocalDir/all
-						cp ./allMethods.txt $projLocalDir/all
+						cat ./allMethods.txt >> $projLocalDir/all/allMethods.txt
 	
 						#run tests
 						./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir

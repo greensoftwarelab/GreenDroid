@@ -14,6 +14,8 @@ PACKAGE=$2
 PROJECT_FOLDER=$3
 TEST_FOLDER=$4
 
+deviceDir=$5
+
 TAG="[APP BUILDER]"
 echo ""
 
@@ -51,12 +53,24 @@ if [ -n "$STATUS_NOK" ]; then
 	# First, let's clean previous config files
 	rm -rf $PROJECT_FOLDER/build.xml $PROJECT_FOLDER/project.properties $PROJECT_FOLDER/local.properties $PROJECT_FOLDER/proguard-project.txt $PROJECT_FOLDER/ant.properties
 	rm -rf $TEST_FOLDER/build.xml $TEST_FOLDER/project.properties $TEST_FOLDER/local.properties $TEST_FOLDER/proguard-project.txt $TEST_FOLDER/ant.properties
-	
-	# And execute the clean and build tasks, along with install and test tasks
+	# And uninstall potentially previous installed packages
+	./forceUninstall.sh
+
+	# Now, execute the clean and build tasks, along with install and test tasks
+	echo "$TAG Running the tests (Measuring)"
+	adb shell "echo 1 > $deviceDir/GDflag"
 	UPDATE_P=$(android update project -p $TEST_FOLDER -t 1 -s)
 	ant -f $TEST_FOLDER/build.xml clean debug install test &> buildStatus.log
 
-	# Now, let's check if the error is maintained
+	echo "$TAG Running the tests (Tracing)"
+	adb shell "echo -1 > $deviceDir/GDflag"
+	UPDATE_P=$(android update project -p $TEST_FOLDER -t 1 -s)
+	ant -f $TEST_FOLDER/build.xml clean debug install test &> buildStatus.log
+
+	# And remove the install apk's
+	./forceUninstall.sh
+
+	# Finally, let's check if the error is maintained
 	STATUS_NOK=$(grep "BUILD FAILED" buildStatus.log)
 	STATUS_OK=$(grep "BUILD SUCCESS" buildStatus.log)
 	if [ -n "$STATUS_NOK" ]; then
@@ -64,7 +78,16 @@ if [ -n "$STATUS_NOK" ]; then
 		e_echo "[ERROR] Aborting"
 		exit 1
 	elif [ -n "$STATUS_OK" ]; then
-		i_echo "$TAG Build successful for project $ID"
+		i_echo "$TAG Build + Trace/Measure successful for project $ID"
+		i_echo "$TAG Pulling result files"
+
+		projLocalDir=$localDir/$ID
+		mkdir -p $projLocalDir
+		
+		adb shell ls "$deviceDir/Measures/" | sed -r 's/[\r]+//g' | egrep "*.csv" |  xargs -I{} adb pull $deviceDir/Measures/{} $projLocalDir
+		adb shell ls "$deviceDir/Traces/" | sed -r 's/[\r]+//g' | egrep "*.txt" | xargs -I{} adb pull $deviceDir/Traces/{} $projLocalDir
+
+		exit 10
 	else
 		echo "$TAG Unable to build project $ID"
 		echo "[ERROR] Aborting"
