@@ -185,7 +185,6 @@ else
 							MANIF_S="${SOURCE}/AndroidManifest.xml"
 							MANIF_T="-"
 							java -jar "jInst/jInst-1.0.jar" "-gradle" $tName "X" $SOURCE $MANIF_S $MANIF_T $trace ##RR
-							exit 0
 						fi
 
 						#copy the test runner
@@ -195,7 +194,7 @@ else
 						cp libsAdded/$trepnJar $SOURCE/$tName/tests/libs
 	
 						#build
-						./buildSDK.sh $ID $PACKAGE $SOURCE/$tName $SOURCE/$tName/tests
+						./buildSDK.sh $ID $PACKAGE $SOURCE/$tName $SOURCE/$tName/tests $deviceDir
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
 							echo "$ID" >> errorBuild.log
