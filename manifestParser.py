@@ -72,8 +72,7 @@ def main(argv):
                   package=x.package
                   res.append(source + ":" + tests + ":" + package + ":" + testPack)
                   #break
-      if source != "":
-         break
+
    
    if len(res) == 0:
       source, package = getLauncher(lst_cpy)

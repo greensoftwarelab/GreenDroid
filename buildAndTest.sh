@@ -88,6 +88,11 @@ else
 					MP=($(python manifestParser.py ${MANIFESTS[*]}))
 					for R in ${MP[@]}; do
 						RESULT=($(echo "$R" | tr ':' '\n'))
+						w_echo "#R# [0] => ${RESULT[0]}"
+						w_echo "#R# [1] => ${RESULT[1]}"
+						w_echo "#R# [2] => ${RESULT[2]}"
+						w_echo "#R# [3] => ${RESULT[3]}"
+						w_echo "#R# [4] => ${RESULT[4]}"
 						TESTS_SRC=${RESULT[1]}
 						PACKAGE=${RESULT[2]}
 						if [[ "${RESULT[3]}" != "-" ]]; then
@@ -176,10 +181,10 @@ else
 					w_echo "#R# [2] => ${RESULT[2]}"
 					w_echo "#R# [3] => ${RESULT[3]}"
 					w_echo "#R# [4] => ${RESULT[4]}"
-					SOURCE=${RESULT[1]}
-					TESTS=${RESULT[2]}
-					PACKAGE=${RESULT[3]}
-					TESTPACKAGE=${RESULT[4]}
+					SOURCE=${RESULT[0]}
+					TESTS=${RESULT[1]}
+					PACKAGE=${RESULT[2]}
+					TESTPACKAGE=${RESULT[3]}
 					if [ "$SOURCE" != "" ] && [ "$TESTS" != "" ] && [ "$f" != "" ]; then
 						#delete previously instrumented project, if any
 						rm -rf $SOURCE/$tName
@@ -201,6 +206,7 @@ else
 							fi
 							continue
 						fi
+						continue
 						
 						#install on device
 						./install.sh $SOURCE/$tName $SOURCE/$tName/tests "SDK" $PACKAGE $localDir
