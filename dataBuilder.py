@@ -72,10 +72,12 @@ def compute_test_info(all_apps_path, print_status=True, minimum_number_tests=0):
 	return all_apps, all_energy
 
 def main(mf):
+	minimum = 1
+
 	color_print(TAG, color='green', bold=True)
 	
 	all_apps_path = childDirs(mf)
-	all_apps, all_energy = compute_test_info(all_apps_path, minimum_number_tests=1)
+	all_apps, all_energy = compute_test_info(all_apps_path, minimum_number_tests=minimum)
 	
 	
 	color_print("Calculating the quantiles", color="green", bold=True)
@@ -89,6 +91,7 @@ def main(mf):
 	tests, cov = compute_test_stats(all_apps)
 	#for n in tests:
 	#	print("-> " + str(n))
+	print("#Apps with >= " + str(minimum) + " tests: " + str(len(all_apps)))
 
 	print("Average #Tests per App: " + str(st.mean(tests)))
 
