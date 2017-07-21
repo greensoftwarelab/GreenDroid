@@ -43,7 +43,7 @@ def compute_test_stats(all_apps, minimum_number_tests=0):
 		
 	return tests, cov
 
-def compute_test_info(all_apps_path, print_status=True, minimum_number_tests=0):
+def compute_test_info(all_apps_path, print_status=True, minimum_number_tests=0, minimum_method_coverage=0):
 	all_apps = []
 	all_energy = []
 	count, i = 0, 0
@@ -65,19 +65,20 @@ def compute_test_info(all_apps_path, print_status=True, minimum_number_tests=0):
 		run_analyzer(path)
       	#get the results & store it in classes
 		app = AppData(path, id)
-		if (app.all_OK()) & (app.number_of_tests() >= minimum_number_tests):
+		if (app.all_OK()) & (app.number_of_tests() >= minimum_number_tests) & (app.average_test_coverage() > minimum_method_coverage):
 			all_apps.append(app)
 			all_energy += app.consumptions_over_trace()	#other options available
 		count+=1
 	return all_apps, all_energy
 
 def main(mf):
-	minimum = 1
+	minimum_tests = 1
+	minimum_coverage = 0.03
 
 	color_print(TAG, color='green', bold=True)
 	
 	all_apps_path = childDirs(mf)
-	all_apps, all_energy = compute_test_info(all_apps_path, minimum_number_tests=minimum)
+	all_apps, all_energy = compute_test_info(all_apps_path, minimum_number_tests=minimum_tests, minimum_method_coverage=minimum_coverage)
 	
 	
 	color_print("Calculating the quantiles", color="green", bold=True)
@@ -91,7 +92,7 @@ def main(mf):
 	tests, cov = compute_test_stats(all_apps)
 	#for n in tests:
 	#	print("-> " + str(n))
-	print("#Apps with >= " + str(minimum) + " tests: " + str(len(all_apps)))
+	print("#Apps with >= " + str(minimum_tests) + " tests & >= " + str(minimum_coverage) + " method coverage : " + str(len(all_apps)))
 
 	print("Average #Tests per App: " + str(st.mean(tests)))
 

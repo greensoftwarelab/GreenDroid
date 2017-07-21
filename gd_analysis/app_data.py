@@ -121,7 +121,9 @@ class AppData(object):
 		res = []
 		for tc in self._test_cases:
 			res.append(tc.method_count()/self._method_count)
-		return st.mean(res)
+		if len(res):
+			return st.mean(res)
+		return 0
 
 	def number_of_tests(self):
 		return len(self._test_cases)
