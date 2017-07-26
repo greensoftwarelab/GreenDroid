@@ -2,6 +2,9 @@
 
 import re, sys, os
 import statistics as st
+import json as js
+import csv
+import pickle
 
 from subprocess import call, check_output, Popen, PIPE
 from lazyme.string import color_print
@@ -10,6 +13,15 @@ from pandas import *
 #from gd_analysis.app_data import AppData 
 #from gd_analysis.trace import Trace
 from gd_analysis import *
+
+#default flag values
+get_last = False
+save = True
+
+#output files
+prev_data = "data.json"
+prev_data_bin = "data.pkl"
+prev_cons = "consumption.csv"
 
 TAG="[DATA BUILDER]"
 
@@ -43,43 +55,80 @@ def compute_test_stats(all_apps, minimum_number_tests=0):
 		
 	return tests, cov
 
-def compute_test_info(all_apps_path, print_status=True, minimum_number_tests=0, minimum_method_coverage=0):
+def save_data(all_apps, all_energy):
+	# save the apps data in JSON format
+	json_string = js.dumps(all_apps, default=obj_dict)
+	with open(prev_data, "w+") as file:
+		file.write(json_string)
+		file.close()
+
+	# save the apps data in pickle binary format
+	with open(prev_data_bin, "wb+") as pkl_file:
+		pickle.dump(all_apps, pkl_file, pickle.HIGHEST_PROTOCOL)
+
+	# save the consumptions in CSV format
+	with open(prev_cons, "w+") as csvfile:
+		spamwriter = csv.writer(csvfile, delimiter=',')
+		spamwriter.writerow(all_energy)
+		csvfile.close()
+
+def load_data():
 	all_apps = []
+	with open(prev_data_bin, "rb") as file:
+		all_apps = pickle.load(file)
+
 	all_energy = []
-	count, i = 0, 0
-	if print_status:
-		perc = [
-		{"percentage" : "0" , "value" : 0}, 
-		{"percentage" : "20", "value" : len(all_apps_path)*0.20}, 
-		{"percentage" : "40", "value" : len(all_apps_path)*0.40}, 
-		{"percentage" : "60", "value" : len(all_apps_path)*0.60}, 
-		{"percentage" : "80", "value" : len(all_apps_path)*0.80}, 
-		{"percentage" : "100", "value" : len(all_apps_path)}
-		]
-	for path in all_apps_path:
-		id = re.sub(r'.+\/(.+)', r'\1', path)
-		if (print_status) & (count >= perc[i]["value"]):
-			print(str(perc[i]["percentage"]) + "% analyzed")
-			i+=1
-		#run Analyzer
-		run_analyzer(path)
-      	#get the results & store it in classes
-		app = AppData(path, id)
-		if (app.all_OK()) & (app.number_of_tests() >= minimum_number_tests) & (app.average_test_coverage() > minimum_method_coverage):
-			all_apps.append(app)
-			all_energy += app.consumptions_over_trace()	#other options available
-		count+=1
+	with open(prev_cons, 'r') as csvfile:
+		reader = csv.reader(csvfile, delimiter=',')
+		all_energy = list(map(lambda x : float(x), list(reader)[0]))
 	return all_apps, all_energy
+
+def compute_test_info(all_apps_path, 
+	                  print_status=True, 
+	                  minimum_number_tests=0, 
+	                  minimum_method_coverage=0):
+	if get_last:
+		if print_status:
+			print("Loading previously saved data")
+		return load_data()
+	else:
+		all_apps = []
+		all_energy = []
+		count, i = 0, 0
+		if print_status:
+			perc = [
+			{"percentage" : "0" , "value" : 0}, 
+			{"percentage" : "20", "value" : len(all_apps_path)*0.20}, 
+			{"percentage" : "40", "value" : len(all_apps_path)*0.40}, 
+			{"percentage" : "60", "value" : len(all_apps_path)*0.60}, 
+			{"percentage" : "80", "value" : len(all_apps_path)*0.80}, 
+			{"percentage" : "100", "value" : len(all_apps_path)}
+			]
+		for path in all_apps_path:
+			id = re.sub(r'.+\/(.+)', r'\1', path)
+			if (print_status) & (count >= perc[i]["value"]):
+				print(str(perc[i]["percentage"]) + "% analyzed")
+				i+=1
+			#run Analyzer
+			run_analyzer(path)
+    	  	#get the results & store it in classes
+			app = AppData(path, id)
+			if (app.all_OK()) & (app.number_of_tests() >= minimum_number_tests) & (app.average_test_coverage() > minimum_method_coverage):
+				all_apps.append(app)
+				all_energy += app.consumptions_over_trace()	#other options available
+			count+=1
+		return all_apps, all_energy
 
 def main(mf):
 	minimum_tests = 1
-	minimum_coverage = 0.03
+	minimum_coverage = 0
 
 	color_print(TAG, color='green', bold=True)
 	
 	all_apps_path = childDirs(mf)
 	all_apps, all_energy = compute_test_info(all_apps_path, minimum_number_tests=minimum_tests, minimum_method_coverage=minimum_coverage)
-	
+	if save:
+		save_data(all_apps, all_energy)
 	
 	color_print("Calculating the quantiles", color="green", bold=True)
 	red, yellow, green = compute_quantiles(all_energy)
@@ -99,12 +148,19 @@ def main(mf):
 	print("Average Test Coverage (Global): " + str(st.mean(cov)))
 
 
-	#quantiles_dict = {'green': green_test, 'yellow' : yellow_test, 'red' : red_test}
-	#print(str(quantiles_dict))
-
 if __name__ == "__main__":
 	if len(sys.argv) > 1:
 		main_folder = sys.argv[1]
+		tag = re.sub(r'\/', r'_', main_folder)
+		prev_data = tag + "_" + prev_data
+		prev_data_bin = tag + "_" + prev_data_bin
+		prev_cons = tag + "_" + prev_cons
+		if len(sys.argv) > 2:
+			for arg in sys.argv:
+				if (arg == "-l") | (arg == "--last"):
+					get_last = True
+				elif (arg == "-n") | (arg == "--no-save"):
+					save = False
 		main(main_folder)
 
 # interesting app: 

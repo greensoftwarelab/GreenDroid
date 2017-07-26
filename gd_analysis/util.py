@@ -52,3 +52,6 @@ def is_number(s):
         return True
     except ValueError:
         return False
+
+def obj_dict(obj):
+    return obj.__dict__
