@@ -13,11 +13,11 @@ GD_ANALYZER="analyzer/Analyzer-1.0-SNAPSHOT.jar"  # "analyzer/greenDroidAnalyzer
 trepnLib="TrepnLibrary-release.aar"
 trepnJar="TrepnLibrary-release.jar"
 
-flagStatus="on"
+#flagStatus="on"
 
 #DIR=/media/data/android_apps/failed/*   #DIR=$1
-DIR=/media/data/android_apps/success/*
-#DIR=$HOME/tests/*
+#DIR=/media/data/android_apps/success/*
+DIR=$HOME/tests/androidProjects/*
 
 #Quickly check the folder containing the apps to be tested for inconsistencies
 if [ "${DIR: -1}" == "*" ]; then
@@ -75,6 +75,8 @@ else
 		ID=${arr[-1]}
 		IFS=$(echo -en "\n\b")
 		if [ "$ID" != "success" ] && [ "$ID" != "failed" ] && [ "$ID" != "unknown" ]; then
+			projLocalDir=$localDir/$ID
+			rm -rf $projLocalDir/all/*
 			#first, check if this is a gradle or a maven project
 			#GRADLE=$(find ${f}/latest -maxdepth 1 -name "build.gradle")
 			GRADLE=($(find ${f}/latest -name "*.gradle" -type f -print | grep -v "settings.gradle" | xargs -I{} grep "buildscript" {} /dev/null | cut -f1 -d:))
@@ -85,147 +87,166 @@ else
 			elif [ -n "${GRADLE[0]}" ]; then
 				MANIFESTS=($(find $f -name "AndroidManifest.xml" | egrep -v "/build/|$tName"))
 				if [[ "${#MANIFESTS[@]}" > 0 ]]; then
-					RESULT=($(python manifestParser.py ${MANIFESTS[*]}))
-					TESTS_SRC=${RESULT[1]}
-					PACKAGE=${RESULT[2]}
-					if [[ "${RESULT[3]}" != "-" ]]; then
-						TESTPACKAGE=${RESULT[3]}
-					else
-						TESTPACKAGE="$PACKAGE.test"
-					fi
-					MANIF_S="${RESULT[0]}/AndroidManifest.xml"
-					MANIF_T="-"
+					MP=($(python manifestParser.py ${MANIFESTS[*]}))
+					for R in ${MP[@]}; do
+						RESULT=($(echo "$R" | tr ':' '\n'))
+						TESTS_SRC=${RESULT[1]}
+						PACKAGE=${RESULT[2]}
+						if [[ "${RESULT[3]}" != "-" ]]; then
+							TESTPACKAGE=${RESULT[3]}
+						else
+							TESTPACKAGE="$PACKAGE.test"
+						fi
+						MANIF_S="${RESULT[0]}/AndroidManifest.xml"
+						MANIF_T="-"
+						
+						FOLDER=${f}/latest #$f
+						#delete previously instrumented project, if any
+						rm -rf $FOLDER/$tName
+						#instrument
+						java -jar "jInst/jInst-1.0.jar" "-gradle" $tName "X" $FOLDER $MANIF_S $MANIF_T $trace ##RR
+						
+						#copy the trace/measure lib
+						#folds=($(find $FOLDER/$tName/ -type d | egrep -v "\/res|\/gen|\/build|\/.git|\/src|\/.gradle"))
+						for D in `find $FOLDER/$tName/ -type d | egrep -v "\/res|\/gen|\/build|\/.git|\/src|\/.gradle"`; do  ##RR
+						    if [ -d "${D}" ]; then  ##RR
+						    	mkdir -p ${D}/libs  ##RR
+						     	cp libsAdded/$trepnLib ${D}/libs  ##RR
+						    fi  ##RR
+						done  ##RR
+		
+						#build
+						#GRADLE=$(find $FOLDER/$tName -maxdepth 1 -name "build.gradle")
+						GRADLE=($(find $FOLDER/$tName -name "*.gradle" -type f -print | grep -v "settings.gradle" | xargs grep -L "com.android.library" | xargs grep -l "buildscript" | cut -f1 -d:))
+						./buildGradle.sh $ID $FOLDER/$tName ${GRADLE[0]}
+						RET=$(echo $?)
+						if [[ "$RET" != "0" ]]; then
+							echo "$ID" >> errorBuild.log
+							if [[ -n "$flagStatus" ]]; then
+								cp buildStatus.log debugBuild/$ID.log
+							fi
+							continue
+						fi
+						
+						#create results support folder
+						echo "$TAG Creating support folder..."
+						mkdir -p $projLocalDir
+						mkdir -p $projLocalDir/all
+						cat ./allMethods.txt >> $projLocalDir/all/allMethods.txt
+		
+						#install on device
+						./install.sh $FOLDER/$tName "X" "GRADLE" $PACKAGE $projLocalDir  #COMMENT, EVENTUALLY...
+						RET=$(echo $?)
+						if [[ "$RET" != "0" ]]; then
+							echo "$ID" >> errorInstall.log
+							continue
+						fi
+						echo "$ID" >> success.log
+						
+						#run tests
+						./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir # "-gradle" $FOLDER/$tName
+						RET=$(echo $?)
+						if [[ "$RET" != "0" ]]; then
+							echo "$ID" >> errorRun.log
+							continue
+						fi
+						
+						#uninstall the app & tests
+						./uninstall.sh $PACKAGE $TESTPACKAGE
+						RET=$(echo $?)
+						if [[ "$RET" != "0" ]]; then
+							echo "$ID" >> errorUninstall.log
+							#continue
+						fi
+						
+						#Run greendoid!
+						#java -jar $GD_ANALYZER $ID $PACKAGE $TESTPACKAGE $FOLDER $FOLDER/tName $localDir
+						java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv  ##RR
+						#break
+					done
 				fi
-				FOLDER=${f}/latest #$f
-				#delete previously instrumented project, if any
-				rm -rf $FOLDER/$tName
-				#instrument
-				java -jar "jInst/jInst-1.0.jar" "-gradle" $tName "X" $FOLDER $MANIF_S $MANIF_T $trace ##RR
-				
-				#copy the trace/measure lib
-				#folds=($(find $FOLDER/$tName/ -type d | egrep -v "\/res|\/gen|\/build|\/.git|\/src|\/.gradle"))
-				for D in `find $FOLDER/$tName/ -type d | egrep -v "\/res|\/gen|\/build|\/.git|\/src|\/.gradle"`; do  ##RR
-				    if [ -d "${D}" ]; then  ##RR
-				    	mkdir -p ${D}/libs  ##RR
-				     	cp libsAdded/$trepnLib ${D}/libs  ##RR
-				    fi  ##RR
-				done  ##RR
-
-				#build
-				#GRADLE=$(find $FOLDER/$tName -maxdepth 1 -name "build.gradle")
-				GRADLE=($(find $FOLDER/$tName -name "*.gradle" -type f -print | grep -v "settings.gradle" | xargs grep -L "com.android.library" | xargs grep -l "buildscript" | cut -f1 -d:))
-				./buildGradle.sh $ID $FOLDER/$tName ${GRADLE[0]}
-				RET=$(echo $?)
-				if [[ "$RET" != "0" ]]; then
-					echo "$ID" >> errorBuild.log
-					if [[ -n "$flagStatus" ]]; then
-						cp buildStatus.log debugBuild/$ID.log
-					fi
-					continue
-				fi
-				
-				#create results support folder
-				projLocalDir=$localDir/$ID
-				echo "$TAG Creating support folder..."
-				mkdir -p $projLocalDir
-				mkdir -p $projLocalDir/all
-				cp ./allMethods.txt $projLocalDir/all
-
-				#install on device
-				./install.sh $FOLDER/$tName "X" "GRADLE" $PACKAGE $projLocalDir  #COMMENT, EVENTUALLY...
-				RET=$(echo $?)
-				if [[ "$RET" != "0" ]]; then
-					echo "$ID" >> errorInstall.log
-					continue
-				fi
-				echo "$ID" >> success.log
-				
-				#run tests
-				./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir # "-gradle" $FOLDER/$tName
-				RET=$(echo $?)
-				if [[ "$RET" != "0" ]]; then
-					echo "$ID" >> errorRun.log
-					continue
-				fi
-				
-				#uninstall the app & tests
-				./uninstall.sh $PACKAGE $TESTPACKAGE
-				RET=$(echo $?)
-				if [[ "$RET" != "0" ]]; then
-					echo "$ID" >> errorUninstall.log
-					#continue
-				fi
-				
-				#Run greendoid!
-				#java -jar $GD_ANALYZER $ID $PACKAGE $TESTPACKAGE $FOLDER $FOLDER/tName $localDir
-				java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv  ##RR
-				#break
 			else
 				#search for the manifests
 				MANIFESTS=($(find $f -name "AndroidManifest.xml" | egrep -v "/bin/|$tName"))
-				RESULT=($(python manifestParser.py ${MANIFESTS[*]}))
-				SOURCE=${RESULT[0]}
-				TESTS=${RESULT[1]}
-				PACKAGE=${RESULT[2]}
-				TESTPACKAGE=${RESULT[3]}
-				if [ "$SOURCE" != "" ] && [ "$TESTS" != "" ] && [ "$f" != "" ]; then
-					#delete previously instrumented project, if any
-					rm -rf $SOURCE/$tName
-					#instrument
-					java -jar "jInst/jInst-1.0.jar" "-sdk" $tName "X" $SOURCE $TESTS $trace
-					#copy the test runner
-					mkdir $SOURCE/$tName/libs
-					mkdir $SOURCE/$tName/tests/libs
-					cp libsAdded/$trepnJar $SOURCE/$tName/libs
-					cp libsAdded/$trepnJar $SOURCE/$tName/tests/libs
-
-					#build
-					./buildSDK.sh $ID $PACKAGE $SOURCE/$tName $SOURCE/$tName/tests
-					RET=$(echo $?)
-					if [[ "$RET" != "0" ]]; then
-						echo "$ID" >> errorBuild.log
-						if [[ -n "$flagStatus" ]]; then
-							cp buildStatus.log debugBuild/$ID.log
+				MP=($(python manifestParser.py ${MANIFESTS[*]}))
+				for R in ${MP[@]}; do
+					RESULT=($(echo "$R" | tr ':' '\n'))
+					SOURCE=${RESULT[0]}
+					TESTS=${RESULT[1]}
+					PACKAGE=${RESULT[2]}
+					TESTPACKAGE=${RESULT[3]}
+					if [ "$SOURCE" != "" ] && [ "$TESTS" != "" ] && [ "$f" != "" ]; then
+						#delete previously instrumented project, if any
+						rm -rf $SOURCE/$tName
+						#instrument
+						if [[ "$SOURCE" != "$TESTS" ]]; then
+							java -jar "jInst/jInst-1.0.jar" "-sdk" $tName "X" $SOURCE $TESTS $trace
+						else
+							MANIF_S="${SOURCE}/AndroidManifest.xml"
+							MANIF_T="-"
+							java -jar "jInst/jInst-1.0.jar" "-gradle" $tName "X" $SOURCE $MANIF_S $MANIF_T $trace ##RR
 						fi
-						continue
-					fi
-					
-					#install on device
-					./install.sh $SOURCE/$tName $SOURCE/$tName/tests "SDK" $PACKAGE $localDir
-					RET=$(echo $?)
-					if [[ "$RET" != "0" ]]; then
-						echo "$ID" >> errorInstall.log
-						continue
-					fi
-					echo "$ID" >> success.log
 
-					#create results support folder
-					projLocalDir=$localDir/$ID
-					echo "$TAG Creating support folder..."
-					mkdir -p $projLocalDir
-					mkdir -p $projLocalDir/all
-					cp ./allMethods.txt $projLocalDir/all
-
-					#run tests
-					./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir
-					RET=$(echo $?)
-					if [[ "$RET" != "0" ]]; then
-						echo "$ID" >> errorRun.log
-						continue
+						#copy the test runner
+						mkdir -p $SOURCE/$tName/libs
+						mkdir -p $SOURCE/$tName/tests/libs
+						cp libsAdded/$trepnJar $SOURCE/$tName/libs
+						cp libsAdded/$trepnJar $SOURCE/$tName/tests/libs
+	
+						#build
+						./buildSDK.sh $ID $PACKAGE $SOURCE/$tName $SOURCE/$tName/tests $deviceDir $localDir
+						RET=$(echo $?)
+						if [[ "$RET" != "0" ]]; then
+							echo "$ID" >> errorBuild.log
+							if [[ "$RET" == "10" ]]; then
+								#everything went well, at second try
+								#let's create the results support files
+								mkdir -p $projLocalDir
+								mkdir -p $projLocalDir/all
+								cat ./allMethods.txt >> $projLocalDir/all/allMethods.txt
+								echo "$ID" >> success.log
+							elif [[ -n "$flagStatus" ]]; then
+								cp buildStatus.log debugBuild/$ID.log
+							fi
+							continue
+						fi
+						
+						#install on device
+						./install.sh $SOURCE/$tName $SOURCE/$tName/tests "SDK" $PACKAGE $localDir
+						RET=$(echo $?)
+						if [[ "$RET" != "0" ]]; then
+							echo "$ID" >> errorInstall.log
+							continue
+						fi
+						echo "$ID" >> success.log
+	
+						#create results support folder
+						echo "$TAG Creating support folder..."
+						mkdir -p $projLocalDir
+						mkdir -p $projLocalDir/all
+						cat ./allMethods.txt >> $projLocalDir/all/allMethods.txt
+	
+						#run tests
+						./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir
+						RET=$(echo $?)
+						if [[ "$RET" != "0" ]]; then
+							echo "$ID" >> errorRun.log
+							continue
+						fi
+						#uninstall the app & tests
+						./uninstall.sh $PACKAGE $TESTPACKAGE
+						RET=$(echo $?)
+						if [[ "$RET" != "0" ]]; then
+							echo "$ID" >> errorUninstall.log
+							#continue
+						fi
+						#Run greendoid!
+						java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv  ##RR
+						#break
+					else
+						e_echo "$TAG ERROR!"
 					fi
-					#uninstall the app & tests
-					./uninstall.sh $PACKAGE $TESTPACKAGE
-					RET=$(echo $?)
-					if [[ "$RET" != "0" ]]; then
-						echo "$ID" >> errorUninstall.log
-						#continue
-					fi
-					#Run greendoid!
-					java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv  ##RR
-					#break
-				else
-					e_echo "$TAG ERROR!"
-				fi
+				done
 			fi
 	    	
 	    fi
