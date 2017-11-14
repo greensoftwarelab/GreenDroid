@@ -10,10 +10,16 @@ projType=$5
 TIMEOUT="900" #15 minutes (60*15)
 
 TAG="[APP RUNNER]"
-echo ""
 
-#runner="android.support.test.runner.AndroidJUnitRunner"
-runner="android.test.InstrumentationTestRunner"
+
+actualrunner=$(grep "JUnitRunner" actualrunner.txt)
+if [[ -n "$actualrunner" ]]; then
+	runner="android.support.test.runner.AndroidJUnitRunner"
+else
+	runner="android.test.InstrumentationTestRunner"
+fi
+
+
 
 i_echo "$TAG Running"
 
@@ -91,22 +97,22 @@ fi
 
 i_echo "$TAG Pulling result files"
 #adb pull $deviceDir $localDir
-
+echo $localDir
 adb shell ls "$deviceDir/Measures/" | sed -r 's/[\r]+//g' | egrep "*.csv" |  xargs -I{} adb pull $deviceDir/Measures/{} $localDir
 #adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
 adb shell ls "$deviceDir/Traces/" | sed -r 's/[\r]+//g' | egrep "*.txt" | xargs -I{} adb pull $deviceDir/Traces/{} $localDir
 
 # In case the missing instrumentation error occured, let's remove all apps with instrumentations now!
-# if [[ "$flagInst" == 1 ]]; then
-	instTests=($(adb shell pm list instrumentation | cut -f2 -d: | cut -f1 -d\ | cut -f1 -d/))
-	for i in ${instTests[@]}; do
-		a=${i/%.test/}
-		adb shell pm uninstall $a
-		adb shell pm uninstall $i
+#« if [[ "$flagInst" == 1 ]]; then
+#	instTests=($(adb shell pm list instrumentation | cut -f2 -d: | cut -f1 -d\ | cut -f1 -d/))
+#	for i in ${instTests[@]}; do
+#		a=${i/%.test/}
+#		adb shell pm uninstall $a
+#		adb shell pm uninstall $i
 		
-		a=${i/%.tests/}
-		adb shell pm uninstall $a
-	done
+		#a=${i/%.tests/}
+		#adb shell pm uninstall $a
+#	done
 # fi
 
 exit 0

@@ -6,18 +6,25 @@ TAG="[GD]"
 OLDIFS=$IFS
 tName="_TRANSFORMED_"
 deviceDir=""
+prefix="" # "latest" or ""
 deviceExternal=""
 localDir="$HOME/GDResults"
 trace="-TraceMethods"   #trace=$2  ##RR
 GD_ANALYZER="analyzer/Analyzer-1.0-SNAPSHOT.jar"  # "analyzer/greenDroidAnalyzer.jar"
+treprefix=""
 trepnLib="TrepnLibrary-release.aar"
 trepnJar="TrepnLibrary-release.jar"
 
-#flagStatus="on"
+flagStatus="on"
 
 #DIR=/media/data/android_apps/failed/*   #DIR=$1
 #DIR=/media/data/android_apps/success/*
-DIR=$HOME/tests/androidProjects/*
+#DIR=$HOME/tests/androidProjects/*
+#DIR=$HOME/tests/simple/*
+
+#DIR=$HOME/tests/SimpleApp/latest/*
+DIR=$HOME/tests/success/*
+#DIR=$HOME/tests/wasSuccess/gradleProjects/*
 
 #Quickly check the folder containing the apps to be tested for inconsistencies
 if [ "${DIR: -1}" == "*" ]; then
@@ -61,6 +68,7 @@ else
 	fi
 	
 	#for each app in $DIR folder...
+	echo $DIR
 	for f in $DIR/
 	do
 		#clean previous list of all methods and device results
@@ -79,8 +87,8 @@ else
 			rm -rf $projLocalDir/all/*
 			#first, check if this is a gradle or a maven project
 			#GRADLE=$(find ${f}/latest -maxdepth 1 -name "build.gradle")
-			GRADLE=($(find ${f}/latest -name "*.gradle" -type f -print | grep -v "settings.gradle" | xargs -I{} grep "buildscript" {} /dev/null | cut -f1 -d:))
-			POM=$(find ${f}/latest -maxdepth 1 -name "pom.xml")
+			GRADLE=($(find ${f}/${prefix} -name "*.gradle" -type f -print | grep -v "settings.gradle" | xargs -I{} grep "buildscript" {} /dev/null | cut -f1 -d:))
+			POM=$(find ${f}/${prefix} -maxdepth 1 -name "pom.xml")
 			if [ -n "$POM" ]; then
 				POM=${POM// /\\ }
 				# Maven porjects are not considered yet...
@@ -100,7 +108,7 @@ else
 						MANIF_S="${RESULT[0]}/AndroidManifest.xml"
 						MANIF_T="-"
 						
-						FOLDER=${f}/latest #$f
+						FOLDER=${f}/${prefix} #$f
 						#delete previously instrumented project, if any
 						rm -rf $FOLDER/$tName
 						#instrument
@@ -111,7 +119,7 @@ else
 						for D in `find $FOLDER/$tName/ -type d | egrep -v "\/res|\/gen|\/build|\/.git|\/src|\/.gradle"`; do  ##RR
 						    if [ -d "${D}" ]; then  ##RR
 						    	mkdir -p ${D}/libs  ##RR
-						     	cp libsAdded/$trepnLib ${D}/libs  ##RR
+						     	cp libsAdded/$treprefix$trepnLib ${D}/libs  ##RR
 						    fi  ##RR
 						done  ##RR
 		
@@ -137,10 +145,10 @@ else
 						#install on device
 						./install.sh $FOLDER/$tName "X" "GRADLE" $PACKAGE $projLocalDir  #COMMENT, EVENTUALLY...
 						RET=$(echo $?)
-						if [[ "$RET" != "0" ]]; then
-							echo "$ID" >> errorInstall.log
-							continue
-						fi
+						#if [[ "$RET" != "0" ]]; then
+						#	echo "$ID" >> errorInstall.log
+						#	continue
+						#fi
 						echo "$ID" >> success.log
 						
 						#run tests
@@ -252,4 +260,5 @@ else
 	    fi
 	done
 	IFS=$OLDIFS
+	cat $projLocalDir/Testresults.csv | sed 's/,/ ,/g' | column -t -s, | less -S
 fi

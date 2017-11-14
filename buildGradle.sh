@@ -10,20 +10,21 @@ FOLDER=$2
 GRADLE=$3
 
 TAG="[APP BUILDER]"
-echo ""
-
 #list of available build tools versions
 GRADLE_VERSION=$(gradle --version | grep "Gradle" | cut -f2 -d\ ) # "3.4.1"
-GRADLE_PLUGIN="2.0.0" #TODO - Find a better way to determine this value (see https://developer.android.com/studio/releases/gradle-plugin.html#updating-gradle)
+#GRADLE_VERSION=3.3 # RR
+GRADLE_PLUGIN="2.3.3" #TODO - Find a better way to determine this value (see https://developer.android.com/studio/releases/gradle-plugin.html#updating-gradle)
 
-BUILD_VERSIONS=($(ls $HOME/android-sdk-linux/build-tools/))
-TARGET_VERSIONS=($(ls $HOME/android-sdk-linux/platforms/))
+#BUILD_VERSIONS=($(ls $HOME/android-sdk-linux/build-tools/)) #MC
+#TARGET_VERSIONS=($(ls $HOME/android-sdk-linux/platforms/))  #MC
+BUILD_VERSIONS=($(ls $HOME/Android/Sdk/build-tools/))
+TARGET_VERSIONS=($(ls $HOME/Android/Sdk/platforms/))
 
 i_echo "$TAG GRADLE PROJECT"
-
+i_echo "$TAG APP folder : $FOLDER"
 NEW_RUNNER_JAR=libs/android-junit-report-1.5.8.jar # unused
-NEW_RUNNER="android.test.InstrumentationTestRunner" # "android.support.test.runner.AndroidJUnitRunner" # 
-
+#NEW_RUNNER="android.test.InstrumentationTestRunner" # "android.support.test.runner.AndroidJUnitRunner" # 
+NEW_RUNNER="android.support.test.runner.AndroidJUnitRunner"
 RUNNER_VERSION="0.5"      # ${ANDROID_HOME}/extras/android/m2repository/com/android/support/test/runner
 RUNNER_RULES="0.5"        # ${ANDROID_HOME}/extras/android/m2repository/com/android/support/test/rules
 RUNNER_ESPRESSO="2.2.2"   # ${ANDROID_HOME}/extras/android/m2repository/com/android/support/test/espresso/espresso-cores
@@ -215,6 +216,7 @@ for x in ${BUILDS[@]}; do
 			HAS_RUNNER=$(egrep -n "testInstrumentationRunner " $x)
 			if [[ -n "$HAS_RUNNER" ]]; then
 				sed -ri.bak "s#([ \t]*)testInstrumentationRunner .+#\1testInstrumentationRunner \"$NEW_RUNNER\"#g" $x
+				echo "$HAS_RUNNER" >> actualrunner.txt
 			else
 				sed -i.bak ""$ANDROID_LINE"i testInstrumentationRunner \"$NEW_RUNNER\"" $x
 			fi

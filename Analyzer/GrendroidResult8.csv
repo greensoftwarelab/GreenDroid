@@ -1,0 +1,4 @@
+Method,Consumption (J)
+com.greenlab.simpleapp.LoginActivity<profileLoader>,4.496046268
+com.greenlab.simpleapp.LoginActivity<logOut>,1.11716556
+com.greenlab.simpleapp.LoginActivity<credentialsValidator>,6.000531989000001

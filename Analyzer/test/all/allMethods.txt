@@ -1,0 +1,2 @@
+com.example.rrua.maxuxo.MainActivity<onCreate>
+com.example.rrua.maxuxo.MainActivity<onCreate>
