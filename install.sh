@@ -7,6 +7,14 @@ projtype=$3
 package=$4
 resDir=$5
 
+machine=''
+getSO machine
+if [ "$machine" == "Mac" ]; then
+	SED_COMMAND="gsed" #mac
+else 
+	SED_COMMAND="sed" #linux	
+fi
+
 TAG="[APP INSTALLER]"
 echo ""
 
@@ -17,7 +25,7 @@ if [ "$projtype" == "SDK" ]; then
 	testAPK=($(find $pathTests -name "*-debug.apk"))
 elif [ "$projtype" == "GRADLE" ]; then
 	appAPK=($(find $pathProject -name "*-debug.apk"))
-	testAPK=($(find $pathProject -name "*-debug-androidTest-*.apk"))
+	testAPK=($(find $pathProject -name "*-debug-androidTest*.apk"))
 fi
 
 OK="0"
@@ -25,15 +33,15 @@ OK="0"
 if [ "${#appAPK[@]}" != 1 ] || [ "${#testAPK[@]}" != 1 ]; then
 
 	if [ "${#appAPK[@]}" > 1 ] && [ "${#testAPK[@]}" == 1 ]; then
-		pAux=$(echo "${testAPK[0]}" | sed -r "s#\/[a-zA-Z0-9-]+-debug.+.apk#/#g")
+		pAux=$(echo "${testAPK[0]}" | $SED_COMMAND -r "s#\/[a-zA-Z0-9-]+-debug.+.apk#/#g")
 		appAPK=($(find $pAux -name "*-debug.apk"))
 		if [ "${#appAPK[@]}" == 1 ]; then
 			OK="1"
 		fi
 
 	elif [ "${#appAPK[@]}" == 1 ] && [ "${#testAPK[@]}" > 1 ]; then
-		pAux=$(echo "${appAPK[0]}" | sed -r "s#\/[a-zA-Z0-9-]+-debug.+.apk#/#g")
-		testAPK=($(find $pAux -name "*-debug-androidTest-*.apk"))
+		pAux=$(echo "${appAPK[0]}" | $SED_COMMAND -r "s#\/[a-zA-Z0-9-]+-debug.+.apk#/#g")
+		testAPK=($(find $pAux -name "*-debug-androidTest*.apk"))
 		if [ "${#testAPK[@]}" == 1 ]; then
 			OK="1"
 		fi

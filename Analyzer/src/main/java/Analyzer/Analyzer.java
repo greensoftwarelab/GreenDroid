@@ -353,7 +353,7 @@ public class Analyzer {
     }
 
     private static Consumption getDataFromRow( HashMap<String, Pair<Integer, Integer>> columns,String[] row) {
-        int wifiState = Utils.getMatch(columns, Utils.wifiState)!=null?  Integer.parseInt(row[Utils.getMatch(columns, Utils.wifiState).second]) : returnList[0];
+        int wifiState = Utils.getMatch(columns, Utils.wifiState)!=null? (row[Utils.getMatch(columns, Utils.wifiState).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.wifiState).second])) : returnList[0]) : returnList[0];
               //  Integer.parseInt(row[Utils.getMatch(columns, Utils.wifiState).second]);
         int mobileData = Utils.getMatch(columns, Utils.mobileData)!=null? (row[Utils.getMatch(columns, Utils.mobileData).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.mobileData).second])) : returnList[1]) : returnList[1];
         int screenState = Utils.getMatch(columns, Utils.screenState)!=null?  (row[Utils.getMatch(columns, Utils.screenState).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.screenState).second])) : returnList[2]) : returnList[2];

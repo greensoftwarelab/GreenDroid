@@ -1,0 +1,8 @@
+#excluded files
+logs/*.log
+*.txt
+debugBuild/*
+Analyzer/target/*
+Analyzer/mave.*
+jInst/target/*
+jInst/mave.*

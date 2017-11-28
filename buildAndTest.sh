@@ -3,13 +3,20 @@ source settings.sh
 
 TAG="[GD]"
 
-SED_COMMAND="gsed"
+machine=''
+getSO machine
+if [ "$machine" == "Mac" ]; then
+	SED_COMMAND="gsed" #mac
+else 
+	SED_COMMAND="sed" #linux	
+fi
 
 OLDIFS=$IFS
 tName="_TRANSFORMED_"
 deviceDir=""
 prefix="" # "latest" or ""
 deviceExternal=""
+logDir="logs"
 localDir="$HOME/GDResults"
 trace="-TraceMethods"   #trace=$2  ##RR
 GD_ANALYZER="jars/Analyzer.jar"  # "analyzer/greenDroidAnalyzer.jar"
@@ -60,6 +67,7 @@ else
 	(adb push trepnPreferences/ $deviceDir/saved_preferences) > /dev/null  2>&1 #new
 
 	deviceDir="$deviceExternal/trepn"  #GreenDroid
+	echo $deviceDir > deviceDir.txt
 	adb shell mkdir $deviceDir
 	adb shell rm -rf $deviceDir/Measures/*  ##RR
 	adb shell rm -rf $deviceDir/Traces/*  ##RR
@@ -71,7 +79,7 @@ else
 	#for each app in $DIR folder...
 	echo $DIR
 	for f in $DIR/
-	do
+		do
 		#clean previous list of all methods and device results
 		rm -rf ./allMethods.txt
 
@@ -90,6 +98,14 @@ else
 		if [ "$ID" != "success" ] && [ "$ID" != "failed" ] && [ "$ID" != "unknown" ]; then
 			projLocalDir=$localDir/$ID
 			rm -rf $projLocalDir/all/*
+
+			if [[ $profileHardware == "YES" ]]; then
+				w_echo "Profiling hardware ✔"
+				(adb shell am broadcast -a com.quicinc.trepn.load_preferences –e com.quicinc.trepn.load_preferences_file "$deviceDir/saved_preferences/trepnPreferences/All.pref") > dev/null 2>&1
+			else 
+				(adb shell am broadcast -a com.quicinc.trepn.load_preferences –e com.quicinc.trepn.load_preferences_file "$deviceDir/saved_preferences/trepnPreferences/Pref1.pref") > /dev/null 2>&1
+			fi
+			
 			#first, check if this is a gradle or a maven project
 			#GRADLE=$(find ${f}/latest -maxdepth 1 -name "build.gradle")
 			GRADLE=($(find ${f}/${prefix} -name "*.gradle" -type f -print | grep -v "settings.gradle" | xargs -I{} grep "buildscript" {} /dev/null | cut -f1 -d:))
@@ -113,18 +129,13 @@ else
 						MANIF_S="${RESULT[0]}/AndroidManifest.xml"
 						MANIF_T="-"
 						
-						FOLDER=${f}/${prefix} #$f
+						FOLDER=${f}${prefix} #$f
 						#delete previously instrumented project, if any
 						rm -rf $FOLDER/$tName
 
-						if [[ $profileHardware == "YES" ]]; then
-							w_echo "Profiling hardware ✔"
-							adb shell am broadcast -a com.quicinc.trepn.load_preferences –e com.quicinc.trepn.load_preferences_file "$deviceDir/saved_preferences/trepnPreferences/All.pref"
-						else 
-							adb shell am broadcast -a com.quicinc.trepn.load_preferences –e com.quicinc.trepn.load_preferences_file "$deviceDir/saved_preferences/trepnPreferences/Pref1.pref"
-						fi
 						#instrument
-						echo "folder of app to instrument ----> $FOLDER"
+						#echo "folder of app to instrument ----> $FOLDER"
+						echo "$FOLDER$tName" > lastTranformedApp.txt
 						java -jar $GD_INSTRUMENT "-gradle" $tName "X" $FOLDER $MANIF_S $MANIF_T $trace ##RR
 						
 						#copy the trace/measure lib
@@ -143,9 +154,9 @@ else
 						./buildGradle.sh $ID $FOLDER/$tName ${GRADLE[0]}
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
-							echo "$ID" >> errorBuild.log
+							echo "$ID" >> $logDir/errorBuild.log
 							if [[ -n "$flagStatus" ]]; then
-								cp buildStatus.log debugBuild/$ID.log
+								cp $logDir/buildStatus.log debugBuild/$ID.log
 							fi
 							continue
 						fi
@@ -163,13 +174,13 @@ else
 						#	echo "$ID" >> errorInstall.log
 						#	continue
 						#fi
-						echo "$ID" >> success.log
+						echo "$ID" >> $logDir/success.log
 						
 						#run tests
 						./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir # "-gradle" $FOLDER/$tName
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
-							echo "$ID" >> errorRun.log
+							echo "$ID" >> $logDir/errorRun.log
 							e_echo "[GD ERROR] There was an Error while running tests "
 							continue
 						fi
@@ -178,13 +189,16 @@ else
 						./uninstall.sh $PACKAGE $TESTPACKAGE
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
-							echo "$ID" >> errorUninstall.log
+							echo "$ID" >> $logDir/errorUninstall.log
 							#continue
 						fi
 						
 						#Run greendoid!
 						#java -jar $GD_ANALYZER $ID $PACKAGE $TESTPACKAGE $FOLDER $FOLDER/tName $localDir
-						java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv  ##RR
+						(java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv) > $logDir/analyzer.log  ##RR
+						cat $logDir/analyzer.log
+						errorAnalyzer=$(cat $logDir/analyzer.log)
+						#TODO se der erro imprimir a vermelho e aconselhar usar o trepFix.sh
 						#break
 					done
 				fi
@@ -220,16 +234,16 @@ else
 						./buildSDK.sh $ID $PACKAGE $SOURCE/$tName $SOURCE/$tName/tests $deviceDir $localDir
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
-							echo "$ID" >> errorBuild.log
+							echo "$ID" >> $logDir/errorBuild.log
 							if [[ "$RET" == "10" ]]; then
 								#everything went well, at second try
 								#let's create the results support files
 								mkdir -p $projLocalDir
 								mkdir -p $projLocalDir/all
 								cat ./allMethods.txt >> $projLocalDir/all/allMethods.txt
-								echo "$ID" >> success.log
+								echo "$ID" >> $logDir/success.log
 							elif [[ -n "$flagStatus" ]]; then
-								cp buildStatus.log debugBuild/$ID.log
+								cp $logDir/buildStatus.log debugBuild/$ID.log
 							fi
 							continue
 						fi
@@ -238,10 +252,10 @@ else
 						./install.sh $SOURCE/$tName $SOURCE/$tName/tests "SDK" $PACKAGE $localDir
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
-							echo "$ID" >> errorInstall.log
+							echo "$ID" >> $logDir/errorInstall.log
 							continue
 						fi
-						echo "$ID" >> success.log
+						echo "$ID" >> $logDir/success.log
 	
 						#create results support folder
 						echo "$TAG Creating support folder..."
@@ -253,14 +267,14 @@ else
 						./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
-							echo "$ID" >> errorRun.log
+							echo "$ID" >> $logDir/errorRun.log
 							continue
 						fi
 						#uninstall the app & tests
 						./uninstall.sh $PACKAGE $TESTPACKAGE
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
-							echo "$ID" >> errorUninstall.log
+							echo "$ID" >> $logDir/errorUninstall.log
 							#continue
 						fi
 						#Run greendoid!
