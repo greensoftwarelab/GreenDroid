@@ -9,7 +9,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
-import com.sun.org.apache.xpath.internal.operations.UnaryOperation;
+
 import jInst.profiler.MethodOrientedProfiler;
 import jInst.profiler.Profiler;
 import jInst.profiler.TestOrientedProfiler;

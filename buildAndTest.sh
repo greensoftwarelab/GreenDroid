@@ -3,6 +3,8 @@ source settings.sh
 
 TAG="[GD]"
 
+SED_COMMAND="gsed"
+
 OLDIFS=$IFS
 tName="_TRANSFORMED_"
 deviceDir=""
@@ -10,28 +12,25 @@ prefix="" # "latest" or ""
 deviceExternal=""
 localDir="$HOME/GDResults"
 trace="-TraceMethods"   #trace=$2  ##RR
-GD_ANALYZER="analyzer/Analyzer-1.0-SNAPSHOT.jar"  # "analyzer/greenDroidAnalyzer.jar"
+GD_ANALYZER="jars/Analyzer.jar"  # "analyzer/greenDroidAnalyzer.jar"
+GD_INSTRUMENT="jars/jInst.jar"
 treprefix=""
 trepnLib="TrepnLibrary-release.aar"
 trepnJar="TrepnLibrary-release.jar"
-
+profileHardware="YES" # YES or ""
 flagStatus="on"
 
-#DIR=/media/data/android_apps/failed/*   #DIR=$1
-#DIR=/media/data/android_apps/success/*
-#DIR=$HOME/tests/androidProjects/*
-#DIR=$HOME/tests/simple/*
-
-#DIR=$HOME/tests/SimpleApp/latest/*
-DIR=$HOME/tests/success/*
 #DIR=$HOME/tests/wasSuccess/gradleProjects/*
+DIR=$HOME/tests/simpleApps/*
+#DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
+
 
 #Quickly check the folder containing the apps to be tested for inconsistencies
-if [ "${DIR: -1}" == "*" ]; then
-	TEST_DIR="${DIR:0:-1}"
-else 
-	TEST_DIR=$DIR
-fi
+#if [ "${DIR: -1}" == "*" ]; then
+#	TEST_DIR="${DIR:0:-1}"
+#else 
+#	TEST_DIR=$DIR
+#qfi
 
 
 if [ ! -d $TEST_DIR ]; then
@@ -55,8 +54,10 @@ else
 		exit 1
 	fi
 
-	#Strat Trepn
+	#Start Trepn
 	adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
+	#put Trepn preferences on device
+	(adb push trepnPreferences/ $deviceDir/saved_preferences) > /dev/null  2>&1 #new
 
 	deviceDir="$deviceExternal/trepn"  #GreenDroid
 	adb shell mkdir $deviceDir
@@ -80,8 +81,12 @@ else
 		adb shell rm -rf "$deviceDir/Measures/*"
 
 		IFS='/' read -ra arr <<< "$f"
-		ID=${arr[-1]}
+		#ID=${arr[-1]} # MC
+		#IFS=$(echo -en "\n\b") #MC
+		ID=${arr[*]: -1}
 		IFS=$(echo -en "\n\b")
+		now=$(date +"%d_%m_%y_%H_%M_%S")
+
 		if [ "$ID" != "success" ] && [ "$ID" != "failed" ] && [ "$ID" != "unknown" ]; then
 			projLocalDir=$localDir/$ID
 			rm -rf $projLocalDir/all/*
@@ -111,8 +116,16 @@ else
 						FOLDER=${f}/${prefix} #$f
 						#delete previously instrumented project, if any
 						rm -rf $FOLDER/$tName
+
+						if [[ $profileHardware == "YES" ]]; then
+							w_echo "Profiling hardware ✔"
+							adb shell am broadcast -a com.quicinc.trepn.load_preferences –e com.quicinc.trepn.load_preferences_file "$deviceDir/saved_preferences/trepnPreferences/All.pref"
+						else 
+							adb shell am broadcast -a com.quicinc.trepn.load_preferences –e com.quicinc.trepn.load_preferences_file "$deviceDir/saved_preferences/trepnPreferences/Pref1.pref"
+						fi
 						#instrument
-						java -jar "jInst/jInst-1.0.jar" "-gradle" $tName "X" $FOLDER $MANIF_S $MANIF_T $trace ##RR
+						echo "folder of app to instrument ----> $FOLDER"
+						java -jar $GD_INSTRUMENT "-gradle" $tName "X" $FOLDER $MANIF_S $MANIF_T $trace ##RR
 						
 						#copy the trace/measure lib
 						#folds=($(find $FOLDER/$tName/ -type d | egrep -v "\/res|\/gen|\/build|\/.git|\/src|\/.gradle"))
@@ -126,6 +139,7 @@ else
 						#build
 						#GRADLE=$(find $FOLDER/$tName -maxdepth 1 -name "build.gradle")
 						GRADLE=($(find $FOLDER/$tName -name "*.gradle" -type f -print | grep -v "settings.gradle" | xargs grep -L "com.android.library" | xargs grep -l "buildscript" | cut -f1 -d:))
+						#echo "gradle script invocation -> ./buildGradle.sh $ID $FOLDER/$tName ${GRADLE[0]}"
 						./buildGradle.sh $ID $FOLDER/$tName ${GRADLE[0]}
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
@@ -156,6 +170,7 @@ else
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
 							echo "$ID" >> errorRun.log
+							e_echo "[GD ERROR] There was an Error while running tests "
 							continue
 						fi
 						
@@ -188,11 +203,11 @@ else
 						rm -rf $SOURCE/$tName
 						#instrument
 						if [[ "$SOURCE" != "$TESTS" ]]; then
-							java -jar "jInst/jInst-1.0.jar" "-sdk" $tName "X" $SOURCE $TESTS $trace
+							java -jar $GD_INSTRUMENT "-sdk" $tName "X" $SOURCE $TESTS $trace
 						else
 							MANIF_S="${SOURCE}/AndroidManifest.xml"
 							MANIF_T="-"
-							java -jar "jInst/jInst-1.0.jar" "-gradle" $tName "X" $SOURCE $MANIF_S $MANIF_T $trace ##RR
+							java -jar $GD_INSTRUMENT "-gradle" $tName "X" $SOURCE $MANIF_S $MANIF_T $trace ##RR
 						fi
 
 						#copy the test runner
@@ -260,5 +275,5 @@ else
 	    fi
 	done
 	IFS=$OLDIFS
-	cat $projLocalDir/Testresults.csv | sed 's/,/ ,/g' | column -t -s, | less -S
+	cat $projLocalDir/Testresults.csv | $SED_COMMAND 's/,/ ,/g' | column -t -s, | less -S
 fi

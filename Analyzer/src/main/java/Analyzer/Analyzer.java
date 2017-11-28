@@ -38,6 +38,8 @@ public class Analyzer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
         
         return allmethods;
     }
@@ -132,6 +134,9 @@ public class Analyzer {
         }
         l.clear();
         for (int j = 0; j <args.length ; j++) {
+
+            for (int i = 0; i < 10; i++) { returnList[i]=0;}
+
             if(!args[j].matches(".*.csv.*") || args[j].matches(".*Testresults.csv")) continue;
             System.out.println("--- " + args[j] + " ---");
             CsvParser parser = new CsvParser(settings);
@@ -350,22 +355,21 @@ public class Analyzer {
     private static Consumption getDataFromRow( HashMap<String, Pair<Integer, Integer>> columns,String[] row) {
         int wifiState = Utils.getMatch(columns, Utils.wifiState)!=null?  Integer.parseInt(row[Utils.getMatch(columns, Utils.wifiState).second]) : returnList[0];
               //  Integer.parseInt(row[Utils.getMatch(columns, Utils.wifiState).second]);
-        int mobileData = Integer.parseInt(row[Utils.getMatch(columns, Utils.mobileData).second]);
-        int screenState = Integer.parseInt(row[Utils.getMatch(columns, Utils.screenState).second]);
-        int batteryStatus = Integer.parseInt(row[Utils.getMatch(columns, Utils.batteryStatus).second]);
-        int wifiRSSI = Integer.parseInt(row[Utils.getMatch(columns, Utils.wifiRSSILevel).second]);
-        int memUsage = Integer.parseInt(row[Utils.getMatch(columns, Utils.memory).second]);
-        int bluetooth = Integer.parseInt(row[Utils.getMatch(columns, Utils.bluetoothState).second]);
-        int gpuLoad = Integer.parseInt(row[Utils.getMatch(columns, Utils.gpuLoad).second]);
-        int cpuLoadNormalized = Integer.parseInt(row[Utils.getMatch(columns, Utils.cpuLoadNormalized).second]);
-        int gps = Integer.parseInt(row[Utils.getMatch(columns, Utils.gpsSate).second]);
+        int mobileData = Utils.getMatch(columns, Utils.mobileData)!=null? (row[Utils.getMatch(columns, Utils.mobileData).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.mobileData).second])) : returnList[1]) : returnList[1];
+        int screenState = Utils.getMatch(columns, Utils.screenState)!=null?  (row[Utils.getMatch(columns, Utils.screenState).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.screenState).second])) : returnList[2]) : returnList[2];
+        int batteryStatus = Utils.getMatch(columns, Utils.batteryStatus)!=null?  (row[Utils.getMatch(columns, Utils.batteryStatus).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.batteryStatus).second])) : returnList[3]) : returnList[3];
+        int wifiRSSI = Utils.getMatch(columns, Utils.wifiRSSILevel)!=null?  (row[Utils.getMatch(columns, Utils.wifiRSSILevel).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.wifiRSSILevel).second])) : returnList[4]) : returnList[4];
+        int memUsage = Utils.getMatch(columns, Utils.memory)!=null?  (row[Utils.getMatch(columns, Utils.memory).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.memory).second])) : returnList[5]) : returnList[5];
+        int bluetooth = Utils.getMatch(columns, Utils.bluetoothState)!=null?  (row[Utils.getMatch(columns, Utils.bluetoothState).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.bluetoothState).second])) : returnList[6]) : returnList[6];
+        int gpuLoad = Utils.getMatch(columns, Utils.gpuLoad)!=null? (row[Utils.getMatch(columns, Utils.gpuLoad).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.gpuLoad).second])) : returnList[7]) : returnList[7];
+        int cpuLoadNormalized = Utils.getMatch(columns, Utils.wifiRSSILevel)!=null?  (row[Utils.getMatch(columns, Utils.wifiRSSILevel).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.wifiRSSILevel).second])) : returnList[8]) : returnList[8];
+        int gps = Utils.getMatch(columns, Utils.gpsSate)!=null? (row[Utils.getMatch(columns, Utils.gpsSate).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.gpsSate).second])) : returnList[9]) : returnList[9];
         return new Consumption(memUsage, mobileData, wifiState, wifiRSSI, screenState, 0, 0, batteryStatus, bluetooth, gpuLoad, gps, cpuLoadNormalized);
 
     }
 
     public static void showData(List<Consumption> list){
 
-        for (int i = 0; i < 10; i++) { returnList[i]=0;}
         for (Consumption c :list) {
             returnList[0] = (returnList[0]>1? true :false) || (c.getWifiState()>1? true :false)? 1 :0;
             returnList[1] = returnList[1] > c.getMobileDataState()? returnList[1] : c.getMobileDataState();

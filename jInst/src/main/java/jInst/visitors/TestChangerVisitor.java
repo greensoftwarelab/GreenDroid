@@ -213,12 +213,9 @@ public class TestChangerVisitor extends VoidVisitorAdapter{
             }
 
             else {
-                //is a Test Case / Class test
-                //StaticEstimator.startEstimator("<org.sufficientlysecure.keychain.helper>PgpMain", "encryptAndSign");
                 if (n.getName().equals("setUp")) {
                     cDef.setBefore(true);
                     cDef.setSetUp(true);
-                    //... <- add the call 'startEstimator();' at the begining
                     MethodCallExpr mcS = new MethodCallExpr();
                     MethodCallExpr getContext = new MethodCallExpr();
                     

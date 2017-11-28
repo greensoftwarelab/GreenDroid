@@ -410,7 +410,7 @@ public class InstrumentHelper {
         CompilationUnit cu;
         try {
             // parse the file
-            cu = JavaParser.parse(in);
+            cu = JavaParser.parse(in,null, false);
         } finally {
             in.close();
         }
@@ -526,7 +526,7 @@ public class InstrumentHelper {
         boolean isJunitTest4 = false;
         try {
             // parse the file
-            cu = JavaParser.parse(in);
+            cu = JavaParser.parse(in,null, false);
         } finally {
             in.close();
         }
@@ -635,6 +635,8 @@ public class InstrumentHelper {
                     body.add(new ExpressionStmt(mcS));
                     newSetUp.getBody().setStmts(body);
 
+
+
                     x.getMembers().add(0, newSetUp);
                     imp2 = new ImportDeclaration(ASTHelper.createNameExpr("org.junit.BeforeClass"), false, false);
 
@@ -699,14 +701,6 @@ public class InstrumentHelper {
                         anot.add(new MarkerAnnotationExpr(new NameExpr("Before")));
                         newSetUp.setAnnotations(anot);
                         newSetUp.setBody(new BlockStmt());
-//                        MethodCallExpr mcS = new MethodCallExpr();
-//
-//                        if(traceMethods){
-//                            mcS.setName("TrepnLib.startProfilingTest");
-//                        }
-//                        else {
-//                            mcS.setName("TrepnLib.startProfiling");
-//                        }
 
                         MethodCallExpr getContext = new MethodCallExpr();
                         if (!cDef.isInstrumented()) {
@@ -802,15 +796,6 @@ public class InstrumentHelper {
                         //add the setUp method
                         MethodCallExpr superSetUp = new MethodCallExpr();
                         superSetUp.setName("super.setUp");
-
-//                        MethodCallExpr mcS = new MethodCallExpr();
-//                        if(traceMethods){
-//                            mcS.setName("TrepnLib.startProfilingTest");
-//                        }
-//                        else {
-//                            mcS.setName("TrepnLib.startProfiling");
-//                        }
-
                         MethodCallExpr getContext = new MethodCallExpr();
                         if (!cDef.isInstrumented()) {
                             getContext.setName("this.getContext");
@@ -827,8 +812,18 @@ public class InstrumentHelper {
                         ArrayList<Statement> body = new ArrayList<Statement>();
                         body.add(new ExpressionStmt(mcS));
                         body.add(new ExpressionStmt(superSetUp));
-                        newSetUp.getBody().setStmts(body);
                         // -> invocacao das permissoes pode ser aqui???
+                        if(InstrumentHelper.compiledSdkVersion>22) {
+                            ExpressionStmt exp = InstrumentHelper.getReadPermissions();
+                            ExpressionStmt exp1 = InstrumentHelper.getWritePermissions();
+                            ExpressionStmt exp2 = InstrumentHelper.getTrepnlibReadPermissions();
+                            ExpressionStmt exp3 = InstrumentHelper.getTrepnlibWritePermissions();
+                            body.add(0,exp);
+                            body.add(0,exp1);
+                            body.add(0,exp2);
+                            body.add(0,exp3);
+                        }
+                        newSetUp.getBody().setStmts(body);
                         x.getMembers().add(0, newSetUp);
 
                     }
@@ -958,7 +953,7 @@ public class InstrumentHelper {
         try {
             // parse the file
              in = new FileInputStream(dest);
-            cu = JavaParser.parse(in);
+            cu = JavaParser.parse(in,null, false);
             PackageDeclaration p = new PackageDeclaration();
             p.setName(ASTHelper.createNameExpr(pack));
             cu.setPackage(p);
