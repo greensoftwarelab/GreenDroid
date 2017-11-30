@@ -20,12 +20,8 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.VoidType;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InterruptedIOException;
+
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -52,6 +48,7 @@ public class InstrumentHelper {
 //    public static String runnerClass = "com.zutubi.android.junitreport.JUnitReportTestRunner";
     protected static ArrayList<String> instrumented = new ArrayList<String>();
     protected static ArrayList<String> testCase = new ArrayList<String>();
+    public static final String testClasses = "testClasses.txt";
     protected static String notTestable = "TestCase";
     public static Integer compiledSdkVersion=0;
     protected String tName;
@@ -416,19 +413,15 @@ public class InstrumentHelper {
         }
 
         String pack = cu.getPackage().getName().toString();
+        if(cu.getTypes()==null){
+            return cu.toString();
+        }
         String cl = cu.getTypes().get(0).getName();
         ClassDefs cDef = new ClassDefs();
         cDef.setName(cl); cDef.setPack(pack);
 
-//        if (!traceMethods)
-//            setupAppClass(pack,file);
-
-
-         //ADD THE IMPORT OF THE STATIC ESTIMATOR
-        //jRAPL
-        //ImportDeclaration imp1 = new ImportDeclaration(ASTHelper.createNameExpr("jRAPL.EnergyCheckUtils"), false, false);
-        //ImportDeclaration imp2 = new ImportDeclaration(ASTHelper.createNameExpr("com.greendroid.StaticEstimator"), false, false);
-//        ImportDeclaration imp2 = new ImportDeclaration(ASTHelper.createNameExpr(" com.greenlab.trepnlib.TrepnLib"), false, false);
+     //ImportDeclaration imp2 = new ImportDeclaration(ASTHelper.createNameExpr("com.greendroid.StaticEstimator"), false, false);
+        // ImportDeclaration imp2 = new ImportDeclaration(ASTHelper.createNameExpr(" com.greenlab.trepnlib.TrepnLib"), false, false);
         ImportDeclaration imp2 = profiler.getLibrary();
         ImportDeclaration imp3 = null;
 //        if (!traceMethods)
@@ -516,6 +509,17 @@ public class InstrumentHelper {
 
 
     protected String transformTest(String file) throws Exception {
+        // append to file containing all classeswith tests
+        try(FileWriter fw = new FileWriter(testClasses, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter out = new PrintWriter(bw))
+        {
+            out.println(file);
+        } catch (IOException e) {
+            System.out.println("[jInst] Error appending to testClasses.txt file");
+        }
+
+
         // creates an input stream for the file to be parsed
         FileInputStream in = new FileInputStream(file);
         ClassDefs cDef = new ClassDefs();
@@ -973,7 +977,7 @@ public class InstrumentHelper {
 
         while ((s = b.readLine()) != null) {
             String s1 = new String(s);
-            if(s.matches(".* class .+ extends (ActivityUnitTestCase|ActivityIntrumentationTestCase2|ActivityTestCase|ProviderTestCase|SingleLaunchActivityTestCase|SyncBaseInstrumentation|ActivityInstrumentationTestCase|ActivityInstrumentationTestCase2|AndroidTestCase|ApplicationTestCase|LoaderTestCase|ProviderTestCase2|ServiceTestCasefail).*")){
+            if(s.matches(".* class .+ extends (TestCase|ActivityUnitTestCase|ActivityIntrumentationTestCase2|ActivityTestCase|ProviderTestCase|SingleLaunchActivityTestCase|SyncBaseInstrumentation|ActivityInstrumentationTestCase|ActivityInstrumentationTestCase2|AndroidTestCase|ApplicationTestCase|LoaderTestCase|ProviderTestCase2|ServiceTestCasefail).*")){
                 addTestType(src.getAbsolutePath(),"Other");
                 res = true;
 

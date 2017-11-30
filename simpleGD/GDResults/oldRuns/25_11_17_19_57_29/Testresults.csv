@@ -1,0 +1,4 @@
+Test Number,Consumption (J),Power (W),Time (ms),Method coverage (%),Wifi?,Mobile Data?,Screen state,Battery Charging?,Avg RSSI Level,Avg Mem Usage,Bluetooth?,Avg gpu Load,Avg CPU Load,GPS?
+Total method coverage,0,0,0,0.0
+,,,,
+Class,Method,Times invoked

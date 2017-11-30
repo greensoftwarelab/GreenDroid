@@ -14,7 +14,7 @@ fi
 OLDIFS=$IFS
 tName="_TRANSFORMED_"
 deviceDir=""
-prefix="" # "latest" or ""
+prefix="latest" # "latest" or ""
 deviceExternal=""
 logDir="logs"
 localDir="$HOME/GDResults"
@@ -28,7 +28,7 @@ profileHardware="YES" # YES or ""
 flagStatus="on"
 
 #DIR=$HOME/tests/wasSuccess/gradleProjects/*
-DIR=$HOME/tests/simpleApps/*
+DIR=$HOME/tests/actual/*
 #DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
 
 
@@ -39,6 +39,8 @@ DIR=$HOME/tests/simpleApps/*
 #	TEST_DIR=$DIR
 #qfi
 
+echo ""
+i_echo "### GRENDROID PROFILING TOOL ###     "
 
 if [ ! -d $TEST_DIR ]; then
 	e_echo "$TAG Error: Folder $TEST_DIR does not exist"
@@ -53,31 +55,33 @@ fi
 adb kill-server
 DEVICE=$(adb devices -l | egrep "device .+ product:")
 if [ -z "$DEVICE" ]; then
-	e_echo "$TAG Error: Could not find any attached device. Check and try again..."
+	e_echo "$TAG Error: 📵 Could not find any attached device. Check and try again..."
 else
 	deviceExternal=$(adb shell 'echo -n $EXTERNAL_STORAGE')
 	if [ -z "$deviceExternal" ]; then
 		e_echo "$TAG Could not determine the device's external storage. Check and try again..."
 		exit 1
 	fi
-
+	i_echo "$TAG 📲  Attached device recognized"
+	#TODO include mode to choose the conected device and echo the device name
 	#Start Trepn
 	adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
 	#put Trepn preferences on device
 	(adb push trepnPreferences/ $deviceDir/saved_preferences) > /dev/null  2>&1 #new
 
 	deviceDir="$deviceExternal/trepn"  #GreenDroid
-	echo $deviceDir > deviceDir.txt
-	adb shell mkdir $deviceDir
+	(echo $deviceDir > deviceDir.txt) 
+	(adb shell mkdir $deviceDir) > /dev/null  2>&1
 	adb shell rm -rf $deviceDir/Measures/*  ##RR
 	adb shell rm -rf $deviceDir/Traces/*  ##RR
 
 	if [[ -n "$flagStatus" ]]; then
-		mkdir debugBuild
+		(mkdir debugBuild ) > /dev/null  2>&1 #new
+
 	fi
 	
 	#for each app in $DIR folder...
-	echo $DIR
+	w_echo "$TAG searching for Android Projects in -> $DIR"
 	for f in $DIR/
 		do
 		#clean previous list of all methods and device results
@@ -98,13 +102,18 @@ else
 		if [ "$ID" != "success" ] && [ "$ID" != "failed" ] && [ "$ID" != "unknown" ]; then
 			projLocalDir=$localDir/$ID
 			rm -rf $projLocalDir/all/*
-
+			if [[ $trace == "-TraceMethods" ]]; then
+				w_echo " Test Oriented Profiling:    ✔"
+			else 
+				w_echo "Method Oriented profiling:    ✔"
+			fi 
 			if [[ $profileHardware == "YES" ]]; then
-				w_echo "Profiling hardware ✔"
-				(adb shell am broadcast -a com.quicinc.trepn.load_preferences –e com.quicinc.trepn.load_preferences_file "$deviceDir/saved_preferences/trepnPreferences/All.pref") > dev/null 2>&1
+				w_echo "Profiling hardware: ✔"
+				(adb shell am broadcast -a com.quicinc.trepn.load_preferences –e com.quicinc.trepn.load_preferences_file "$deviceDir/saved_preferences/trepnPreferences/All.pref") > /dev/null 2>&1
 			else 
 				(adb shell am broadcast -a com.quicinc.trepn.load_preferences –e com.quicinc.trepn.load_preferences_file "$deviceDir/saved_preferences/trepnPreferences/Pref1.pref") > /dev/null 2>&1
 			fi
+
 			
 			#first, check if this is a gradle or a maven project
 			#GRADLE=$(find ${f}/latest -maxdepth 1 -name "build.gradle")
@@ -135,14 +144,15 @@ else
 
 						#instrument
 						#echo "folder of app to instrument ----> $FOLDER"
-						echo "$FOLDER$tName" > lastTranformedApp.txt
+						echo "$FOLDER/$tName" > lastTranformedApp.txt
+						#echo "java -jar jar -gradle _TRANSFORMED_ X $FOLDER $MANIF_S $MANIF_T $trace"
 						java -jar $GD_INSTRUMENT "-gradle" $tName "X" $FOLDER $MANIF_S $MANIF_T $trace ##RR
 						
 						#copy the trace/measure lib
 						#folds=($(find $FOLDER/$tName/ -type d | egrep -v "\/res|\/gen|\/build|\/.git|\/src|\/.gradle"))
 						for D in `find $FOLDER/$tName/ -type d | egrep -v "\/res|\/gen|\/build|\/.git|\/src|\/.gradle"`; do  ##RR
 						    if [ -d "${D}" ]; then  ##RR
-						    	mkdir -p ${D}/libs  ##RR
+						    	gmkdir -p ${D}/libs  ##RR
 						     	cp libsAdded/$treprefix$trepnLib ${D}/libs  ##RR
 						    fi  ##RR
 						done  ##RR
@@ -159,12 +169,14 @@ else
 								cp $logDir/buildStatus.log debugBuild/$ID.log
 							fi
 							continue
+						else 
+							i_echo "BUILD SUCCESSFULL"
 						fi
 						
 						#create results support folder
 						echo "$TAG Creating support folder..."
-						mkdir -p $projLocalDir
-						mkdir -p $projLocalDir/all
+						gmkdir -p $projLocalDir
+						gmkdir -p $projLocalDir/all
 						cat ./allMethods.txt >> $projLocalDir/all/allMethods.txt
 		
 						#install on device
@@ -208,6 +220,7 @@ else
 				MP=($(python manifestParser.py ${MANIFESTS[*]}))
 				for R in ${MP[@]}; do
 					RESULT=($(echo "$R" | tr ':' '\n'))
+					echo "result -> $RESULT"
 					SOURCE=${RESULT[0]}
 					TESTS=${RESULT[1]}
 					PACKAGE=${RESULT[2]}
@@ -225,8 +238,8 @@ else
 						fi
 
 						#copy the test runner
-						mkdir -p $SOURCE/$tName/libs
-						mkdir -p $SOURCE/$tName/tests/libs
+						gmkdir -p $SOURCE/$tName/libs
+						gmkdir -p $SOURCE/$tName/tests/libs
 						cp libsAdded/$trepnJar $SOURCE/$tName/libs
 						cp libsAdded/$trepnJar $SOURCE/$tName/tests/libs
 	
@@ -259,8 +272,8 @@ else
 	
 						#create results support folder
 						echo "$TAG Creating support folder..."
-						mkdir -p $projLocalDir
-						mkdir -p $projLocalDir/all
+						gmkdir -p $projLocalDir
+						gmkdir -p $projLocalDir/all
 						cat ./allMethods.txt >> $projLocalDir/all/allMethods.txt
 	
 						#run tests

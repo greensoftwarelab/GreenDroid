@@ -10,6 +10,7 @@ else
 	SED_COMMAND="sed" #linux	
 fi
 
+logDir="logs"
 OLDIFS=$IFS
 IFS=$(echo -en "\n\b")
 ID=$1
@@ -32,7 +33,7 @@ TARGET_VERSIONS=($(ls $ANDROID_HOME/platforms/))
 
 i_echo "$TAG GRADLE PROJECT -> $ID "
 NEW_RUNNER_JAR=libs/android-junit-report-1.5.8.jar # unused
-#NEW_RUNNER="android.test.InstrumentationTestRunner" # "android.support.test.runner.AndroidJUnitRunner" # 
+OLD_RUNNER="android.test.InstrumentationTestRunner" # "android.support.test.runner.AndroidJUnitRunner" # 
 NEW_RUNNER="android.support.test.runner.AndroidJUnitRunner"
 RUNNER_VERSION="0.5"      # ${ANDROID_HOME}/extras/android/m2repository/com/android/support/test/runner
 RUNNER_RULES="0.5"        # ${ANDROID_HOME}/extras/android/m2repository/com/android/support/test/rules
@@ -222,17 +223,34 @@ for x in ${BUILDS[@]}; do
 		ANDROID_LINE=($(egrep -n "defaultConfig( ?){$" $x | cut -f1 -d:))
 		if [ -n "${ANDROID_LINE[0]}" ]; then
 			((ANDROID_LINE[0]++))
-			HAS_RUNNER=$(egrep -n "testInstrumentationRunner " $x)
-			if [[ -n "$HAS_RUNNER" ]]; then
-				$SED_COMMAND -ri.bak "s#([ \t]*)testInstrumentationRunner .+#\1testInstrumentationRunner \"$NEW_RUNNER\"#g" $x
-				echo "$HAS_RUNNER" > actualrunner.txt
+			HAS_RUNNER=$(grep  "testInstrumentationRunner" $x)
+			vv=$(grep "compileSdkVersion" $x)
+			IFS=" " read -ra arr <<< "$vv"
+			csv=${arr[*]: -1}
+			IFS=$(echo -en "\n\b")
+			if ! [[ -z "${HAS_RUNNER// }" ]] && [ -n $vv ]; then
+				#echo "ja tem runner file $x xx$HAS_RUNNER xx $vv"
+				if [ "$csv" -ge "22" ] ; then
+					$SED_COMMAND -ri.bak "s#([ \t]*)testInstrumentationRunner .+#\1testInstrumentationRunner \"$NEW_RUNNER\"#g" $x
+					(echo $NEW_RUNNER) > actualrunner.txt
+				else
+					$SED_COMMAND -ri.bak "s#([ \t]*)testInstrumentationRunner .+#\1testInstrumentationRunner \"$OLD_RUNNER\"#g" $x
+					(echo $OLD_RUNNER) > actualrunner.txt
+				fi
+				
 			else
-				$SED_COMMAND -i.bak ""$ANDROID_LINE"i testInstrumentationRunner \"$NEW_RUNNER\"" $x
+				if [ "$csv" -ge "22" ] ; then
+					$SED_COMMAND -i.bak ""$ANDROID_LINE"i testInstrumentationRunner \"$NEW_RUNNER\"" $x
+					(echo $NEW_RUNNER) > actualrunner.txt
+				else
+					$SED_COMMAND -i.bak ""$ANDROID_LINE"i testInstrumentationRunner \"$OLD_RUNNER\"" $x
+					(echo $OLD_RUNNER) > actualrunner.txt
+				fi
 			fi
 		fi
 		#Add TrepnLib dependency to build.gradle
-		HAS_DEPEND=$(egrep "dependencies( ?){" $x)
-		AUX=$(egrep "buildscript *\{" $x)
+		HAS_DEPEND=$(egrep -n "dependencies( ?){" $x)
+		AUX=$(egrep -n "buildscript *\{" $x)
 		AUX_BS=$(egrep -n "buildscript *\{" $x | cut -f1 -d: | tail -1)
 		if [ -n "$HAS_DEPEND" ]; then
 			DEPEND_LINE=$(egrep -n "dependencies( ?){" $x | cut -f1 -d: | tail -1)
@@ -243,7 +261,6 @@ for x in ${BUILDS[@]}; do
 					DEPEND_LINE_2=$(egrep -n "dependencies( ?){" $x | cut -f1 -d: | head -1)
 				fi
 			fi
-
 			if [[ "$DEPEND_LINE" == "$DEPEND_LINE_2" ]]; then
 				DEPEND_LINE=$(wc -l $x | cut -f1 -d\ )
 				echo "" >> $x
@@ -306,9 +323,10 @@ for x in ${BUILDS[@]}; do
 			DEPEND_LINE=$(wc -l $x | cut -f1 -d\ )
 			echo "" >> $x
 			((DEPEND_LINE++))
-			$SED_COMMAND -i.bak ""$DEPEND_LINE"i dependencies {" $x
-			((DEPEND_LINE++))
-			$SED_COMMAND -i.bak ""$DEPEND_LINE"i compile (name:'TrepnLibrary-release', ext:'aar')" $x
+			$SED_COMMAND  -i -e "\$a\ dependencies\ {compile\ (name:'TrepnLibrary-release',\ ext:'aar')}" $x
+			#$SED_COMMAND -i.bak ""$DEPEND_LINE"i dependencies {" $x
+			#((DEPEND_LINE++))
+			#$SED_COMMAND -i.bak ""$DEPEND_LINE"i compile (name:'TrepnLibrary-release', ext:'aar')" $x
 			((DEPEND_LINE++))
 			###
 			# For when we decide to use the new runner, this will be needed
@@ -324,7 +342,7 @@ for x in ${BUILDS[@]}; do
   			# $SED_COMMAND -i.bak ""$DEPEND_LINE"i androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:$RUNNER_AUTOMATOR'" $x
   			# ((DEPEND_LINE++))
   			###
-			$SED_COMMAND -i.bak ""$DEPEND_LINE"i }" $x
+			#$SED_COMMAND -i.bak ""$DEPEND_LINE"i }" $x
 		fi
 	fi
 done
@@ -335,34 +353,31 @@ if [ -n "$LOCAL_P" ]; then
 	LOCAL_P=${LOCAL_P// /\\ }
 	$SED_COMMAND -ri.bak "s|sdk.dir.+|#&|g" $LOCAL_P
 fi
-
 #change gradle-wrapper.properties
 WRAPPER=$(find $FOLDER -name "gradle-wrapper.properties")
 if [ -n "$WRAPPER" ]; then
 	WRAPPER=${WRAPPER// /\\ }
 	$SED_COMMAND -ri.bak "s#distributionUrl.+#distributionUrl=http\://services.gradle.org/distributions/gradle-$GRADLE_VERSION-all.zip#g" $WRAPPER
-fi
-
-gradle -b $GRADLE clean build assembleAndroidTest &> buildStatus.log
+fi 
+gradle -b $GRADLE clean build assembleAndroidTest &> $logDir/buildStatus.log
 
 ## The 'RR' way:
 ## chmod +x $FOLDER/gradlew
 ## echo  "$TAG Building and running tests....."
 ## cd $FOLDER ; ($FOLDER/gradlew connectedAndroidTest &> buildStatus.log)
 
-STATUS_NOK=$(grep "BUILD FAILED" buildStatus.log)
-STATUS_OK=$(grep "BUILD SUCCESS" buildStatus.log)
-
+STATUS_NOK=$(grep "BUILD FAILED" $logDir/buildStatus.log)
+STATUS_OK=$(grep "BUILD SUCCESS" $logDir/buildStatus.log)
 if [ -n "$STATUS_NOK" ]; then
 	try="6"
-	libsError=$(grep "No signature of method: java.util.ArrayList.call() is applicable for argument types: (java.lang.String) values: \[libs\]" buildStatus.log)
-	minSDKerror=$(egrep "uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in" buildStatus.log)
-	buildSDKerror=$(egrep "The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)" buildStatus.log)
+	libsError=$(grep "No signature of method: java.util.ArrayList.call() is applicable for argument types: (java.lang.String) values: \[libs\]" $logDir/buildStatus.log)
+	minSDKerror=$(egrep "uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in" $logDir/buildStatus.log)
+	buildSDKerror=$(egrep "The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)" $logDir/buildStatus.log)
 	while [[ (-n "$minSDKerror") || (-n "$buildSDKerror") || (-n "$libsError") ]]; do
 		((try--))
 		w_echo "$TAG Common Error. Trying again..."
-		unmatchVers=($($SED_COMMAND -nr "s/(.+)uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in (.+)$/\2\n\3/p" buildStatus.log))
-		unmatchBuilds=($($SED_COMMAND -nr "s/(.+)The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)$/\2\n\4/p" buildStatus.log))
+		unmatchVers=($($SED_COMMAND -nr "s/(.+)uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in (.+)$/\2\n\3/p" $logDir/buildStatus.log))
+		unmatchBuilds=($($SED_COMMAND -nr "s/(.+)The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)$/\2\n\4/p" $logDir/buildStatus.log))
 		oldV=${unmatchVers[0]}
 		newV=${unmatchVers[1]}
 		oldBuild=${unmatchBuilds[0]}
@@ -401,14 +416,13 @@ if [ -n "$STATUS_NOK" ]; then
 			fi
 			
 		done
+		gradle -b $GRADLE clean build assembleAndroidTest &> $logDir/buildStatus.log
 
-		gradle -b $GRADLE clean build assembleAndroidTest &> buildStatus.log
-
-		libsError=$(egrep "No signature of method: java.util.ArrayList.call() is applicable for argument types: (java.lang.String) values: [libs]" buildStatus.log)
-		minSDKerror=$(egrep "uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in" buildStatus.log)
-		buildSDKerror=$(egrep "The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)" buildStatus.log)
-		STATUS_NOK=$(grep "BUILD FAILED" buildStatus.log)
-		STATUS_OK=$(grep "BUILD SUCCESS" buildStatus.log)
+		libsError=$(egrep "No signature of method: java.util.ArrayList.call() is applicable for argument types: (java.lang.String) values: [libs]" $logDir/buildStatus.log)
+		minSDKerror=$(egrep "uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in" $logDir/buildStatus.log)
+		buildSDKerror=$(egrep "The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)" $logDir/buildStatus.log)
+		STATUS_NOK=$(grep "BUILD FAILED" $logDir/buildStatus.log)
+		STATUS_OK=$(grep "BUILD SUCCESS" $logDir/buildStatus.log)
 		
 		if [ -n "$STATUS_OK" ]; then
 			#the build was successful

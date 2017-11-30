@@ -29,7 +29,7 @@ fi
 
 
 
-i_echo "$TAG Running"
+#i_echo "$TAG Running"
 
 if [ "$projType" == "-gradle" ]; then
 	FOLDER=$6
@@ -38,17 +38,19 @@ if [ "$projType" == "-gradle" ]; then
 	cd $FOLDER ; ($FOLDER/gradlew connectedAndroidTest &> buildStatus.log)
 else
 
-	echo "$TAG Cleaning previous files"  ##RR
+	w_echo "$TAG Cleaning files of previous runs"  ##RR
 	adb shell rm -rf "$deviceDir/allMethods.txt"  ##RR
 	adb shell rm -rf "$deviceDir/Traces/*"  ##RR
 	adb shell rm -rf "$deviceDir/TracedMethods.txt"  ##RR
 	adb shell rm -rf "$deviceDir/Measures/*"  ##RR
 
 	rm -rf $localDir/*.csv
-	
-	echo "$TAG Running the tests (Measuring)"
+	e_echo "running with "
+
+	w_echo "$TAG Running the tests (Measuring)"
 	adb shell "echo 1 > $deviceDir/GDflag"
-	$Timeout_COMMAND -s 9 $TIMEOUT adb shell am instrument -w $testPack/$runner &> runStatus.log
+	echo "$Timeout_COMMAND -s 9 $TIMEOUT adb shell am instrument -w $testPack/$runner &> runStatus.log"
+	($Timeout_COMMAND -s 9 $TIMEOUT adb shell am instrument -w $testPack/$runner) &> runStatus.log
 
 	missingInstrumentation=$(grep "Unable to find instrumentation info for" runStatus.log)
 	flagInst="0"
@@ -56,10 +58,13 @@ else
 		# Something went wrong during instalation and run. 
 		# Let's try running all existing instrumentations (should not be bigger than one)
 		flagInst="1"
+		adb shell "pm list instrumentation"
 		allInstrumentations=($(adb shell pm list instrumentation | cut -f2 -d: | cut -f1 -d\ ))
+		echo "instrumenting"
+		echo "$allInstrumentations"
 		if [[ "${#allInstrumentations[@]}" == "1" ]]; then
 			for i in ${allInstrumentations[@]}; do
-				$Timeout_COMMAND -s 9 $TIMEOUT adb shell am instrument -w $i &> runStatus.log
+				($Timeout_COMMAND -s 9 $TIMEOUT adb shell am instrument -w $i) &> runStatus.log
 				RET=$(echo $?)
 				if [[ "$RET" != 0 ]]; then
 					./forceUninstall.sh
@@ -76,14 +81,14 @@ else
 	adb shell am force-stop $testPack
 	adb shell am start -a android.intent.action.MAIN -c android.intent.category.HOME > /dev/null 2>&1
 	
-	echo "$TAG Running the tests (Tracing)"
+	w_echo "$TAG Running the tests (Tracing)"
 	adb shell "echo -1 > $deviceDir/GDflag"
 	
 	if [[ "$flagInst" == 1 ]]; then
 		allInstrumentations=($(adb shell pm list instrumentation | cut -f2 -d: | cut -f1 -d\ ))
 		if [[ "${#allInstrumentations[@]}" == "1" ]]; then
 			for i in ${allInstrumentations[@]}; do
-				timeout -s 9 $TIMEOUT adb shell am instrument -w $i &> runStatus.log
+				$Timeout_COMMAND -s 9 $TIMEOUT adb shell am instrument -w $i &> runStatus.log
 				RET=$(echo $?)
 				if [[ "$RET" != 0 ]]; then
 					./forceUninstall.sh
@@ -109,7 +114,7 @@ Ntraces=$(adb shell ls "$deviceDir/Traces/" | wc -l)
 echo "Nº measures: $Nmeasures"
 echo "Nº traces:   $Ntraces"
 if [ $Nmeasures -le "0" ] || [ $Ntraces -le "0" ] || [ $Nmeasures -ne $Ntraces ] ; then 
-	e_echo "[GD ERROR] Something went wrong. Try restart trepn (and delete .db and state files in trepn folder) or check GDflag"
+	e_echo "[GD ERROR] Something went wrong. Try run trepnFix.sh and try again"
 fi
 echo $localDir
 adb shell ls "$deviceDir/Measures/" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/Measures/{} $localDir

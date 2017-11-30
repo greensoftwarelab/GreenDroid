@@ -60,7 +60,7 @@ public class JInst {
                     String manifestSource = args[4];
                     String manifestTests = args[5];
                     boolean tracemethods = args[6].equals("-TraceMethods") ? true :false;
-                    if (tracemethods) System.out.println(" Tracing tests......");
+
                     try {
                         InstrumentGradleHelper helper = new InstrumentGradleHelper(tName, workspace, project, "", manifestSource, manifestTests, tracemethods);
 //                           if (!tracemethods) {

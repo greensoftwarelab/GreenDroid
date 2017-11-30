@@ -1,0 +1,3 @@
+change permissions of .sh file to make it executable (chmod +x file.sh)
+execute ./greendroidSimple.sh <pathToProj>
+check results in GDResults folder

@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="jInst">
+    <output-path>$PROJECT_DIR$/../jars</output-path>
+    <root id="archive" name="jInst.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="jInst" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/javaparser/javaparser-core/2.0.0/javaparser-core-2.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/jaxen/jaxen/1.2.0-atlassian-2/jaxen-1.2.0-atlassian-2.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

@@ -25,7 +25,7 @@ if [ "$projtype" == "SDK" ]; then
 	testAPK=($(find $pathTests -name "*-debug.apk"))
 elif [ "$projtype" == "GRADLE" ]; then
 	appAPK=($(find $pathProject -name "*-debug.apk"))
-	testAPK=($(find $pathProject -name "*-debug-androidTest*.apk"))
+	testAPK=($(find $pathProject -name "*debug-androidTest*.apk"))
 fi
 
 OK="0"
@@ -41,8 +41,11 @@ if [ "${#appAPK[@]}" != 1 ] || [ "${#testAPK[@]}" != 1 ]; then
 
 	elif [ "${#appAPK[@]}" == 1 ] && [ "${#testAPK[@]}" > 1 ]; then
 		pAux=$(echo "${appAPK[0]}" | $SED_COMMAND -r "s#\/[a-zA-Z0-9-]+-debug.+.apk#/#g")
-		testAPK=($(find $pAux -name "*-debug-androidTest*.apk"))
-		if [ "${#testAPK[@]}" == 1 ]; then
+		ppAux=$(dirname $pAux)
+		echo "folder is -> $ppAux"
+		bqq=($(find $ppAux -name "*debug-androidTest*.apk"))
+		echo "testApk -> $bqq"
+		if [ "${#bqq[@]}" == 1 ]; then
 			OK="1"
 		fi
 	else
@@ -56,11 +59,14 @@ fi
 
 if [[ "$OK" != "1" ]]; then
 	e_echo "$TAG Error: Unexpected number of .apk files found."
-	e_echo "$TAG Expected: 1 App .apk, 1 Test .apk |  Found: ${#appAPK[@]} App .apk's, ${#testAPK[@]} Test .apk's"
-	e_echo "[ERROR] Aborting..."
+	e_echo "$TAG Expected: 1 App .apk, 1 Test .apk |  Finded : ${#appAPK[@]} App .apk's, ${#testAPK[@]} Test .apk's"
+	w_echo "[ERROR] Aborting..."
 	exit 1
 else
+	w_echo "$TAG Ready to install generated Apps -> Finded : ${#appAPK[@]} App .apk's, ${#testAPK[@]} Test .apk's"
+	w_echo "$TAG installing App .apk's"
 	adb install -r ${appAPK[0]}
+	w_echo "$TAG installing Test .apk's"
 	adb install -r ${testAPK[0]}
 
 fi
