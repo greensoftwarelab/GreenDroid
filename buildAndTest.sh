@@ -72,8 +72,12 @@ else
 	deviceDir="$deviceExternal/trepn"  #GreenDroid
 	(echo $deviceDir > deviceDir.txt) 
 	(adb shell mkdir $deviceDir) > /dev/null  2>&1
+	(adb shell mkdir $deviceDir/Traces) > /dev/null  2>&1
+	(adb shell mkdir $deviceDir/Measures) > /dev/null  2>&1
+	(adb shell mkdir $deviceDir/TracedTests) > /dev/null  2>&1
 	adb shell rm -rf $deviceDir/Measures/*  ##RR
 	adb shell rm -rf $deviceDir/Traces/*  ##RR
+	adb shell rm -rf $deviceDir/TracedTests/*  ##RR
 
 	if [[ -n "$flagStatus" ]]; then
 		(mkdir debugBuild ) > /dev/null  2>&1 #new
@@ -103,12 +107,12 @@ else
 			projLocalDir=$localDir/$ID
 			rm -rf $projLocalDir/all/*
 			if [[ $trace == "-TraceMethods" ]]; then
-				w_echo " Test Oriented Profiling:    ✔"
+				w_echo "	Test Oriented Profiling:      ✔"
 			else 
-				w_echo "Method Oriented profiling:    ✔"
+				w_echo "	Method Oriented profiling:    ✔"
 			fi 
 			if [[ $profileHardware == "YES" ]]; then
-				w_echo "Profiling hardware: ✔"
+				w_echo "	Profiling hardware:           ✔"
 				(adb shell am broadcast -a com.quicinc.trepn.load_preferences –e com.quicinc.trepn.load_preferences_file "$deviceDir/saved_preferences/trepnPreferences/All.pref") > /dev/null 2>&1
 			else 
 				(adb shell am broadcast -a com.quicinc.trepn.load_preferences –e com.quicinc.trepn.load_preferences_file "$deviceDir/saved_preferences/trepnPreferences/Pref1.pref") > /dev/null 2>&1
@@ -212,6 +216,7 @@ else
 						errorAnalyzer=$(cat $logDir/analyzer.log)
 						#TODO se der erro imprimir a vermelho e aconselhar usar o trepFix.sh
 						#break
+						./trepnFix.sh
 					done
 				fi
 			else
@@ -291,7 +296,9 @@ else
 							#continue
 						fi
 						#Run greendoid!
+						cat ./TracedTests.txt >> $projLocalDir/all/TracedTests.txt
 						java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv  ##RR
+						./trepnFix.sh
 						#break
 					else
 						e_echo "$TAG ERROR!"

@@ -45,7 +45,7 @@ else
 	adb shell rm -rf "$deviceDir/Measures/*"  ##RR
 
 	rm -rf $localDir/*.csv
-	e_echo "running with "
+	w_echo "$TAG using runner with $runner"
 
 	w_echo "$TAG Running the tests (Measuring)"
 	adb shell "echo 1 > $deviceDir/GDflag"
@@ -62,7 +62,7 @@ else
 		allInstrumentations=($(adb shell pm list instrumentation | cut -f2 -d: | cut -f1 -d\ ))
 		echo "instrumenting"
 		echo "$allInstrumentations"
-		if [[ "${#allInstrumentations[@]}" == "1" ]]; then
+		if [[ "${#allInstrumentations[@]}" -ge "1" ]]; then
 			for i in ${allInstrumentations[@]}; do
 				($Timeout_COMMAND -s 9 $TIMEOUT adb shell am instrument -w $i) &> runStatus.log
 				RET=$(echo $?)
@@ -120,7 +120,7 @@ echo $localDir
 adb shell ls "$deviceDir/Measures/" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/Measures/{} $localDir
 #adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
 adb shell ls "$deviceDir/Traces/" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.txt" | xargs -I{} adb pull $deviceDir/Traces/{} $localDir
-
+adb shell ls "$deviceDir/TracedTests/" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.txt" | xargs -I{} adb pull $deviceDir/TracedTests/{} $localDir
 # In case the missing instrumentation error occured, let's remove all apps with instrumentations now!
 #« if [[ "$flagInst" == 1 ]]; then
 #	instTests=($(adb shell pm list instrumentation | cut -f2 -d: | cut -f1 -d\ | cut -f1 -d/))

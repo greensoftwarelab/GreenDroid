@@ -16,7 +16,7 @@ public class TrepnTestOrientedProfiler implements TestOrientedProfiler {
     public static String startProfiling = "startProfilingTest";
     public static String stopProfiling = "stopProfilingTest";
     public static String markMethod = "traceMethod";
-
+    public static String markTest = "traceTest";
 
     public TrepnTestOrientedProfiler(){}
 
@@ -55,6 +55,15 @@ public class TrepnTestOrientedProfiler implements TestOrientedProfiler {
     public MethodCallExpr markMethod(MethodCallExpr context, String method) {
         MethodCallExpr mcB = new MethodCallExpr();
         mcB.setName( library +"." + markMethod);
+        Expression method1 = new StringLiteralExpr( method);
+        ASTHelper.addArgument(mcB, method1);
+        return  mcB;
+    }
+
+    @Override
+    public MethodCallExpr markTest(MethodCallExpr context, String method) {
+        MethodCallExpr mcB = new MethodCallExpr();
+        mcB.setName( library +"." + markTest);
         Expression method1 = new StringLiteralExpr( method);
         ASTHelper.addArgument(mcB, method1);
         return  mcB;

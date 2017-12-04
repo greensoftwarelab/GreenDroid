@@ -11,6 +11,7 @@ public interface TestOrientedProfiler extends Profiler { // abstract product
 //    MethodCallExpr startProfiler(MethodCallExpr context);
 //    MethodCallExpr stopProfiler(MethodCallExpr context);
     MethodCallExpr markMethod(MethodCallExpr context, String method);
+    MethodCallExpr markTest(MethodCallExpr context, String method);
 
 
 }

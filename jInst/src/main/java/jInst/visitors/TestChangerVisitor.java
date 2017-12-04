@@ -5,6 +5,7 @@
 package jInst.visitors;
 
 import com.github.javaparser.ASTHelper;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.ModifierSet;
 import com.github.javaparser.ast.expr.*;
@@ -28,12 +29,27 @@ public class TestChangerVisitor extends VoidVisitorAdapter{
 
 
     public static boolean traceMethod;
+
+    @Override
+    public void visit(ConstructorDeclaration n, Object arg){
+
+        ClassDefs cDef = (ClassDefs)arg;
+        Expression className = new StringLiteralExpr(cDef.getDescriptor());
+        Expression method = new StringLiteralExpr(n.getName());
+        if(n.getBlock() == null) n.setBlock(new BlockStmt());
+        List<Statement> x = n.getBlock().getStmts() != null ? n.getBlock().getStmts() : new LinkedList<Statement>();
+        String metodo = ((ClassDefs) arg).getPack() + "." + ((ClassDefs) arg).getName()+"<" +n.getName() + ">";
+        MethodCallExpr mce = ((TestOrientedProfiler) InstrumentHelper.getProfiler()).markTest(null,metodo);
+        x.add( new ExpressionStmt(mce));
+        n.getBlock().setStmts(x);
+
+
+    }
+
+
     @Override
     public void visit(MethodDeclaration n, Object arg) {
-        /** try catch
-        VoidType voidT = new VoidType();
-        if(!n.getType().equals(voidT)) return;
-        */
+
         ClassDefs cDef = (ClassDefs)arg;
         Expression className = new StringLiteralExpr(cDef.getDescriptor());
         Expression method = new StringLiteralExpr(n.getName());
@@ -282,15 +298,12 @@ public class TestChangerVisitor extends VoidVisitorAdapter{
                     n.getBody().setStmts(x);
                 }
 
-                else if(n.getType().toString().equals("void") && n.getName().startsWith("test") && n.getParameters() == null){
-                    //System.out.println(n.getName());
-                    //StaticEstimator.setMethod();
-                    /*
-                    MethodCallExpr met = new MethodCallExpr();
-                    met.setName("StaticEstimator.setTest");
-                    ASTHelper.addArgument(met, new StringLiteralExpr(n.getName()));
-                    x.add(0,new ExpressionStmt(met));
-                    */
+                else {
+                    //is normal test
+                    String metodo = ((ClassDefs) arg).getPack() + "." + ((ClassDefs) arg).getName()+"<" +n.getName() + ">";
+                    MethodCallExpr mce = ((TestOrientedProfiler) InstrumentHelper.getProfiler()).markTest(null,metodo);
+                    x.add(0, new ExpressionStmt(mce));
+                    n.getBody().setStmts(x);
                 }
             }
         }

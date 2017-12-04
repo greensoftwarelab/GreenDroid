@@ -594,7 +594,7 @@ public class InstrumentHelper {
         if(isTestable){
             TestChangerVisitor t = new TestChangerVisitor();
             t.traceMethod = this.traceMethods;
-            t.visit(cu, cDef );
+            t.visit(cu, ((Object)cDef) );
 
             if(cDef.isJunit4suite()){
                 if (!cDef.isBeforeClass()) {

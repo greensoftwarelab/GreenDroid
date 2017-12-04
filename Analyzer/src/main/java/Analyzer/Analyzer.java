@@ -5,10 +5,7 @@ import com.univocity.parsers.csv.CsvParserSettings;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -20,8 +17,33 @@ public class Analyzer {
     public  static String resultDirPath = "results/" ;
     public static Integer [] returnList = new Integer[10];
     public static String allMethodsDir = "";
-
+    public static List<String> alltests= new ArrayList<>();
     public static HashSet<String> allmethods= new HashSet<>();
+
+
+    private static List<String> loadTests(String allMethods) throws Exception {
+        alltests = new ArrayList<String>();
+
+        Path path = Paths.get(allMethods + "tracedTests.txt");
+        try {
+            try (Stream<String> lines = Files.lines (path, StandardCharsets.UTF_8))
+            {
+                for (String line : (Iterable<String>) lines::iterator)
+                {
+                    alltests.add(line);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return alltests;
+    }
+
+
+
+
+
 
     private static HashSet<String> loadMethods(String allMethods) {
         allmethods = new HashSet<String>();
@@ -256,7 +278,8 @@ public class Analyzer {
             if (total>0)
             {
                 System.out.println("-------------"+ " TEST CONSUMPTION" + "-------------");
-                System.out.println("--"+ " Filename: " + args[j] + " ----------");
+                //System.out.println("--"+ " Filename: " + args[j] + " ----------");
+                System.out.println("--"+ " Test Name: " + getTestName(number) + " ----------");
                 System.out.println("----------------------------------------------------");
                 System.out.println("| Test Total Consumption (J) : " + joules + " J|");
                 System.out.println("| Test Total Consumption (W) : " + watt + " W|");
@@ -293,7 +316,7 @@ public class Analyzer {
             showData(consumptionList);
             Integer [] hardwareResults = returnList;
             if (total>0){
-                l.add(String.valueOf(number));l.add(String.valueOf(joules)); l.add(String.valueOf(watt)); l.add( String.valueOf(totaltime)); l.add(String.valueOf(totalcoverage));
+                l.add(String.valueOf(getTestName(number)));l.add(String.valueOf(joules)); l.add(String.valueOf(watt)); l.add( String.valueOf(totaltime)); l.add(String.valueOf(totalcoverage));
                 for (int i = 0; i < hardwareResults.length ; i++) { l.add(String.valueOf(hardwareResults[i])); }
                 try {
                     write(fw,l);
@@ -510,6 +533,17 @@ public static double perto(Map<Integer,Double> timeConsumption, int time){
         return percentageCoverage;
     }
 
+
+
+    public static  String getTestName(String number){
+        if(alltests.size()>0 && Integer.parseInt(number)<= alltests.size()){
+            return alltests.get(Integer.parseInt(number));
+        }
+        else
+            return number;
+
+    }
+
     public static double methodCoverage(Map<String,TreeSet<Consumption>> map ){
 
         ArrayList<String> arrayList = new ArrayList<>();
@@ -548,6 +582,13 @@ public static double perto(Map<Integer,Double> timeConsumption, int time){
             resultDirPath =args[1];
             allMethodsDir = args[2];
             allmethods = loadMethods(allMethodsDir);
+            try {
+                alltests = loadTests(resultDirPath);
+            }
+            catch (Exception e) {
+                System.out.println("[ANALYZER] Error tracing tests... Assuming order of tests instead of names");
+            }
+
             if (testOriented) {
                 try {
                     testOriented(Arrays.copyOfRange(args, 3, args.length));
@@ -555,6 +596,7 @@ public static double perto(Map<Integer,Double> timeConsumption, int time){
 //                    System.out.println("[Analyzer] Error parsing the file. Please run again or restart Trepn");
                     e.printStackTrace();
                 }
+
 
             } else {
 
