@@ -7,8 +7,10 @@ machine=''
 getSO machine
 if [ "$machine" == "Mac" ]; then
 	SED_COMMAND="gsed" #mac
+	MKDIR_COMMAND="gmkdir"
 else 
-	SED_COMMAND="sed" #linux	
+	SED_COMMAND="sed" #linux
+	MKDIR_COMMAND="mkdir"	
 fi
 
 OLDIFS=$IFS
@@ -71,16 +73,16 @@ else
 
 	deviceDir="$deviceExternal/trepn"  #GreenDroid
 	(echo $deviceDir > deviceDir.txt) 
-	(adb shell mkdir $deviceDir) > /dev/null  2>&1
-	(adb shell mkdir $deviceDir/Traces) > /dev/null  2>&1
-	(adb shell mkdir $deviceDir/Measures) > /dev/null  2>&1
-	(adb shell mkdir $deviceDir/TracedTests) > /dev/null  2>&1
+	(adb shell $MKDIR_COMMAND $deviceDir) > /dev/null  2>&1
+	(adb shell $MKDIR_COMMAND $deviceDir/Traces) > /dev/null  2>&1
+	(adb shell $MKDIR_COMMAND $deviceDir/Measures) > /dev/null  2>&1
+	(adb shell $MKDIR_COMMAND $deviceDir/TracedTests) > /dev/null  2>&1
 	adb shell rm -rf $deviceDir/Measures/*  ##RR
 	adb shell rm -rf $deviceDir/Traces/*  ##RR
 	adb shell rm -rf $deviceDir/TracedTests/*  ##RR
 
 	if [[ -n "$flagStatus" ]]; then
-		(mkdir debugBuild ) > /dev/null  2>&1 #new
+		($MKDIR_COMMAND debugBuild ) > /dev/null  2>&1 #new
 
 	fi
 	
@@ -156,7 +158,7 @@ else
 						#folds=($(find $FOLDER/$tName/ -type d | egrep -v "\/res|\/gen|\/build|\/.git|\/src|\/.gradle"))
 						for D in `find $FOLDER/$tName/ -type d | egrep -v "\/res|\/gen|\/build|\/.git|\/src|\/.gradle"`; do  ##RR
 						    if [ -d "${D}" ]; then  ##RR
-						    	gmkdir -p ${D}/libs  ##RR
+						    	$MKDIR_COMMAND -p ${D}/libs  ##RR
 						     	cp libsAdded/$treprefix$trepnLib ${D}/libs  ##RR
 						    fi  ##RR
 						done  ##RR
@@ -179,8 +181,8 @@ else
 						
 						#create results support folder
 						echo "$TAG Creating support folder..."
-						gmkdir -p $projLocalDir
-						gmkdir -p $projLocalDir/all
+						$MKDIR_COMMAND -p $projLocalDir
+						$MKDIR_COMMAND -p $projLocalDir/all
 						cat ./allMethods.txt >> $projLocalDir/all/allMethods.txt
 		
 						#install on device
@@ -255,8 +257,8 @@ else
 						fi
 
 						#copy the test runner
-						gmkdir -p $SOURCE/$tName/libs
-						gmkdir -p $SOURCE/$tName/tests/libs
+						$MKDIR_COMMAND -p $SOURCE/$tName/libs
+						$MKDIR_COMMAND -p $SOURCE/$tName/tests/libs
 						cp libsAdded/$trepnJar $SOURCE/$tName/libs
 						cp libsAdded/$trepnJar $SOURCE/$tName/tests/libs
 	
@@ -289,8 +291,8 @@ else
 	
 						#create results support folder
 						echo "$TAG Creating support folder..."
-						gmkdir -p $projLocalDir
-						gmkdir -p $projLocalDir/all
+						$MKDIR_COMMAND -p $projLocalDir
+						$MKDIR_COMMAND -p $projLocalDir/all
 						cat ./allMethods.txt >> $projLocalDir/all/allMethods.txt
 	
 						#run tests
