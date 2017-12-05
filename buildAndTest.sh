@@ -26,9 +26,9 @@ trepnLib="TrepnLibrary-release.aar"
 trepnJar="TrepnLibrary-release.jar"
 profileHardware="YES" # YES or ""
 flagStatus="on"
-
+SLEEPTIME=30
 #DIR=$HOME/tests/wasSuccess/gradleProjects/*
-DIR=$HOME/tests/actual/*
+DIR=$HOME/tests/success/*
 #DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
 
 
@@ -84,7 +84,7 @@ else
 
 	fi
 	
-	#for each app in $DIR folder...
+	#for each Android Proj in $DIR folder...
 	w_echo "$TAG searching for Android Projects in -> $DIR"
 	for f in $DIR/
 		do
@@ -197,8 +197,17 @@ else
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
 							echo "$ID" >> $logDir/errorRun.log
-							e_echo "[GD ERROR] There was an Error while running tests "
-							continue
+							e_echo "[GD ERROR] There was an Error while running tests. Retrying... "
+							#RETRY 
+							./trepFix.sh
+							adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
+							./runTests $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir # "-gradle" $FOLDER/$tName
+							RET=$(echo $?)
+							if [[ "$RET" != "0" ]]; then
+								echo "$ID" >> $logDir/errorRun.log
+								e_echo "[GD ERROR] FATAL ERROR RUNNING TESTS. IGNORING APP "
+								continue
+							fi
 						fi
 						
 						#uninstall the app & tests
@@ -217,6 +226,9 @@ else
 						#TODO se der erro imprimir a vermelho e aconselhar usar o trepFix.sh
 						#break
 						./trepnFix.sh
+						w_echo "$TAG sleeping between profiling apps"
+						sleep 60
+						w_echo "$TAG resuming Greendroid after nap"
 					done
 				fi
 			else
@@ -286,7 +298,17 @@ else
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
 							echo "$ID" >> $logDir/errorRun.log
-							continue
+							e_echo "[GD ERROR] There was an Error while running tests. Retrying... "
+							#RETRY 
+							./trepFix.sh
+							adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
+							./runTests $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir # "-gradle" $FOLDER/$tName
+							RET=$(echo $?)
+							if [[ "$RET" != "0" ]]; then
+								echo "$ID" >> $logDir/errorRun.log
+								e_echo "[GD ERROR] FATAL ERROR RUNNING TESTS. IGNORING APP "
+								continue
+							fi
 						fi
 						#uninstall the app & tests
 						./uninstall.sh $PACKAGE $TESTPACKAGE
@@ -296,7 +318,6 @@ else
 							#continue
 						fi
 						#Run greendoid!
-						cat ./TracedTests.txt >> $projLocalDir/all/TracedTests.txt
 						java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv  ##RR
 						./trepnFix.sh
 						#break
@@ -309,5 +330,9 @@ else
 	    fi
 	done
 	IFS=$OLDIFS
-	cat $projLocalDir/Testresults.csv | $SED_COMMAND 's/,/ ,/g' | column -t -s, | less -S
+	testRes=$(find $projLocalDir -name "Testresults.csv")
+	if [ -n $testRes ] ; then 
+		cat $projLocalDir/Testresults.csv | $SED_COMMAND 's/,/ ,/g' | column -t -s, | less -S
+	fi
+	./trepnFix.sh
 fi

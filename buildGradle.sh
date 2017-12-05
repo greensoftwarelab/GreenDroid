@@ -6,10 +6,12 @@ machine=''
 getSO machine
 if [ "$machine" == "Mac" ]; then
 	SED_COMMAND="gsed" #mac
+	Timeout_COMMAND="gtimeout"
 else 
-	SED_COMMAND="sed" #linux	
+	SED_COMMAND="sed" #linux
+	Timeout_COMMAND="gtimeout"	
 fi
-
+TIMEOUT="420" #7 minutes (60*7)
 logDir="logs"
 OLDIFS=$IFS
 IFS=$(echo -en "\n\b")
@@ -108,6 +110,9 @@ for x in ${BUILDS[@]}; do
 			$SED_COMMAND -i.bak ""$ANDROID_LINE"i }" $x
 		fi
 	fi
+	### dummy way to add mavenCentral and jcenter
+		$SED_COMMAND  -i -e "\$a\ buildscript\ {repositories\ {jcenter()\ \n\ mavenCentral()}}" $x
+	###
 	#Add a line that includes the trepn library folder in build.gradle
 	$SED_COMMAND  -i -e "\$a\ allprojects\ {repositories\ {flatDir\ {\ dirs\ 'libs'}}}" $x
 	#Change the packageName and testPackageName variables, if it exists
@@ -248,6 +253,7 @@ for x in ${BUILDS[@]}; do
 				fi
 			fi
 		fi
+		
 		#Add TrepnLib dependency to build.gradle
 		HAS_DEPEND=$(egrep -n "dependencies( ?){" $x)
 		AUX=$(egrep -n "buildscript *\{" $x)
@@ -359,7 +365,7 @@ if [ -n "$WRAPPER" ]; then
 	WRAPPER=${WRAPPER// /\\ }
 	$SED_COMMAND -ri.bak "s#distributionUrl.+#distributionUrl=http\://services.gradle.org/distributions/gradle-$GRADLE_VERSION-all.zip#g" $WRAPPER
 fi 
-gradle -b $GRADLE clean build assembleAndroidTest &> $logDir/buildStatus.log
+gradle --no-daemon -b $GRADLE clean build assembleAndroidTest &> $logDir/buildStatus.log
 
 ## The 'RR' way:
 ## chmod +x $FOLDER/gradlew
@@ -373,6 +379,9 @@ if [ -n "$STATUS_NOK" ]; then
 	libsError=$(grep "No signature of method: java.util.ArrayList.call() is applicable for argument types: (java.lang.String) values: \[libs\]" $logDir/buildStatus.log)
 	minSDKerror=$(egrep "uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in" $logDir/buildStatus.log)
 	buildSDKerror=$(egrep "The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)" $logDir/buildStatus.log)
+	(export PATH=$ANDROID_HOME/tools/bin:$PATH)
+	(sdkmanager --list) > sdks.txt
+	availableSdkTools=$(grep "build-tools/$newBuild" sdks.txt)	
 	while [[ (-n "$minSDKerror") || (-n "$buildSDKerror") || (-n "$libsError") ]]; do
 		((try--))
 		w_echo "$TAG Common Error. Trying again..."
@@ -406,8 +415,16 @@ if [ -n "$STATUS_NOK" ]; then
 			fi
 
 			#correct buildToolsVersion
-			if [[ -n "$oldBuild" ]]; then
-				$SED_COMMAND -ri.bak "s#buildToolsVersion ('\")$oldBuild('\")#buildToolsVersion \1$newBuild\2#g" $x
+			if [[ -n "$oldBuild" ]] ; then
+				#echo " avaliables -> $availableSdkTools"
+				# if don't have that build tools version		
+				if [[ -z "$availableSdkTools" ]] ; then 
+					#download via sdkmanager 
+					e_echo "No suitable build-tools found. Downloading build tools $newBuild."
+					($Timeout_COMMAND -s 9 $TIMEOUT sdkmanager "build-tools;$newBuild") &> $logDir/downloads.log
+				fi
+				$SED_COMMAND -ri.bak "s#buildToolsVersion \"$oldBuild\"#buildToolsVersion \"$newBuild\"#g" $x
+				#cat $x
 			fi
 
 			if [[ -n "$libsError" ]]; then
@@ -416,7 +433,7 @@ if [ -n "$STATUS_NOK" ]; then
 			fi
 			
 		done
-		gradle -b $GRADLE clean build assembleAndroidTest &> $logDir/buildStatus.log
+		gradle --no-daemon -b $GRADLE clean build assembleAndroidTest &> $logDir/buildStatus.log
 
 		libsError=$(egrep "No signature of method: java.util.ArrayList.call() is applicable for argument types: (java.lang.String) values: [libs]" $logDir/buildStatus.log)
 		minSDKerror=$(egrep "uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in" $logDir/buildStatus.log)

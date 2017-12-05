@@ -97,14 +97,11 @@ if [ -n "$STATUS_NOK" ]; then
 		exit 1
 	elif [ -n "$STATUS_OK" ]; then
 		i_echo "$TAG Build + Trace/Measure successful for project $ID"
-		i_echo "$TAG Pulling result files"
-
-		projLocalDir=$localDir/$ID
-		gmkdir -p $projLocalDir
-		
-		adb shell ls "$deviceDir/Measures/" | $SED_COMMAND -r 's/[\r]+//g' | egrep "*.csv" |  xargs -I{} adb pull $deviceDir/Measures/{} $projLocalDir
-		adb shell ls "$deviceDir/Traces/" | $SED_COMMAND -r 's/[\r]+//g' | egrep "*.txt" | xargs -I{} adb pull $deviceDir/Traces/{} $projLocalDir
-
+		echo $localDir
+		adb shell ls "$deviceDir/Measures/" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/Measures/{} $localDir
+		#adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
+		adb shell ls "$deviceDir/Traces/" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.txt" | xargs -I{} adb pull $deviceDir/Traces/{} $localDir
+		adb shell ls "$deviceDir/TracedTests/" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.txt" | xargs -I{} adb pull $deviceDir/TracedTests/{} $localDir
 		exit 10
 	else
 		echo "$TAG Unable to build project $ID"
