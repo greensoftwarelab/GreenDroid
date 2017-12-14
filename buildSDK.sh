@@ -39,7 +39,7 @@ echo "Package -> $PACKAGE"
 echo "ID -> $ID"
 echo "proj fold -> $PROJECT_FOLDER"
 echo "test fold -> $TEST_FOLDER"
-echo "local dir -> $dlocalDir"
+echo "local dir -> $localDir"
 echo "device dir -> $deviceDir"
 
 
