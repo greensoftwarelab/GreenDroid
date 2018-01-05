@@ -26,12 +26,12 @@ prev_cons = "consumption.csv"
 TAG="[DATA BUILDER]"
 
 def run_analyzer(path):
-	cmd = "java -jar analyzer/Analyzer-1.0-SNAPSHOT.jar -TraceMethods " + path + " " + path + "/all/ " + path +"/*.csv"
+	cmd = "java -jar jars/Analyzer.jar -TraceMethods " + path + " " + path + "/all/ " + path +"/*.csv"
 	pipes = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
 	std_out, std_err = pipes.communicate()
 	if pipes.returncode != 0:
 		err_msg = "%s. Code: %s" % (std_err.strip(), pipes.returncode)
-		color_print('[E] Error on ' + root + ': ', color='red', bold=True)
+		color_print('[E] Error on ' + path + ': ', color='red', bold=True)
 		print(err_msg)
 
 def compute_quantiles(all_energy):
@@ -120,7 +120,7 @@ def compute_test_info(all_apps_path,
 		return all_apps, all_energy
 
 def main(mf):
-	minimum_tests = 1
+	minimum_tests = 5
 	minimum_coverage = 0
 
 	color_print(TAG, color='green', bold=True)
