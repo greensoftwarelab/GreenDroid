@@ -28,7 +28,7 @@ trepnLib="TrepnLibrary-release.aar"
 trepnJar="TrepnLibrary-release.jar"
 profileHardware="YES" # YES or ""
 flagStatus="on"
-SLEEPTIME=30
+SLEEPTIME=10
 #DIR=$HOME/tests/wasSuccess/gradleProjects/*
 DIR=$HOME/tests/success/*
 #DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
@@ -73,10 +73,10 @@ else
 
 	deviceDir="$deviceExternal/trepn"  #GreenDroid
 	(echo $deviceDir > deviceDir.txt) 
-	(adb shell $MKDIR_COMMAND $deviceDir) > /dev/null  2>&1
-	(adb shell $MKDIR_COMMAND $deviceDir/Traces) > /dev/null  2>&1
-	(adb shell $MKDIR_COMMAND $deviceDir/Measures) > /dev/null  2>&1
-	(adb shell $MKDIR_COMMAND $deviceDir/TracedTests) > /dev/null  2>&1
+	(adb shell mkdir $deviceDir) > /dev/null  2>&1
+	(adb shell mkdir $deviceDir/Traces) > /dev/null  2>&1
+	(adb shell mkdir $deviceDir/Measures) > /dev/null  2>&1
+	(adb shell mkdir $deviceDir/TracedTests) > /dev/null  2>&1
 	adb shell rm -rf $deviceDir/Measures/*  ##RR
 	adb shell rm -rf $deviceDir/Traces/*  ##RR
 	adb shell rm -rf $deviceDir/TracedTests/*  ##RR

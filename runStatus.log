@@ -1,8 +1,10 @@
+android.util.AndroidException: INSTRUMENTATION_FAILED: com.tehmou.rxmaps.test/android.test.InstrumentationTestRunner
+INSTRUMENTATION_STATUS: id=ActivityManagerService
+	at com.android.commands.am.Am.runInstrument(Am.java:890)
+	at com.android.commands.am.Am.onRun(Am.java:400)INSTRUMENTATION_STATUS: Error=Unable to find instrumentation info for: ComponentInfo{com.tehmou.rxmaps.test/android.test.InstrumentationTestRunner}
+	at com.android.internal.os.BaseCommand.run(BaseCommand.java:51)
+INSTRUMENTATION_STATUS_CODE: -1
 
-com.welcu.android.zxingfragmentlib.ApplicationTest:.
-Test results for InstrumentationTestRunner=.
-Time: 0.095
-
-OK (1 test)
-
-
+	at com.android.commands.am.Am.main(Am.java:121)
+	at com.android.internal.os.RuntimeInit.nativeFinishInit(Native Method)
+	at com.android.internal.os.RuntimeInit.main(RuntimeInit.java:359)

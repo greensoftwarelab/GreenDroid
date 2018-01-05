@@ -24,7 +24,7 @@ public class Analyzer {
     private static List<String> loadTests(String allMethods) throws Exception {
         alltests = new ArrayList<String>();
 
-        Path path = Paths.get(allMethods + "tracedTests.txt");
+        Path path = Paths.get(allMethods + "TracedTests.txt");
         try {
             try (Stream<String> lines = Files.lines (path, StandardCharsets.UTF_8))
             {
@@ -134,7 +134,8 @@ public class Analyzer {
     private static void testOriented(String [] args) throws NullPointerException{
         CsvParserSettings settings = new CsvParserSettings();
         Map<Integer,Integer> timeConsumption = new HashMap<>();
-        List <Consumption> consumptionList = new ArrayList<Consumption>();
+        List <Consumption> consumptionList = new ArrayList<>();
+        Set<Integer> timeStates = new TreeSet<>();
         settings.getFormat().setLineSeparator("\n");
         FileWriter fw = null;
 
@@ -148,7 +149,7 @@ public class Analyzer {
             e.printStackTrace();
         }
         List<String> l = new ArrayList<>();
-        l.add("Test Number");l.add("Consumption (J)"); l.add("Power (W)"); l.add("Time (ms)"); l.add("Method coverage (%)");l.add("Wifi?");l.add("Mobile Data?");l.add("Screen state");l.add("Battery Charging?");l.add("Avg RSSI Level");l.add("Avg Mem Usage");l.add("Bluetooth?");l.add("Avg gpu Load");l.add("Avg CPU Load");l.add("GPS?");
+        l.add("Test Number");l.add("Consumption (J)"); l.add("Time (ms)"); l.add("Method coverage (%)");l.add("Wifi?");l.add("Mobile Data?");l.add("Screen state");l.add("Battery Charging?");l.add("Avg RSSI Level");l.add("Avg Mem Usage");l.add("Bluetooth?");l.add("Avg gpu Load");l.add("Avg CPU Load");l.add("GPS?");
         try {
             write(fw,l);
         } catch (IOException e) {
@@ -197,29 +198,34 @@ public class Analyzer {
 
                     if(state&&method.equals("started") && first){
                         //int timeTrepn = Integer.parseInt(row[0]); // removed, might not have
-//                        int timeBatttery = Integer.parseInt(row[6]);
-//                        double watts = Double.parseDouble(row[7]);
+//                        int timeBatttery = Integer.parseInt(row[Utils.getMatch(columns,Utils.batteryPower).first]);
+               //         int timeBatttery = Integer.parseInt(row[Utils.getMatch(columns,Utils.batteryPower).first]);
+              //          int watts = Integer.parseInt(row[Utils.getMatch(columns,Utils.batteryPower).second]);
 //                        int delta = Integer.parseInt(row[8]);
                          timeStart  = Integer.parseInt(row[Utils.getMatch(columns,Utils.stateDescription).first]);
 //                         started = new Consumption(0,state,method,0, 0, 0, timeStart);
                          first=false;
+                 //       timeConsumption.put(timeBatttery,watts);
                     }
-                    else if(!state && method.equals("stopped")){
+                    else if(!state && method.equals("stopped") ){
 //                        int timeTrepn = Integer.parseInt(row[0]);
-//                        int timeBatttery = Integer.parseInt(row[6]);
-//                        double watts = Double.parseDouble(row[7]);
+                       // int timeBatttery = Integer.parseInt(row[Utils.getMatch(columns,Utils.batteryPower).first]);
+                 //       int watts = Integer.parseInt(row[Utils.getMatch(columns,Utils.batteryPower).second]);
 //                        int delta = Integer.parseInt(row[8]);
                         timeEnd  = Integer.parseInt(row[Utils.getMatch(columns,Utils.stateDescription).first]);
 //                         ended = new Consumption(0,state,method,0, 0, 0, timeEnd);
                         i= resolvedData.size()+1;
                         stop=false;
 //                        consumptionList.add(getDataFromRow(columns,row));
+                  //      timeConsumption.put(timeBatttery,watts);
                     }
 
-                    if(!first && stop){
-                        consumptionList.add(getDataFromRow(columns,row));
+                    if(Utils.getMatch(columns,Utils.batteryPower)!=null&&row[Utils.getMatch(columns, Utils.batteryPower).first]!=null) {
+                        int timeBatttery = Integer.parseInt(row[Utils.getMatch(columns, Utils.batteryPower).first]);
+                        int watts = Integer.parseInt(row[Utils.getMatch(columns, Utils.batteryPower).second]);
+                        timeConsumption.put(timeBatttery, watts);
                     }
-
+                    timeStates.add(Integer.parseInt(row[Utils.getMatch(columns,Utils.stateDescription).first]));
                 }
                 if(row[Utils.getMatch(columns,Utils.batteryPower).first]!=null && row[Utils.getMatch(columns,Utils.batteryPower).first]!=null){
                     // add power measures to Map
@@ -261,6 +267,10 @@ public class Analyzer {
 //            int total = stopConsum-startConsum;
             int total = stopConsum;
             int totaltime = timeEnd-timeStart;
+
+
+            // if is a relevant test (in terms of time)
+
             if(total<=0 && alternativeEnd!=0){
                  stopConsum  = timeConsumption.get(alternativeEnd);
 //                 total = stopConsum-startConsum;.csv 
@@ -273,17 +283,34 @@ public class Analyzer {
                 total = startConsum;
                 totaltime = timeEnd-timeStart;
             }
-            double watt = (double) total/((double) 1000000);
-            double joules = ((double)(((double)totaltime/((double)1000))) * (watt));
+            TreeSet<Integer> ts = (TreeSet<Integer>) timeStates;
+
+
+            int totalconsum = 0;
+            int toma =0, delta = 0, ultimo = ts.first();
+            for(Integer i : ts){
+                toma =i;
+                delta = toma -ultimo;
+                totalconsum+= delta * (closestMemMeasure(timeConsumption,toma));
+                ultimo = i;
+            }
+
+
+           // double watt = (double) total/((double) 1000000);
+            // double joules = ((double)(((double)totaltime/((double)1000))) * (watt));
+
+            double joules = totalconsum;
+
+
             if (total>0)
             {
-                System.out.println("-------------"+ " TEST CONSUMPTION" + "-------------");
-                //System.out.println("--"+ " Filename: " + args[j] + " ----------");
-                System.out.println("--"+ " Test Name: " + getTestName(number) + " ----------");
-                System.out.println("----------------------------------------------------");
-                System.out.println("| Test Total Consumption (J) : " + joules + " J|");
-                System.out.println("| Test Total Consumption (W) : " + watt + " W|");
-                System.out.println("| Test Total Time (ms) : " + totaltime + " ms|");
+                System.out.println("---------"+ " TEST CONSUMPTION" + "-----------");
+                //System.out.println("--"+ " Filename: " + args[j] + " -----------");
+                System.out.println("--"+ " Test Name: " + getTestName(number)+" --");
+                System.out.println("----------------------------------------------");
+                System.out.println("| Test Total Consumption (J) : " +joules+ " J|");
+               // System.out.println("| Test Total Consumption (W) : " + watt + " W|");
+                System.out.println("| Test Total Time (ms)       : " + totaltime + " ms|");
                 System.out.println("----------------------------------------------");
 
             }
@@ -316,7 +343,7 @@ public class Analyzer {
             showData(consumptionList);
             Integer [] hardwareResults = returnList;
             if (total>0){
-                l.add(String.valueOf(getTestName(number)));l.add(String.valueOf(joules)); l.add(String.valueOf(watt)); l.add( String.valueOf(totaltime)); l.add(String.valueOf(totalcoverage));
+                l.add(String.valueOf(getTestName(number)));l.add(String.valueOf(joules));  l.add( String.valueOf(totaltime)); l.add(String.valueOf(totalcoverage));
                 for (int i = 0; i < hardwareResults.length ; i++) { l.add(String.valueOf(hardwareResults[i])); }
                 try {
                     write(fw,l);
@@ -326,7 +353,7 @@ public class Analyzer {
                 l.clear();
             }
             else {
-                l.add(args[j]);l.add(String.valueOf(0)); l.add(String.valueOf(0)); l.add( String.valueOf(0)); l.add(String.valueOf(totalcoverage));
+                l.add(args[j]);l.add(String.valueOf(0)); l.add(String.valueOf(0));l.add(String.valueOf(totalcoverage));
                 for (int i = 0; i < hardwareResults.length ; i++) { l.add(String.valueOf(hardwareResults[i])); }
                 try {
                     write(fw,l);
@@ -405,10 +432,10 @@ public class Analyzer {
             returnList[8] += c.getCpuLoadNormalized();
             returnList[9] += (returnList[9]>0? true :false) || (c.getGpsState()>0? true :false)? 1 :0;
         }
-        returnList[4] = returnList[4] / list.size();
-        returnList[5] = returnList[5] / list.size();
-        returnList[7] = returnList[4] / list.size();
-        returnList[8] = returnList[5] / list.size();
+        returnList[4] = returnList[4] / (list.size()>0? list.size() : 1);
+        returnList[5] = returnList[5] / (list.size()>0? list.size() : 1);
+        returnList[7] = returnList[4] / (list.size()>0? list.size() : 1);
+        returnList[8] = returnList[5] / (list.size()>0? list.size() : 1);
 
     }
 
@@ -466,7 +493,7 @@ public static double perto(Map<Integer,Double> timeConsumption, int time){
 
 }
 
-    public static double[] perto2(Map<Integer,Double> timeConsumption, int time){
+    public static Integer closestMemMeasure(Map<Integer,Integer> timeConsumption, int time){
         // calcular a medida de bateria mais aproximada
         int closestStart = 1000000, closestStop = 1000000;
         int difStart = 1000000, diffEnd = 1000000;
@@ -479,10 +506,8 @@ public static double perto(Map<Integer,Double> timeConsumption, int time){
             }
 
         }
-        double[] b = new double[2];
-        b[1] = timeConsumption.get(closestStart);
-        b[0] = (double) closestStart;
-        return b;
+
+        return timeConsumption.get(closestStart);
 
     }
 

@@ -18,12 +18,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="JInst.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/jInst/JInst.java">
+      <file leaf-file-name="MethodChangerVisitor.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/jInst/visitors/MethodChangerVisitor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="62" column="0" lean-forward="false" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="870">
+              <caret line="198" column="0" lean-forward="false" selection-start-line="198" selection-start-column="0" selection-end-line="198" selection-end-column="0" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="method#getClass#0;class#MethodChangerVisitor#0" expanded="false" />
+                <element signature="method#getMethod#0;class#MethodChangerVisitor#0" expanded="false" />
+                <element signature="method#countOperations#0;class#MethodChangerVisitor#0" expanded="false" />
+                <element signature="method#notCount#0;class#MethodChangerVisitor#0" expanded="false" />
+                <element signature="method#countOperations#1;class#MethodChangerVisitor#0" expanded="false" />
+                <element signature="method#visit#0;class#MethodChangerVisitor#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -31,51 +39,8 @@
       <file leaf-file-name="InstrumentHelper.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/jInst/transform/InstrumentHelper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="395">
-              <caret line="525" column="29" lean-forward="false" selection-start-line="525" selection-start-column="29" selection-end-line="525" selection-end-column="29" />
-              <folding>
-                <element signature="e#1663#1671#0" expanded="true" />
-                <element signature="e#1738#1746#0" expanded="true" />
-                <element signature="e#21047#21057#0" expanded="true" />
-                <element signature="e#21477#21493#0" expanded="true" />
-                <element signature="e#22756#22767#0" expanded="true" />
-                <element signature="e#23230#23240#0" expanded="true" />
-                <element signature="e#23674#23690#0" expanded="true" />
-                <element signature="e#24946#24957#0" expanded="true" />
-                <element signature="e#25520#25530#0" expanded="true" />
-                <element signature="e#25978#25994#0" expanded="true" />
-                <element signature="e#26995#27006#0" expanded="true" />
-                <element signature="e#28073#28083#0" expanded="true" />
-                <element signature="e#28545#28561#0" expanded="true" />
-                <element signature="e#29908#29919#0" expanded="true" />
-                <element signature="e#30444#30454#0" expanded="true" />
-                <element signature="e#30901#30917#0" expanded="true" />
-                <element signature="e#32099#32110#0" expanded="true" />
-                <element signature="e#33270#33280#0" expanded="true" />
-                <element signature="e#33745#33761#0" expanded="true" />
-                <element signature="e#35254#35265#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tester.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/jInst/tester.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TestChangerVisitor.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/jInst/visitors/TestChangerVisitor.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2340">
-              <caret line="173" column="37" lean-forward="false" selection-start-line="173" selection-start-column="37" selection-end-line="173" selection-end-column="37" />
+            <state relative-caret-position="7215">
+              <caret line="536" column="25" lean-forward="false" selection-start-line="536" selection-start-column="25" selection-end-line="536" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -85,20 +50,18 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/jInst/transform/InstrumentGradleHelper.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="2445">
-              <caret line="179" column="39" lean-forward="false" selection-start-line="179" selection-start-column="39" selection-end-line="179" selection-end-column="39" />
+              <caret line="179" column="0" lean-forward="false" selection-start-line="179" selection-start-column="0" selection-end-line="179" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MethodChangerVisitor.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/jInst/visitors/MethodChangerVisitor.java">
+      <file leaf-file-name="TestChangerVisitor.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/jInst/visitors/TestChangerVisitor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="585">
-              <caret line="71" column="13" lean-forward="false" selection-start-line="71" selection-start-column="13" selection-end-line="71" selection-end-column="13" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="-21">
+              <caret line="42" column="40" lean-forward="false" selection-start-line="42" selection-start-column="40" selection-end-line="42" selection-end-column="40" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -108,6 +71,10 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>parse(</find>
+      <find>x</find>
+      <find>Testchan</find>
+      <find>methodchange</find>
+      <find>testcha</find>
     </findStrings>
   </component>
   <component name="GradleLocalSettings">
@@ -119,16 +86,20 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/main/java/jInst/visitors/MethodChangerVisitor.java" />
-        <option value="$PROJECT_DIR$/src/main/java/jInst/visitors/TestChangerVisitor.java" />
         <option value="$PROJECT_DIR$/src/main/java/jInst/tester.java" />
-        <option value="$PROJECT_DIR$/src/main/java/jInst/transform/InstrumentHelper.java" />
         <option value="$PROJECT_DIR$/src/main/java/jInst/JInst.java" />
+        <option value="$PROJECT_DIR$/src/main/java/jInst/profiler/trepn/TrepnTestOrientedProfiler.java" />
+        <option value="$PROJECT_DIR$/src/main/java/jInst/profiler/TestOrientedProfiler.java" />
+        <option value="$MAVEN_REPOSITORY$/com/github/javaparser/javaparser-core/2.0.0/javaparser-core-2.0.0.jar!/com/github/javaparser/ast/CompilationUnit.class" />
+        <option value="$PROJECT_DIR$/src/main/java/jInst/transform/InstrumentHelper.java" />
+        <option value="$PROJECT_DIR$/src/main/java/jInst/visitors/TestChangerVisitor.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" fullScreen="true">
+    <option name="y" value="23" />
     <option name="width" value="1440" />
-    <option name="height" value="900" />
+    <option name="height" value="793" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -417,7 +388,8 @@
     </navigator>
     <panes>
       <pane id="AndroidView" />
-      <pane id="PackagesPane" />
+      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -458,6 +430,25 @@
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="jInst" type="462c0819:PsiDirectoryNode" />
+              <item name="profiler" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="jInst" type="b2602c69:ProjectViewProjectNode" />
+              <item name="jInst" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="jInst" type="462c0819:PsiDirectoryNode" />
+              <item name="profiler" type="462c0819:PsiDirectoryNode" />
+              <item name="trepn" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="jInst" type="b2602c69:ProjectViewProjectNode" />
+              <item name="jInst" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="jInst" type="462c0819:PsiDirectoryNode" />
               <item name="transform" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -473,8 +464,7 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scratches" />
-      <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -608,32 +598,31 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32941177" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32769045" sideWeight="0.5028612" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32889965" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.38746437" sideWeight="0.49713877" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.38694075" sideWeight="0.49713877" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25751072" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21745351" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39903265" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32941177" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
@@ -645,16 +634,113 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/jInst/transform/InstrumentHelper.java</url>
-          <line>418</line>
+          <url>file://$PROJECT_DIR$/src/main/java/jInst/visitors/TestChangerVisitor.java</url>
+          <line>303</line>
           <properties />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/jInst/visitors/TestChangerVisitor.java</url>
+          <line>273</line>
+          <properties />
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/jInst/visitors/TestChangerVisitor.java</url>
+          <line>52</line>
+          <properties />
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/jInst/visitors/TestChangerVisitor.java</url>
+          <line>56</line>
+          <properties />
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/jInst/transform/InstrumentHelper.java</url>
+          <line>512</line>
+          <properties />
+          <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="1" />
+      <option name="time" value="12" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/main/java/jInst/profiler/ProfilerAbstractFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" column="17" lean-forward="false" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jInst/profiler/Profiler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="8" column="17" lean-forward="false" selection-start-line="8" selection-start-column="17" selection-end-line="8" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jInst/profiler/trepn/TrepnTestOrientedProfiler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="26" column="35" lean-forward="true" selection-start-line="26" selection-start-column="35" selection-end-line="26" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jInst/JInst.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jInst/transform/InstrumentHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="7875">
+          <caret line="525" column="29" lean-forward="false" selection-start-line="525" selection-start-column="29" selection-end-line="525" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jInst/visitors/TestChangerVisitor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2340">
+          <caret line="173" column="37" lean-forward="false" selection-start-line="173" selection-start-column="37" selection-end-line="173" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jInst/transform/InstrumentGradleHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2445">
+          <caret line="179" column="39" lean-forward="false" selection-start-line="179" selection-start-column="39" selection-end-line="179" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jInst/visitors/MethodChangerVisitor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="585">
+          <caret line="71" column="13" lean-forward="false" selection-start-line="71" selection-start-column="13" selection-end-line="71" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#getClass#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#getMethod#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#countOperations#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#notCount#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#countOperations#1;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#visit#0;class#MethodChangerVisitor#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/jInst/JInst.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -668,7 +754,7 @@
         <state relative-caret-position="30">
           <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -695,6 +781,12 @@
           <caret line="71" column="13" lean-forward="false" selection-start-line="71" selection-start-column="13" selection-end-line="71" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="method#getClass#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#getMethod#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#countOperations#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#notCount#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#countOperations#1;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#visit#0;class#MethodChangerVisitor#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -729,6 +821,12 @@
           <caret line="71" column="13" lean-forward="false" selection-start-line="71" selection-start-column="13" selection-end-line="71" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="method#getClass#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#getMethod#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#countOperations#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#notCount#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#countOperations#1;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#visit#0;class#MethodChangerVisitor#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -737,28 +835,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3330">
           <caret line="222" column="0" lean-forward="false" selection-start-line="222" selection-start-column="0" selection-end-line="222" selection-end-column="0" />
-          <folding>
-            <element signature="e#1663#1671#0" expanded="true" />
-            <element signature="e#1738#1746#0" expanded="true" />
-            <element signature="e#21047#21057#0" expanded="true" />
-            <element signature="e#21477#21493#0" expanded="true" />
-            <element signature="e#22756#22767#0" expanded="true" />
-            <element signature="e#23230#23240#0" expanded="true" />
-            <element signature="e#23674#23690#0" expanded="true" />
-            <element signature="e#24946#24957#0" expanded="true" />
-            <element signature="e#25520#25530#0" expanded="true" />
-            <element signature="e#25978#25994#0" expanded="true" />
-            <element signature="e#26995#27006#0" expanded="true" />
-            <element signature="e#28073#28083#0" expanded="true" />
-            <element signature="e#28545#28561#0" expanded="true" />
-            <element signature="e#29908#29919#0" expanded="true" />
-            <element signature="e#30444#30454#0" expanded="true" />
-            <element signature="e#30901#30917#0" expanded="true" />
-            <element signature="e#32099#32110#0" expanded="true" />
-            <element signature="e#33270#33280#0" expanded="true" />
-            <element signature="e#33745#33761#0" expanded="true" />
-            <element signature="e#35254#35265#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -792,6 +869,12 @@
           <caret line="71" column="13" lean-forward="false" selection-start-line="71" selection-start-column="13" selection-end-line="71" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="method#getClass#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#getMethod#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#countOperations#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#notCount#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#countOperations#1;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#visit#0;class#MethodChangerVisitor#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -800,28 +883,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3030">
           <caret line="202" column="36" lean-forward="true" selection-start-line="202" selection-start-column="36" selection-end-line="202" selection-end-column="36" />
-          <folding>
-            <element signature="e#1663#1671#0" expanded="true" />
-            <element signature="e#1738#1746#0" expanded="true" />
-            <element signature="e#21047#21057#0" expanded="true" />
-            <element signature="e#21477#21493#0" expanded="true" />
-            <element signature="e#22756#22767#0" expanded="true" />
-            <element signature="e#23230#23240#0" expanded="true" />
-            <element signature="e#23674#23690#0" expanded="true" />
-            <element signature="e#24946#24957#0" expanded="true" />
-            <element signature="e#25520#25530#0" expanded="true" />
-            <element signature="e#25978#25994#0" expanded="true" />
-            <element signature="e#26995#27006#0" expanded="true" />
-            <element signature="e#28073#28083#0" expanded="true" />
-            <element signature="e#28545#28561#0" expanded="true" />
-            <element signature="e#29908#29919#0" expanded="true" />
-            <element signature="e#30444#30454#0" expanded="true" />
-            <element signature="e#30901#30917#0" expanded="true" />
-            <element signature="e#32099#32110#0" expanded="true" />
-            <element signature="e#33270#33280#0" expanded="true" />
-            <element signature="e#33745#33761#0" expanded="true" />
-            <element signature="e#35254#35265#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -847,6 +909,12 @@
           <caret line="71" column="13" lean-forward="false" selection-start-line="71" selection-start-column="13" selection-end-line="71" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="method#getClass#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#getMethod#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#countOperations#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#notCount#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#countOperations#1;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#visit#0;class#MethodChangerVisitor#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -855,28 +923,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="10065">
           <caret line="730" column="24" lean-forward="true" selection-start-line="730" selection-start-column="24" selection-end-line="730" selection-end-column="24" />
-          <folding>
-            <element signature="e#1663#1671#0" expanded="true" />
-            <element signature="e#1738#1746#0" expanded="true" />
-            <element signature="e#21047#21057#0" expanded="true" />
-            <element signature="e#21477#21493#0" expanded="true" />
-            <element signature="e#22756#22767#0" expanded="true" />
-            <element signature="e#23230#23240#0" expanded="true" />
-            <element signature="e#23674#23690#0" expanded="true" />
-            <element signature="e#24946#24957#0" expanded="true" />
-            <element signature="e#25520#25530#0" expanded="true" />
-            <element signature="e#25978#25994#0" expanded="true" />
-            <element signature="e#26995#27006#0" expanded="true" />
-            <element signature="e#28073#28083#0" expanded="true" />
-            <element signature="e#28545#28561#0" expanded="true" />
-            <element signature="e#29908#29919#0" expanded="true" />
-            <element signature="e#30444#30454#0" expanded="true" />
-            <element signature="e#30901#30917#0" expanded="true" />
-            <element signature="e#32099#32110#0" expanded="true" />
-            <element signature="e#33270#33280#0" expanded="true" />
-            <element signature="e#33745#33761#0" expanded="true" />
-            <element signature="e#35254#35265#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -892,28 +939,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="14400">
           <caret line="960" column="34" lean-forward="false" selection-start-line="960" selection-start-column="28" selection-end-line="960" selection-end-column="34" />
-          <folding>
-            <element signature="e#1663#1671#0" expanded="true" />
-            <element signature="e#1738#1746#0" expanded="true" />
-            <element signature="e#21047#21057#0" expanded="true" />
-            <element signature="e#21477#21493#0" expanded="true" />
-            <element signature="e#22756#22767#0" expanded="true" />
-            <element signature="e#23230#23240#0" expanded="true" />
-            <element signature="e#23674#23690#0" expanded="true" />
-            <element signature="e#24946#24957#0" expanded="true" />
-            <element signature="e#25520#25530#0" expanded="true" />
-            <element signature="e#25978#25994#0" expanded="true" />
-            <element signature="e#26995#27006#0" expanded="true" />
-            <element signature="e#28073#28083#0" expanded="true" />
-            <element signature="e#28545#28561#0" expanded="true" />
-            <element signature="e#29908#29919#0" expanded="true" />
-            <element signature="e#30444#30454#0" expanded="true" />
-            <element signature="e#30901#30917#0" expanded="true" />
-            <element signature="e#32099#32110#0" expanded="true" />
-            <element signature="e#33270#33280#0" expanded="true" />
-            <element signature="e#33745#33761#0" expanded="true" />
-            <element signature="e#35254#35265#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -931,32 +957,20 @@
           <caret line="71" column="13" lean-forward="false" selection-start-line="71" selection-start-column="13" selection-end-line="71" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="method#getClass#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#getMethod#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#countOperations#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#notCount#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#countOperations#1;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#visit#0;class#MethodChangerVisitor#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/jInst/visitors/MethodChangerVisitor.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/jInst/JInst.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="585">
-          <caret line="71" column="13" lean-forward="false" selection-start-line="71" selection-start-column="13" selection-end-line="71" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/jInst/visitors/TestChangerVisitor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2340">
-          <caret line="173" column="37" lean-forward="false" selection-start-line="173" selection-start-column="37" selection-end-line="173" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/jInst/transform/InstrumentGradleHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2445">
-          <caret line="179" column="39" lean-forward="false" selection-start-line="179" selection-start-column="39" selection-end-line="179" selection-end-column="39" />
+        <state relative-caret-position="720">
+          <caret line="62" column="0" lean-forward="false" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -966,44 +980,150 @@
         <state relative-caret-position="30">
           <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
           <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jInst/profiler/ProfilerAbstractFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" column="17" lean-forward="false" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jInst/profiler/Profiler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="8" column="17" lean-forward="false" selection-start-line="8" selection-start-column="17" selection-end-line="8" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jInst/profiler/TestOrientedProfiler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jInst/profiler/trepn/TrepnTestOrientedProfiler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="26" column="35" lean-forward="false" selection-start-line="26" selection-start-column="35" selection-end-line="26" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/github/javaparser/javaparser-core/2.0.0/javaparser-core-2.0.0.jar!/com/github/javaparser/ast/CompilationUnit.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="202">
+          <caret line="65" column="0" lean-forward="false" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jInst/profiler/trepn/TrepnMethodOrientedProfiler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="15" column="13" lean-forward="false" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jInst/visitors/utils/ClassDefs.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="135" column="0" lean-forward="false" selection-start-line="135" selection-start-column="0" selection-end-line="135" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/github/javaparser/javaparser-core/2.0.0/javaparser-core-2.0.0.jar!/com/github/javaparser/ast/body/BodyDeclaration.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="12" column="22" lean-forward="false" selection-start-line="12" selection-start-column="22" selection-end-line="12" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/github/javaparser/javaparser-core/2.0.0/javaparser-core-2.0.0.jar!/com/github/javaparser/ast/body/TypeDeclaration.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="71">
+          <caret line="11" column="50" lean-forward="false" selection-start-line="11" selection-start-column="50" selection-end-line="11" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/github/javaparser/javaparser-core/2.0.0/javaparser-core-2.0.0.jar!/com/github/javaparser/ast/Node.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="157">
+          <caret line="41" column="32" lean-forward="false" selection-start-line="41" selection-start-column="32" selection-end-line="41" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/github/javaparser/javaparser-core/2.0.0/javaparser-core-2.0.0.jar!/com/github/javaparser/ast/ImportDeclaration.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="172">
+          <caret line="38" column="0" lean-forward="false" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/github/javaparser/javaparser-core/2.0.0/javaparser-core-2.0.0.jar!/com/github/javaparser/ast/body/ClassOrInterfaceDeclaration.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="157">
+          <caret line="51" column="0" lean-forward="false" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/github/javaparser/javaparser-core/2.0.0/javaparser-core-2.0.0.jar!/com/github/javaparser/ast/visitor/VoidVisitorAdapter.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="366">
+          <caret line="579" column="0" lean-forward="false" selection-start-line="579" selection-start-column="0" selection-end-line="579" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/github/javaparser/javaparser-core/2.0.0/javaparser-core-2.0.0.jar!/com/github/javaparser/ast/body/FieldDeclaration.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="65" column="0" lean-forward="false" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jInst/visitors/MethodChangerVisitor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="870">
+          <caret line="198" column="0" lean-forward="false" selection-start-line="198" selection-start-column="0" selection-end-line="198" selection-end-column="0" />
+          <folding>
             <element signature="imports" expanded="true" />
+            <element signature="method#getClass#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#getMethod#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#countOperations#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#notCount#0;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#countOperations#1;class#MethodChangerVisitor#0" expanded="false" />
+            <element signature="method#visit#0;class#MethodChangerVisitor#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/jInst/transform/InstrumentHelper.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="395">
-          <caret line="525" column="29" lean-forward="false" selection-start-line="525" selection-start-column="29" selection-end-line="525" selection-end-column="29" />
-          <folding>
-            <element signature="e#1663#1671#0" expanded="true" />
-            <element signature="e#1738#1746#0" expanded="true" />
-            <element signature="e#21047#21057#0" expanded="true" />
-            <element signature="e#21477#21493#0" expanded="true" />
-            <element signature="e#22756#22767#0" expanded="true" />
-            <element signature="e#23230#23240#0" expanded="true" />
-            <element signature="e#23674#23690#0" expanded="true" />
-            <element signature="e#24946#24957#0" expanded="true" />
-            <element signature="e#25520#25530#0" expanded="true" />
-            <element signature="e#25978#25994#0" expanded="true" />
-            <element signature="e#26995#27006#0" expanded="true" />
-            <element signature="e#28073#28083#0" expanded="true" />
-            <element signature="e#28545#28561#0" expanded="true" />
-            <element signature="e#29908#29919#0" expanded="true" />
-            <element signature="e#30444#30454#0" expanded="true" />
-            <element signature="e#30901#30917#0" expanded="true" />
-            <element signature="e#32099#32110#0" expanded="true" />
-            <element signature="e#33270#33280#0" expanded="true" />
-            <element signature="e#33745#33761#0" expanded="true" />
-            <element signature="e#35254#35265#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="7215">
+          <caret line="536" column="25" lean-forward="false" selection-start-line="536" selection-start-column="25" selection-end-line="536" selection-end-column="25" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/jInst/JInst.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/jInst/transform/InstrumentGradleHelper.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="62" column="0" lean-forward="false" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
+        <state relative-caret-position="2445">
+          <caret line="179" column="0" lean-forward="false" selection-start-line="179" selection-start-column="0" selection-end-line="179" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jInst/visitors/TestChangerVisitor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-21">
+          <caret line="42" column="40" lean-forward="false" selection-start-line="42" selection-start-column="40" selection-end-line="42" selection-end-column="40" />
           <folding />
         </state>
       </provider>
