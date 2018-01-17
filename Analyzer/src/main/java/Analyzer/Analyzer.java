@@ -224,6 +224,7 @@ public class Analyzer {
                         int timeBatttery = Integer.parseInt(row[Utils.getMatch(columns, Utils.batteryPower).first]);
                         int watts = Integer.parseInt(row[Utils.getMatch(columns, Utils.batteryPower).second]);
                         timeConsumption.put(timeBatttery, watts);
+                        consumptionList.add(getDataFromRow(columns,row));
                     }
                     timeStates.add(Integer.parseInt(row[Utils.getMatch(columns,Utils.stateDescription).first]));
                 }
@@ -421,21 +422,22 @@ public class Analyzer {
     public static void showData(List<Consumption> list){
 
         for (Consumption c :list) {
-            returnList[0] = (returnList[0]>1? true :false) || (c.getWifiState()>1? true :false)? 1 :0;
+            returnList[0] = (returnList[0] > 1) || (c.getWifiState() > 1)? 1 :0;
+            returnList[0] = (returnList[0] > 1) || (c.getWifiState() > 1)? 1 :0;
             returnList[1] = returnList[1] > c.getMobileDataState()? returnList[1] : c.getMobileDataState();
-            returnList[2] = (returnList[2]>0? true :false) || (c.getScreenState()>0? true :false)? 1 :0;
-            returnList[3] = (returnList[3]>0? true :false) || (c.getBatteryStatus()>0? true :false)? 1 :0;
+            returnList[2] = (returnList[2] > 0) || (c.getScreenState() > 0)? 1 :0;
+            returnList[3] = (returnList[3] > 0) || (c.getBatteryStatus() > 0)? 1 :0;
             returnList[4] += c.getWifiRSSILevel();
             returnList[5] += c.getMemUsage();
-            returnList[6] = (returnList[6]>0? true :false) || (c.getBluetoothState()>1? true :false)? 1 :0;
+            returnList[6] = ((returnList[6] > 0) || ((c.getBluetoothState() > 1) )) ? 1 : 0;
             returnList[7] += c.getGpuFreq();
             returnList[8] += c.getCpuLoadNormalized();
-            returnList[9] += (returnList[9]>0? true :false) || (c.getGpsState()>0? true :false)? 1 :0;
+            returnList[9] = (returnList[9] > 0) || (c.getGpsState() > 0)? 1 :0;
         }
         returnList[4] = returnList[4] / (list.size()>0? list.size() : 1);
         returnList[5] = returnList[5] / (list.size()>0? list.size() : 1);
-        returnList[7] = returnList[4] / (list.size()>0? list.size() : 1);
-        returnList[8] = returnList[5] / (list.size()>0? list.size() : 1);
+        returnList[7] = returnList[7] / (list.size()>0? list.size() : 1);
+        returnList[8] = returnList[8] / (list.size()>0? list.size() : 1);
 
     }
 
