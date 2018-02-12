@@ -39,7 +39,8 @@ public class TestChangerVisitor extends VoidVisitorAdapter{
         if(n.getBlock() == null) n.setBlock(new BlockStmt());
         List<Statement> x = n.getBlock().getStmts() != null ? n.getBlock().getStmts() : new LinkedList<Statement>();
         String metodo = ((ClassDefs) arg).getPack() + "." + ((ClassDefs) arg).getName()+"<" +n.getName() + ">";
-        MethodCallExpr mce = ((TestOrientedProfiler) InstrumentHelper.getProfiler()).markTest(null,metodo);
+        MethodCallExpr m = null;
+        MethodCallExpr mce =  (InstrumentHelper.getProfiler()).marKTest(m,metodo);
         x.add( new ExpressionStmt(mce));
         n.getBlock().setStmts(x);
 

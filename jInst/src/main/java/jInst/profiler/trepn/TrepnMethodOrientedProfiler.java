@@ -23,6 +23,7 @@ public class TrepnMethodOrientedProfiler implements MethodOrientedProfiler{
     private static String markstartMethod = "updateState";
     private static String markstopMethod = "updateState";
     private static String context = "null";
+    private static String markTest = "traceTest";
 
 
     public TrepnMethodOrientedProfiler(){}
@@ -77,4 +78,15 @@ public class TrepnMethodOrientedProfiler implements MethodOrientedProfiler{
         ASTHelper.addArgument(mcB, method1);
         return  mcB;
     }
+
+    @Override
+    public MethodCallExpr marKTest(MethodCallExpr context, String method) {
+        MethodCallExpr mcB = new MethodCallExpr();
+        mcB.setName( library +"." + markTest);
+        Expression method1 = new StringLiteralExpr( method);
+        ASTHelper.addArgument(mcB, method1);
+        return  mcB;
+    }
+
+
 }

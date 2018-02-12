@@ -1,8 +1,11 @@
 #excluded files
-logs/*.log
+logs/*
 *.txt
 debugBuild/*
 Analyzer/target/*
 Analyzer/mave.*
 jInst/target/*
 jInst/mave.*
+.DS_Store
+Analyzer/.idea/*
+jInst/.idea/*

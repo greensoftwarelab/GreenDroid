@@ -13,6 +13,15 @@ else
 	MKDIR_COMMAND="mkdir"	
 fi
 
+####################### Method or Test Oriented
+TestOriented="ON"   # ON - test oriented | !ON Method Oriented
+#######################
+if [ $TestOriented == "ON" ]; then 
+	trace="-TraceMethods"
+else
+	trace="wtv"
+fi
+
 OLDIFS=$IFS
 tName="_TRANSFORMED_"
 deviceDir=""
@@ -30,7 +39,7 @@ profileHardware="YES" # YES or ""
 flagStatus="on"
 SLEEPTIME=10
 #DIR=$HOME/tests/wasSuccess/gradleProjects/*
-DIR=$HOME/tests/success/*
+DIR=$HOME/tests/actual/*
 #DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
 
 

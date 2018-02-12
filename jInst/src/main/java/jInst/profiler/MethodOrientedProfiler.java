@@ -16,4 +16,7 @@ public interface MethodOrientedProfiler extends Profiler{ //  product
 
 
     MethodCallExpr marKMethodStop(MethodCallExpr context, String method);
+
+    MethodCallExpr marKTest(MethodCallExpr context, String method);
 }
+

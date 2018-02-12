@@ -26,7 +26,6 @@ jInst/visitors/ReturnVisitor.class
 jInst/visitors/GenericBlockVisitor.class
 jInst/profiler/trepn/TrepnProfilerFactory.class
 jInst/visitors/IfChangerVisitor.class
-jInst/tester.class
 jInst/profiler/trepn/TrepnMethodOrientedProfiler.class
 jInst/util/PackageM.class
 jInst/visitors/MethodVisitor.class

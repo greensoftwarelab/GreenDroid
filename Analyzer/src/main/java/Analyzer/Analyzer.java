@@ -288,21 +288,23 @@ public class Analyzer {
 
 
             int totalconsum = 0;
+            double delta_seconds =0, watt =0;
             int toma =0, delta = 0, ultimo = ts.first();
             for(Integer i : ts){
                 toma =i;
                 delta = toma -ultimo;
-                totalconsum+= delta * (closestMemMeasure(timeConsumption,toma));
+                delta_seconds = ((double)totaltime/((double)1000));
+                watt = (double) (closestMemMeasure(timeConsumption,toma))/((double) 1000000);
+                //totalconsum+= (delta * (closestMemMeasure(timeConsumption,toma)));
+                totalconsum+= (delta_seconds * watt);
                 ultimo = i;
             }
 
 
-           // double watt = (double) total/((double) 1000000);
-            // double joules = ((double)(((double)totaltime/((double)1000))) * (watt));
+            //double watt = (double) total/((double) 1000000);
+            double joules = ((double)(((double)totaltime/((double)1000))) * (watt));
 
-            double joules = totalconsum;
-
-
+            //double joules = totalconsum;
             if (total>0)
             {
                 System.out.println("---------"+ " TEST CONSUMPTION" + "-----------");
@@ -328,6 +330,7 @@ public class Analyzer {
                 {
                     if(entry.getFileName().toString().matches("TracedMethods"+number+".txt")){
                        p = entry;//break;
+                        break;
                     }
                 }
                 stream.close();
@@ -605,7 +608,7 @@ public static double perto(Map<Integer,Double> timeConsumption, int time){
             System.out.println(s);*/
         System.out.println("-----------");
         if (args.length>3) {
-            boolean testOriented = args[0].equals("-TraceMethods") ? true : false;
+            boolean testOriented = args[0].equals("-TraceMethods");
             resultDirPath =args[1];
             allMethodsDir = args[2];
             allmethods = loadMethods(allMethodsDir);
