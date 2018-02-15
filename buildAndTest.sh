@@ -233,14 +233,15 @@ else
 						
 						#Run greendoid!
 						#java -jar $GD_ANALYZER $ID $PACKAGE $TESTPACKAGE $FOLDER $FOLDER/tName $localDir
-						(java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv) > $logDir/analyzer.log  ##RR
+						#(java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv) > $logDir/analyzer.log  ##RR
+						java -jar $GD_ANALYZER $trace $projLocalDir/ 
 						cat $logDir/analyzer.log
 						errorAnalyzer=$(cat $logDir/analyzer.log)
 						#TODO se der erro imprimir a vermelho e aconselhar usar o trepFix.sh
 						#break
 						./trepnFix.sh
 						w_echo "$TAG sleeping between profiling apps"
-						sleep 60
+						sleep $SLEEPTIME
 						w_echo "$TAG resuming Greendroid after nap"
 					done
 				fi
@@ -331,7 +332,9 @@ else
 							#continue
 						fi
 						#Run greendoid!
-						java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv  ##RR
+						#java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv  ##RR
+						java -jar $GD_ANALYZER $trace $projLocalDir/ 
+
 						./trepnFix.sh
 						#break
 					else

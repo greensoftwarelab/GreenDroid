@@ -24,7 +24,7 @@ public class Analyzer {
 
     private static List<String> loadTests(String fileDir) throws Exception {
         alltests = new ArrayList<String>();
-        Path path = Paths.get(fileDir + "TracedTests.txt");
+        Path path = Paths.get(fileDir + "/TracedTests.txt");
         try {
             try (Stream<String> lines = Files.lines (path, StandardCharsets.UTF_8))
             {
@@ -190,8 +190,8 @@ public class Analyzer {
             boolean first= true, stop = true;
             for(int i =4; i< resolvedData.size();i++) {
                 row  = resolvedData.get(i);
-                if(row.length<=5) continue;
-                if(row[ Utils.getMatch(columns,Utils.stateDescription).first]!=null&&row[ Utils.getMatch(columns,Utils.stateDescription).second]!=null) { // if this line has line and descrip
+                if(row.length<=5) break;
+                if(row[ Utils.getMatch(columns,Utils.stateDescription).first]!=null&&row[ Utils.getMatch(columns,Utils.stateDescription).second]!=null) { // if this line has state and descrip
                     state = Integer.parseInt(row[Utils.getMatch(columns,Utils.stateInt).second]) > 0;
                     method = new String(row[Utils.getMatch(columns,Utils.stateDescription).second]);
 
