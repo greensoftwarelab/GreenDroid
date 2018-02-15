@@ -112,7 +112,7 @@ public class InstrumentHelper {
     public InstrumentHelper(String tName, String work, String proj, String tests, boolean trace) {
         this.tName = tName;
         this.workspace = work;
-        this.project = proj+"/";
+        this.project = proj;
         this.tests = tests;
         this.transFolder = project+tName+"/";
         this.transTests = transFolder+"tests"+"/";
@@ -255,7 +255,7 @@ public class InstrumentHelper {
         File fTransf = new File(transFolder); fTransf.mkdir();
         File[] listOfFiles = fProject.listFiles();
 
-        //this.findLauncher();
+        this.findLauncher();
 
         //Copy all the files to the new project folder
         for(File f : listOfFiles){

@@ -47,7 +47,7 @@ public class InstrumentGradleHelper extends InstrumentHelper{
         File fTransf = new File(transFolder); fTransf.mkdir();
         File[] listOfFiles = fProject.listFiles();
 
-        //this.findLauncher();
+        this.findLauncher();
 
 
         //Copy all the files to the new project folder

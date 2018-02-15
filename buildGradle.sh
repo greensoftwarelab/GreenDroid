@@ -22,7 +22,10 @@ TAG="[APP BUILDER]"
 
 #list of available build tools versions
 GRADLE_VERSION=$(gradle --version | grep "Gradle" | cut -f2 -d\ ) # "3.4.1"
+GRADLE_BUILD_VERSION=$(echo "$GRADLE_VERSION" | cut -f1 -d\. )
 #GRADLE_VERSION=3.3 # RR
+
+GRADLE_BUILD_VERSION="3"
 GRADLE_PLUGIN="2.3.3" #TODO - Find a better way to determine this value (see https://developer.android.com/studio/releases/gradle-plugin.html#updating-gradle)
 
 #BUILD_VERSIONS=($(ls $HOME/android-sdk-linux/build-tools/)) #MC
@@ -41,6 +44,30 @@ RUNNER_VERSION="0.5"      # ${ANDROID_HOME}/extras/android/m2repository/com/andr
 RUNNER_RULES="0.5"        # ${ANDROID_HOME}/extras/android/m2repository/com/android/support/test/rules
 RUNNER_ESPRESSO="2.2.2"   # ${ANDROID_HOME}/extras/android/m2repository/com/android/support/test/espresso/espresso-cores
 RUNNER_AUTOMATOR="2.1.2"  # ${ANDROID_HOME}/extras/android/m2repository/com/android/support/test/uiautomator/uiautomator-v18
+
+#DEPENDENCIES STRINGS
+TRANSITIVE=""
+TEST_TRANSITIVE=""
+ANDROID_TEST_TRANSITIVE=""
+DEBUG_TRANSITIVE=""
+
+if [[ $GRADLE_BUILD_VERSION -gt 3 ]]; then
+	#statements
+	TRANSITIVE="implementation"
+	TEST_TRANSITIVE="testImplementation"
+	ANDROID_TEST_TRANSITIVE="androidTestImplementation"
+	DEBUG_TRANSITIVE="debugImplementation"
+else
+	TRANSITIVE="compile"
+	TEST_TRANSITIVE="testCompile"
+	ANDROID_TEST_TRANSITIVE="AndroidTestCompile"
+	DEBUG_TRANSITIVE="debugCompile"
+fi
+
+
+
+
+
 
 #GREENDROID=$FOLDER/libs/greenDroidTracker.jar
 GREENDROID=$FOLDER/libs/TrepnLibrary-release.aar  ##RR
@@ -135,7 +162,7 @@ for x in ${BUILDS[@]}; do
 	$SED_COMMAND -ri.bak "s#renderscriptSupportMode #renderscriptSupportModeEnabled #g" $x
 	$SED_COMMAND -ri.bak "s#ProductFlavor.renderscriptNdkMode #renderscriptNdkModeEnabled #g" $x
 	$SED_COMMAND -ri.bak "s#InstrumentTest #androidTest #g" $x
-	$SED_COMMAND -ri.bak "s#instrumentTestCompile #androidTestCompile #g" $x
+	$SED_COMMAND -ri.bak "s#instrumentTestCompile #$ANDROID_TEST_TRANSITIVE #g" $x
 
 	#check if the app uses the compatibility library and if the minSdkVersion is defined accordingly
 	appCompat=$(egrep "compile ([\"]|[\'])com.android.support:appcompat-v7:(.+)([\"]|[\'])" $x)
@@ -273,7 +300,7 @@ for x in ${BUILDS[@]}; do
 				((DEPEND_LINE++))
 				$SED_COMMAND -i.bak ""$DEPEND_LINE"i dependencies {" $x
 				((DEPEND_LINE++))
-				$SED_COMMAND -i.bak ""$DEPEND_LINE"i compile (name:'TrepnLibrary-release', ext:'aar')" $x
+				$SED_COMMAND -i.bak ""$DEPEND_LINE"i $TRANSITIVE (name:'TrepnLibrary-release', ext:'aar')" $x
 				((DEPEND_LINE++))
 				###
 				# For when we decide to use the new runner, this will be needed
@@ -292,7 +319,7 @@ for x in ${BUILDS[@]}; do
 				$SED_COMMAND -i.bak ""$DEPEND_LINE"i }" $x
 			else
 				((DEPEND_LINE++))
-				$SED_COMMAND -i.bak ""$DEPEND_LINE"i compile (name:'TrepnLibrary-release', ext:'aar')" $x
+				$SED_COMMAND -i.bak ""$DEPEND_LINE"i $TRANSITIVE (name:'TrepnLibrary-release', ext:'aar')" $x
 				###
 				# For when we decide to use the new runner, this will be needed
 				# TEST_CHECK=$(grep "androidTestCompile 'com.android.support.test:runner" $x)
@@ -329,7 +356,7 @@ for x in ${BUILDS[@]}; do
 			DEPEND_LINE=$(wc -l $x | cut -f1 -d\ )
 			echo "" >> $x
 			((DEPEND_LINE++))
-			$SED_COMMAND  -i -e "\$a\ dependencies\ {compile\ (name:'TrepnLibrary-release',\ ext:'aar')}" $x
+			$SED_COMMAND  -i -e "\$a\ dependencies\ {$TRANSITIVE\ (name:'TrepnLibrary-release',\ ext:'aar')}" $x
 			#$SED_COMMAND -i.bak ""$DEPEND_LINE"i dependencies {" $x
 			#((DEPEND_LINE++))
 			#$SED_COMMAND -i.bak ""$DEPEND_LINE"i compile (name:'TrepnLibrary-release', ext:'aar')" $x

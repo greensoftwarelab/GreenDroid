@@ -116,7 +116,14 @@ echo "Nº traces:   $Ntraces"
 if [ $Nmeasures -le "0" ] || [ $Ntraces -le "0" ] || [ $Nmeasures -ne $Ntraces ] ; then 
 	e_echo "[GD ERROR] Something went wrong. Try run trepnFix.sh and try again"
 fi
-echo $localDir
+
+now=$(date +"%d_%m_%y_%H_%M_%S")
+localDir=$localDir/$ID$now
+echo "$TAG Creating support folder..."
+mkdir -p $localDir
+mkdir -p $localDir/all
+#cat ./allMethods.txt >> $localDir/all/allMethods.txt
+
 adb shell ls "$deviceDir/Measures/" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/Measures/{} $localDir
 #adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
 adb shell ls "$deviceDir/Traces/" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.txt" | xargs -I{} adb pull $deviceDir/Traces/{} $localDir

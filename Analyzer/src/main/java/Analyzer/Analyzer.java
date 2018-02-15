@@ -15,16 +15,16 @@ public class Analyzer {
     public static HashMap<String,Integer> allTracedMethods = new HashMap<>(); // Method name -> times invoked
 //    public  static Set<String> allTracedMethods = new HashSet<>();
     public  static String resultDirPath = "results/" ;
-    public static Integer [] returnList = new Integer[10];
+    public static Double [] returnList = new Double[13];
+    public static HashMap<String , List<Double []>>  globalReturnList = new HashMap<>();
     public static String allMethodsDir = "";
     public static List<String> alltests= new ArrayList<>();
     public static HashSet<String> allmethods= new HashSet<>();
 
 
-    private static List<String> loadTests(String allMethods) throws Exception {
+    private static List<String> loadTests(String fileDir) throws Exception {
         alltests = new ArrayList<String>();
-
-        Path path = Paths.get(allMethods + "TracedTests.txt");
+        Path path = Paths.get(fileDir + "TracedTests.txt");
         try {
             try (Stream<String> lines = Files.lines (path, StandardCharsets.UTF_8))
             {
@@ -36,7 +36,6 @@ public class Analyzer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return alltests;
     }
 
@@ -131,7 +130,7 @@ public class Analyzer {
     }
 
 
-    private static void testOriented(String [] args) throws NullPointerException{
+    private static void testOriented( List<String> args) throws NullPointerException{
         CsvParserSettings settings = new CsvParserSettings();
         Map<Integer,Integer> timeConsumption = new HashMap<>();
         List <Consumption> consumptionList = new ArrayList<>();
@@ -156,20 +155,20 @@ public class Analyzer {
             e.printStackTrace();
         }
         l.clear();
-        for (int j = 0; j <args.length ; j++) {
+        for (int j = 0; j <args.size() ; j++) {
 
-            for (int i = 0; i < 10; i++) { returnList[i]=0;}
+            for (int i = 0; i < 13; i++) { returnList[i]=0.0;}
 
-            if(!args[j].matches(".*.csv.*") || args[j].matches(".*Testresults.csv")) continue;
-            System.out.println("--- " + args[j] + " ---");
+            if(!args.get(j).matches(".*.csv.*") || args.get(j).matches(".*Testresults.csv")) continue;
+            System.out.println("--- " + args.get(j) + " ---");
             CsvParser parser = new CsvParser(settings);
             // 3rd, parses all rows of data in selected columns from the CSV file into a matrix
             List<String[]> resolvedData = null;
             try {
-                File f  = new File(args[j]);
+                File f  = new File(args.get(j));
                 resolvedData = parser.parseAll(new FileReader(f.getAbsolutePath()));
             } catch (FileNotFoundException e) {
-                System.out.println("[ANALYZER]: File Not Found: There is no " +args[j] +" csv file in directory! to generate results");
+                System.out.println("[ANALYZER]: File Not Found: There is no " +args.get(j) +" csv file in directory! to generate results");
                 continue;
             }
 
@@ -181,7 +180,7 @@ public class Analyzer {
                 System.out.println("[ANALYZER] Error fetching columns. Result csv might have an error");
             }
 
-            String number = args[j].replaceAll(".+GreendroidResultTrace(.+)\\..+","$1");
+            String number = args.get(j).replaceAll(".+GreendroidResultTrace(.+)\\..+","$1");
 
             int timeStart = 0;
             int timeEnd = 0;
@@ -209,13 +208,13 @@ public class Analyzer {
                     }
                     else if(!state && method.equals("stopped") ){
 //                        int timeTrepn = Integer.parseInt(row[0]);
-                       // int timeBatttery = Integer.parseInt(row[Utils.getMatch(columns,Utils.batteryPower).first]);
-                 //       int watts = Integer.parseInt(row[Utils.getMatch(columns,Utils.batteryPower).second]);
+                          //int timeBatttery = Integer.parseInt(row[Utils.getMatch(columns, Utils.batteryPower).first]);
+                         // int watts = Integer.parseInt(row[Utils.getMatch(columns, Utils.batteryPower).second]);
 //                        int delta = Integer.parseInt(row[8]);
-                        timeEnd  = Integer.parseInt(row[Utils.getMatch(columns,Utils.stateDescription).first]);
-//                         ended = new Consumption(0,state,method,0, 0, 0, timeEnd);
-                        i= resolvedData.size()+1;
-                        stop=false;
+                          timeEnd  = Integer.parseInt(row[Utils.getMatch(columns,Utils.stateDescription).first]);
+//                        ended = new Consumption(0,state,method,0, 0, 0, timeEnd);
+                          i= resolvedData.size()+1;
+                          stop=false;
 //                        consumptionList.add(getDataFromRow(columns,row));
                   //      timeConsumption.put(timeBatttery,watts);
                     }
@@ -318,9 +317,8 @@ public class Analyzer {
 
             }
 
-            // GreendroidResultTrace0
-
-            File f = new File(args[j]);
+            // get TracedMethodsX.txt file in the folder of the csv file
+            File f = new File(args.get(j));
             Path path = Paths.get(f.getAbsoluteFile().getParent());
             Path p = null;
             try{
@@ -345,28 +343,47 @@ public class Analyzer {
             System.out.println("percentage: " +  totalcoverage+ " %");
             System.out.println("------------------------------------------------");
             showData(consumptionList);
-            Integer [] hardwareResults = returnList;
-            if (total>0){
-                l.add(String.valueOf(getTestName(number)));l.add(String.valueOf(joules));  l.add( String.valueOf(totaltime)); l.add(String.valueOf(totalcoverage));
-                for (int i = 0; i < hardwareResults.length ; i++) { l.add(String.valueOf(hardwareResults[i])); }
-                try {
-                    write(fw,l);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                l.clear();
+
+            returnList[10] = ((double) totaltime);
+            returnList[11] =  joules;
+            returnList[12] =  totalcoverage;
+
+            /* l.add(String.valueOf(getTestName(number)));
+            l.add(String.valueOf(total > 0 ? joules : 0));
+            l.add( String.valueOf(total > 0 ?totaltime : 0 ));
+            l.add(String.valueOf(totalcoverage));
+            for (int i = 0; i < hardwareResults.length ; i++) { l.add(String.valueOf(hardwareResults[i])); }
+            try {
+                write(fw,l);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            else {
-                l.add(args[j]);l.add(String.valueOf(0)); l.add(String.valueOf(0));l.add(String.valueOf(totalcoverage));
-                for (int i = 0; i < hardwareResults.length ; i++) { l.add(String.valueOf(hardwareResults[i])); }
-                try {
-                    write(fw,l);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                l.clear();
-            }
+            l.clear();
+*/
+            copyToGlobalReturnList(getTestName(number));
+            // end of csv file processing
         }
+
+        // final Results
+
+        //  print to file the results and name of test
+
+        for (String testName: globalReturnList.keySet()) {
+
+            Double [] testResults = showGlobalData(testName);
+            l.add(String.valueOf(testName));
+            l.add(String.valueOf(testResults[11]));
+            l.add( String.valueOf(testResults[10]));
+            l.add( String.valueOf(testResults[12]));
+            for (int i = 0; i < 10 ; i++) { l.add(String.valueOf(testResults[i])); }
+            try {
+                write(fw,l);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            l.clear();
+        }
+
 
         double tc = totalCoverage()*100;
         System.out.println("\n///////////////////////////////////////////////");
@@ -375,7 +392,7 @@ public class Analyzer {
         System.out.println("------------------------------------------------");
 
         try {
-            l.add("Total method coverage"); l.add(String.valueOf(0)); l.add( String.valueOf(0)); l.add( String.valueOf(0));l.add(String.valueOf(tc));
+            l.add("Total method coverage"); l.add(String.valueOf(0)); l.add( String.valueOf(0)); l.add(String.valueOf(tc));
             write(fw,l);
             l.clear();
             l.add(""); l.add(""); l.add(""); l.add( "");l.add("");
@@ -407,41 +424,77 @@ public class Analyzer {
     }
 
     private static Consumption getDataFromRow( HashMap<String, Pair<Integer, Integer>> columns,String[] row) {
-        int wifiState = Utils.getMatch(columns, Utils.wifiState)!=null? (row[Utils.getMatch(columns, Utils.wifiState).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.wifiState).second])) : returnList[0]) : returnList[0];
+        double wifiState = Utils.getMatch(columns, Utils.wifiState)!=null? (row[Utils.getMatch(columns, Utils.wifiState).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.wifiState).second])) : returnList[0]) : returnList[0];
               //  Integer.parseInt(row[Utils.getMatch(columns, Utils.wifiState).second]);
-        int mobileData = Utils.getMatch(columns, Utils.mobileData)!=null? (row[Utils.getMatch(columns, Utils.mobileData).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.mobileData).second])) : returnList[1]) : returnList[1];
-        int screenState = Utils.getMatch(columns, Utils.screenState)!=null?  (row[Utils.getMatch(columns, Utils.screenState).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.screenState).second])) : returnList[2]) : returnList[2];
-        int batteryStatus = Utils.getMatch(columns, Utils.batteryStatus)!=null?  (row[Utils.getMatch(columns, Utils.batteryStatus).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.batteryStatus).second])) : returnList[3]) : returnList[3];
-        int wifiRSSI = Utils.getMatch(columns, Utils.wifiRSSILevel)!=null?  (row[Utils.getMatch(columns, Utils.wifiRSSILevel).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.wifiRSSILevel).second])) : returnList[4]) : returnList[4];
-        int memUsage = Utils.getMatch(columns, Utils.memory)!=null?  (row[Utils.getMatch(columns, Utils.memory).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.memory).second])) : returnList[5]) : returnList[5];
-        int bluetooth = Utils.getMatch(columns, Utils.bluetoothState)!=null?  (row[Utils.getMatch(columns, Utils.bluetoothState).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.bluetoothState).second])) : returnList[6]) : returnList[6];
-        int gpuLoad = Utils.getMatch(columns, Utils.gpuLoad)!=null? (row[Utils.getMatch(columns, Utils.gpuLoad).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.gpuLoad).second])) : returnList[7]) : returnList[7];
-        int cpuLoadNormalized = Utils.getMatch(columns, Utils.wifiRSSILevel)!=null?  (row[Utils.getMatch(columns, Utils.wifiRSSILevel).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.wifiRSSILevel).second])) : returnList[8]) : returnList[8];
-        int gps = Utils.getMatch(columns, Utils.gpsSate)!=null? (row[Utils.getMatch(columns, Utils.gpsSate).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.gpsSate).second])) : returnList[9]) : returnList[9];
-        return new Consumption(memUsage, mobileData, wifiState, wifiRSSI, screenState, 0, 0, batteryStatus, bluetooth, gpuLoad, gps, cpuLoadNormalized);
+        double mobileData = Utils.getMatch(columns, Utils.mobileData)!=null? (row[Utils.getMatch(columns, Utils.mobileData).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.mobileData).second])) : returnList[1]) : returnList[1];
+        double screenState = Utils.getMatch(columns, Utils.screenState)!=null?  (row[Utils.getMatch(columns, Utils.screenState).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.screenState).second])) : returnList[2]) : returnList[2];
+        double batteryStatus = Utils.getMatch(columns, Utils.batteryStatus)!=null?  (row[Utils.getMatch(columns, Utils.batteryStatus).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.batteryStatus).second])) : returnList[3]) : returnList[3];
+        double wifiRSSI = Utils.getMatch(columns, Utils.wifiRSSILevel)!=null?  (row[Utils.getMatch(columns, Utils.wifiRSSILevel).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.wifiRSSILevel).second])) : returnList[4]) : returnList[4];
+        double memUsage = Utils.getMatch(columns, Utils.memory)!=null?  (row[Utils.getMatch(columns, Utils.memory).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.memory).second])) : returnList[5]) : returnList[5];
+        double bluetooth = Utils.getMatch(columns, Utils.bluetoothState)!=null?  (row[Utils.getMatch(columns, Utils.bluetoothState).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.bluetoothState).second])) : returnList[6]) : returnList[6];
+        double gpuLoad = Utils.getMatch(columns, Utils.gpuLoad)!=null? (row[Utils.getMatch(columns, Utils.gpuLoad).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.gpuLoad).second])) : returnList[7]) : returnList[7];
+        double cpuLoadNormalized = Utils.getMatch(columns, Utils.cpuLoadNormalized)!=null?  (row[Utils.getMatch(columns, Utils.cpuLoadNormalized).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.cpuLoadNormalized).second])) : returnList[8]) : returnList[8];
+        double gps = Utils.getMatch(columns, Utils.gpsSate)!=null? (row[Utils.getMatch(columns, Utils.gpsSate).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.gpsSate).second])) : returnList[9]) : returnList[9];
+        return new Consumption(((int) memUsage), ((int) mobileData), ((int) wifiState), ((int) wifiRSSI), ((int) screenState), 0, 0, ((int) batteryStatus), ((int) bluetooth), ((int) gpuLoad), ((int) gps), ((int) cpuLoadNormalized));
 
     }
+
+
 
     public static void showData(List<Consumption> list){
 
         for (Consumption c :list) {
-            returnList[0] = (returnList[0] > 1) || (c.getWifiState() > 1)? 1 :0;
-            returnList[0] = (returnList[0] > 1) || (c.getWifiState() > 1)? 1 :0;
-            returnList[1] = returnList[1] > c.getMobileDataState()? returnList[1] : c.getMobileDataState();
-            returnList[2] = (returnList[2] > 0) || (c.getScreenState() > 0)? 1 :0;
-            returnList[3] = (returnList[3] > 0) || (c.getBatteryStatus() > 0)? 1 :0;
+            returnList[0] = (double)((returnList[0] > 1) || (c.getWifiState() > 1)? 1 :0);
+            returnList[1] = (double)(returnList[1] > c.getMobileDataState()? returnList[1] : c.getMobileDataState());
+            returnList[2] = (double)((returnList[2] > 0) || (c.getScreenState() > 0)? 1 :0);
+            returnList[3] = (double)((returnList[3] > 0) || (c.getBatteryStatus() > 0)? 1 :0);
             returnList[4] += c.getWifiRSSILevel();
             returnList[5] += c.getMemUsage();
-            returnList[6] = ((returnList[6] > 0) || ((c.getBluetoothState() > 1) )) ? 1 : 0;
+            returnList[6] = (double)(((returnList[6] > 0) || ((c.getBluetoothState() > 1) )) ? 1 : 0);
             returnList[7] += c.getGpuFreq();
             returnList[8] += c.getCpuLoadNormalized();
-            returnList[9] = (returnList[9] > 0) || (c.getGpsState() > 0)? 1 :0;
+            returnList[9] = (double)((returnList[9] > 0) || (c.getGpsState() > 0)? 1 :0);
         }
         returnList[4] = returnList[4] / (list.size()>0? list.size() : 1);
         returnList[5] = returnList[5] / (list.size()>0? list.size() : 1);
         returnList[7] = returnList[7] / (list.size()>0? list.size() : 1);
         returnList[8] = returnList[8] / (list.size()>0? list.size() : 1);
 
+    }
+
+
+    public static  Double [] showGlobalData(String testName){
+
+        Double [] finalReturnList = new Double[13];
+        for (int i = 0; i < finalReturnList.length ; i++) {
+            finalReturnList[i] = 0.0;
+        }
+
+        for( Double [] list : globalReturnList.get(testName)){
+            finalReturnList[0] = (finalReturnList[0] > 1) || (list[0] > 1)? 1 :0.0;
+            finalReturnList[1] = finalReturnList[1] > list[1]? finalReturnList[1] :  list[1];
+            finalReturnList[2] = (finalReturnList[2] > 1) || (list[2] > 1)? 1 :0.0;
+            finalReturnList[3] = (finalReturnList[3] > 1) || (list[3] > 1)? 1 :0.0;
+            finalReturnList[4] += list[4];
+            finalReturnList[5] += list[5];
+            finalReturnList[6] = (finalReturnList[6] > 1) || (list[6] > 1)? 1 :0.0;
+            finalReturnList[7] += list[7];
+            finalReturnList[8] += list[8];
+            finalReturnList[9] = (finalReturnList[9] > 1) || (list[9] > 1)? 1 :0.0;
+            finalReturnList[10] += list[10];
+            finalReturnList[11] += list[11];
+            finalReturnList[12] = finalReturnList[12] > list[12]? finalReturnList[12] :  list[12];
+
+        }
+
+        finalReturnList[4] = finalReturnList[4] / (globalReturnList.get(testName).size()>0? globalReturnList.get(testName).size() : 1);
+        finalReturnList[5] = finalReturnList[5] / (globalReturnList.get(testName).size()>0? globalReturnList.get(testName).size() : 1);
+        finalReturnList[7] = finalReturnList[7] / (globalReturnList.get(testName).size()>0? globalReturnList.get(testName).size() : 1);
+        finalReturnList[8] = finalReturnList[8] / (globalReturnList.get(testName).size()>0? globalReturnList.get(testName).size() : 1);
+        finalReturnList[10] = finalReturnList[10] / (globalReturnList.get(testName).size()>0? globalReturnList.get(testName).size() : 1);
+        finalReturnList[11] = finalReturnList[11] / (globalReturnList.get(testName).size()>0? globalReturnList.get(testName).size() : 1);
+
+        return finalReturnList;
     }
 
 
@@ -477,6 +530,24 @@ public class Analyzer {
 
         }
 
+
+
+
+    public static void copyToGlobalReturnList(String testName){
+        Double [] newReturnList = new Double[13];
+        for (int i = 0; i <returnList.length ; i++) {
+            newReturnList[i] = returnList[i];
+        }
+        if(globalReturnList.get(testName)!=null){
+
+            globalReturnList.get(testName).add(newReturnList);
+        }
+        else {
+            List<Double []> l = new ArrayList<>();
+            l.add(newReturnList);
+            globalReturnList.put(testName, l);
+        }
+    }
 
 
 // mapa timebattery, watts
@@ -601,16 +672,59 @@ public static double perto(Map<Integer,Double> timeConsumption, int time){
     }
 
 
+    public static  List <String> getAllCsvs(String resultDirPath){
+
+        /*File f = new File(resultDirPath);
+        Path path = Paths.get(f.getAbsoluteFile().getParent());
+        System.out.println("folde3r " + path);
+
+        */
+        List <String> list = new ArrayList<>( );
+        Path path = Paths.get(resultDirPath);
+        try{
+            DirectoryStream<Path> stream;
+            stream = Files.newDirectoryStream(path);
+            // foreach file in resulDir folder
+            for (Path entry : stream) {
+                if(Files.isDirectory(entry)){ // if is a folder
+                    //get files of that folder
+                    DirectoryStream<Path> streamChild = null;
+                    try {
+                        streamChild = Files.newDirectoryStream(Paths.get(entry.toString()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return list;
+                    }
+                    for (Path entry1 : streamChild) { //foreach file of that foler
+                        if(entry1.getFileName().toString().matches("GreendroidResultTrace[0-9]+\\.csv")){
+                            list.add(entry1.toString());
+                        }
+                    }
+                }
+
+            }
+            stream.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+       /* for (String l: list) {
+            System.out.println("ficheiro " +l);
+        }*/
+
+        return list;
+    }
+
     public static void main(String[] args) {
 
-        /*System.out.println("Argumentos:");
-        for (String  s: args)
-            System.out.println(s);*/
         System.out.println("-----------");
-        if (args.length>3) {
+        if (args.length>1) {
             boolean testOriented = args[0].equals("-TraceMethods");
             resultDirPath =args[1];
-            allMethodsDir = args[2];
+            System.out.println(resultDirPath);
+            allMethodsDir = resultDirPath + "/all/";
+            System.out.println(allMethodsDir);
             allmethods = loadMethods(allMethodsDir);
             try {
                 alltests = loadTests(resultDirPath);
@@ -621,7 +735,9 @@ public static double perto(Map<Integer,Double> timeConsumption, int time){
 
             if (testOriented) {
                 try {
-                    testOriented(Arrays.copyOfRange(args, 3, args.length));
+                    //testOriented(Arrays.copyOfRange(args, 3, args.length));
+                    testOriented(getAllCsvs(resultDirPath));
+
                 } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
 //                    System.out.println("[Analyzer] Error parsing the file. Please run again or restart Trepn");
                     e.printStackTrace();
