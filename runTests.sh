@@ -49,7 +49,6 @@ else
 
 	w_echo "$TAG Running the tests (Measuring)"
 	adb shell "echo 1 > $deviceDir/GDflag"
-	echo "$Timeout_COMMAND -s 9 $TIMEOUT adb shell am instrument -w $testPack/$runner &> runStatus.log"
 	($Timeout_COMMAND -s 9 $TIMEOUT adb shell am instrument -w $testPack/$runner) &> runStatus.log
 
 	missingInstrumentation=$(grep "Unable to find instrumentation info for" runStatus.log)
@@ -123,6 +122,8 @@ echo "$TAG Creating support folder..."
 mkdir -p $localDir
 mkdir -p $localDir/all
 #cat ./allMethods.txt >> $localDir/all/allMethods.txt
+
+
 
 adb shell ls "$deviceDir/Measures/" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/Measures/{} $localDir
 #adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 

@@ -45,6 +45,10 @@ RUNNER_RULES="0.5"        # ${ANDROID_HOME}/extras/android/m2repository/com/andr
 RUNNER_ESPRESSO="2.2.2"   # ${ANDROID_HOME}/extras/android/m2repository/com/android/support/test/espresso/espresso-cores
 RUNNER_AUTOMATOR="2.1.2"  # ${ANDROID_HOME}/extras/android/m2repository/com/android/support/test/uiautomator/uiautomator-v18
 
+
+#LINT
+LINT_ISSUES="\n check\ \'Recycle\',\ \'WakeLock\',\'DrawAllocation',\'ObsoleteLayoutParam\',\'ViewHolder\'\ "
+
 #DEPENDENCIES STRINGS
 TRANSITIVE=""
 TEST_TRANSITIVE=""
@@ -137,6 +141,13 @@ for x in ${BUILDS[@]}; do
 			$SED_COMMAND -i.bak ""$ANDROID_LINE"i }" $x
 		fi
 	fi
+
+	##dummy way to add lint checks
+	ANDROID_LINE=($(egrep -n "android( ?){" $x | cut -f1 -d:))
+	if [ -n "${ANDROID_LINE[0]}" ]; then
+		$SED_COMMAND  -i -e "\$a android\ { lintOptions\ {\ $LINT_ISSUES \n }}" $x
+	fi
+
 	### dummy way to add mavenCentral and jcenter
 		$SED_COMMAND  -i -e "\$a\ buildscript\ {repositories\ {jcenter()\ \n\ mavenCentral()}}" $x
 	###
@@ -392,7 +403,9 @@ if [ -n "$WRAPPER" ]; then
 	WRAPPER=${WRAPPER// /\\ }
 	$SED_COMMAND -ri.bak "s#distributionUrl.+#distributionUrl=http\://services.gradle.org/distributions/gradle-$GRADLE_VERSION-all.zip#g" $WRAPPER
 fi 
+
 gradle --no-daemon -b $GRADLE clean build assembleAndroidTest &> $logDir/buildStatus.log
+#gradle -b $GRADLE clean build assembleAndroidTest &> $logDir/buildStatus.log
 
 ## The 'RR' way:
 ## chmod +x $FOLDER/gradlew

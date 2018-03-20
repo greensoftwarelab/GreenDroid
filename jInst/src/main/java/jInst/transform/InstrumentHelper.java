@@ -5,6 +5,7 @@
 package jInst.transform;
 
 //import greendroid.tools.Util;
+import Metrics.APICallUtil;
 import com.github.javaparser.*;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ASTHelper;
@@ -55,6 +56,7 @@ public class InstrumentHelper {
     protected String workspace;
     protected String project;
     protected String tests;
+
     protected String transFolder;
     protected String transTests;
     protected String aux;
@@ -71,9 +73,15 @@ public class InstrumentHelper {
     protected Map<String,String> testType = new HashMap<>();
     private static ClassDefs appPackage = new ClassDefs();
     private static Profiler profiler;
+    private APICallUtil acu = new APICallUtil();
 
+    public String getTransFolder() {
+        return transFolder;
+    }
 
-
+    public void setTransFolder(String transFolder) {
+        this.transFolder = transFolder;
+    }
 
 
 
@@ -96,6 +104,7 @@ public class InstrumentHelper {
 
 
 
+
     public void setProfiler(boolean traceMethods){
 
         ProfilerAbstractFactory pfact = new TrepnProfilerFactory();
@@ -110,11 +119,12 @@ public class InstrumentHelper {
 
 
     public InstrumentHelper(String tName, String work, String proj, String tests, boolean trace) {
+        this.acu = new APICallUtil();
         this.tName = tName;
         this.workspace = work;
         this.project = proj;
         this.tests = tests;
-        this.transFolder = project+tName+"/";
+        this.transFolder = project+"/"+tName+"/";
         this.transTests = transFolder+"tests"+"/";
         this.manifest = transFolder+"AndroidManifest.xml";
         this.manifestTest = transTests+"AndroidManifest.xml";
@@ -182,6 +192,13 @@ public class InstrumentHelper {
         this.tests = tests;
     }
 
+    public APICallUtil getAcu() {
+        return acu;
+    }
+
+    public void setAcu(APICallUtil acu) {
+        this.acu = acu;
+    }
 
     public static int getSdkVersion(String filename){
 
@@ -255,7 +272,7 @@ public class InstrumentHelper {
         File fTransf = new File(transFolder); fTransf.mkdir();
         File[] listOfFiles = fProject.listFiles();
 
-        this.findLauncher();
+
 
         //Copy all the files to the new project folder
         for(File f : listOfFiles){
@@ -293,6 +310,8 @@ public class InstrumentHelper {
         greenDroid.createNewFile();
         FileUtils.copyFile(new File("libsAdded/greendroid.jar"), greenDroid);
         */
+
+       //this.findLauncher();
     }
 
     protected void findLauncher(){
@@ -344,12 +363,15 @@ public class InstrumentHelper {
         else{
             //if file, then transform it
             if(src.getAbsolutePath().endsWith(".java")){
+
+
                 String res = "";
                 //if(src.getAbsolutePath().contains(this.tests) || src.getAbsolutePath().replace('\\', '/').contains(this.tests) || this.testType.containsKey(src)){
                 if(this.isTestCase(src)){
                     res = transformTest(src.getAbsolutePath());
                 
-                }else{
+                }else{ // is normal java file (!test file)
+                    acu.getClassInfo(src.getAbsolutePath());
                      res = transform(src.getAbsolutePath());
                 }
                 if(!res.equals("")){
@@ -548,6 +570,7 @@ public class InstrumentHelper {
         if(x.getExtends() != null){
             for(ClassOrInterfaceType ci: x.getExtends()){
                 String name = ci.getName();
+                String name2 = ci.getName().replaceAll("<.*?>", "");
                 if(testCase.contains(name)){
                     cDef.setInstrumented(false);
                     isTestable = true;
@@ -977,7 +1000,9 @@ public class InstrumentHelper {
 
         while ((s = b.readLine()) != null) {
             String s1 = new String(s);
-            if(s.matches(".* class .+ extends (TestCase|ActivityUnitTestCase|ActivityIntrumentationTestCase2|ActivityTestCase|ProviderTestCase|SingleLaunchActivityTestCase|SyncBaseInstrumentation|ActivityInstrumentationTestCase|ActivityInstrumentationTestCase2|AndroidTestCase|ApplicationTestCase|LoaderTestCase|ProviderTestCase2|ServiceTestCasefail).*")){
+            if(s.matches(".*(@LargeTest|@MediumTest|@SmallTest|@Smoke|@Suppress)")||
+                    s.matches(".* class .+ extends (TestCase|ActivityUnitTestCase|ActivityInstrumentationTestCase2|ActivityTestCase|ProviderTestCase|SingleLaunchActivityTestCase|SyncBaseInstrumentation|ActivityInstrumentationTestCase|ActivityInstrumentationTestCase2|AndroidTestCase|ApplicationTestCase|LoaderTestCase|ProviderTestCase2|ServiceTestCasefail).*")||
+                    s.matches(".*(TestCase|ActivityUnitTestCase|ActivityInstrumentationTestCase2|ActivityTestCase|ProviderTestCase|SingleLaunchActivityTestCase|SyncBaseInstrumentation|ActivityInstrumentationTestCase|ActivityInstrumentationTestCase2|AndroidTestCase|ApplicationTestCase|LoaderTestCase|ProviderTestCase2|ServiceTestCasefail).*")){
                 addTestType(src.getAbsolutePath(),"Other");
                 res = true;
 
@@ -1156,5 +1181,6 @@ public class InstrumentHelper {
         metodo.setArgs(list);
         return exp;
     }
+
 
 }

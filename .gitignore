@@ -9,3 +9,5 @@ jInst/mave.*
 .DS_Store
 Analyzer/.idea/*
 jInst/.idea/*
+Analyzer/test/*
+jInst/.DS_Store

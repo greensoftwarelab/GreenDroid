@@ -19,20 +19,6 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <outputDirectory>${project.build.directory}</outputDirectory>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>Analyzer.Analyzer</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
@@ -50,6 +36,46 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/../../jars/</outputDirectory>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>Analyzer.Analyzer</mainClass>
+                        </manifest>
+                    </archive>
+                    <finalName>Analyzer</finalName>
+                </configuration>
+            </plugin-->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/../../jars/</outputDirectory>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>Analyzer.Analyzer</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <finalName>Analyzer</finalName>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -59,6 +85,25 @@
             <version>2.4.1</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>com.github.javaparser</groupId>
+            <artifactId>javaparser-core</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.greenlab</groupId>
+            <artifactId>Metrics</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+        </dependency>
+        <!--dependency>
+            <groupId>greenlab</groupId>
+            <artifactId>Metrics</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/../jars/GDMetrics.jar</systemPath>
+            <type>jar</type>
+        </dependency-->
     </dependencies>
 
 </project>

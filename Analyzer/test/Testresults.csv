@@ -1,5 +1,5 @@
 Test Number,Consumption (J),Time (ms),Method coverage (%),Wifi?,Mobile Data?,Screen state,Battery Charging?,Avg RSSI Level,Avg Mem Usage,Bluetooth?,Avg gpu Load,Avg CPU Load,GPS?
-batata,0.023551973,29,0.0,1,0,0,1,-56,2737416,0,0,24,1
-Total method coverage,0,0,0,0.0
+0,0.023551973,29.0,0.0,0,1,0,0,-56,2737416,0,0,24,0
+Total method coverage,0,0,0.0
 ,,,,
-Class,Method,Times invoked
+

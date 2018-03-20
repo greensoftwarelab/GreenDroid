@@ -47,7 +47,7 @@ public class InstrumentGradleHelper extends InstrumentHelper{
         File fTransf = new File(transFolder); fTransf.mkdir();
         File[] listOfFiles = fProject.listFiles();
 
-        this.findLauncher();
+
 
 
         //Copy all the files to the new project folder
@@ -76,6 +76,7 @@ public class InstrumentGradleHelper extends InstrumentHelper{
 
         this.addPermission();
         this.changeRunner();
+      //  this.findLauncher();
     }
 
 
@@ -173,11 +174,14 @@ public class InstrumentGradleHelper extends InstrumentHelper{
         else{
             //if file, then transform it
             if(src.getAbsolutePath().endsWith(".java")){
+//                if (src.getAbsolutePath().endsWith("DocumentCentricAppsInstrumentationTest.java"))
+//                    System.out.println("aqui");
                 String res = "";
                 if(this.isTestCase(src)){
                     res = transformTest(src.getAbsolutePath());
                 }else{
                     res = transform(src.getAbsolutePath());
+                    getAcu().getClassInfo(src.getAbsolutePath());
                 }
                 if(!res.equals("")){
                     dest.createNewFile();

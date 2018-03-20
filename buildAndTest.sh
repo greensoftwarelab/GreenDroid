@@ -8,9 +8,11 @@ getSO machine
 if [ "$machine" == "Mac" ]; then
 	SED_COMMAND="gsed" #mac
 	MKDIR_COMMAND="gmkdir"
+	MV_COMMAND="gmv"
 else 
 	SED_COMMAND="sed" #linux
-	MKDIR_COMMAND="mkdir"	
+	MKDIR_COMMAND="mkdir"
+	MV_COMMAND="mv"	
 fi
 
 ####################### Method or Test Oriented
@@ -42,7 +44,7 @@ SLEEPTIME=1
 
 
 
-DIR=$HOME/tests/actual/*
+DIR=$HOME/tests/critical/*
 #DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
 
 
@@ -193,9 +195,15 @@ else
 						#create results support folder
 						echo "$TAG Creating support folder..."
 						$MKDIR_COMMAND -p $projLocalDir
+						$MKDIR_COMMAND -p $projLocalDir/oldRuns
+						$MV_COMMAND -f $(find  $projLocalDir/ -maxdepth 1 | $SED_COMMAND -n '1!p' |grep -v "oldRuns") $projLocalDir/oldRuns/
 						$MKDIR_COMMAND -p $projLocalDir/all
 						cat ./allMethods.txt >> $projLocalDir/all/allMethods.txt
-		
+						
+						##copy MethodMetric to support folder
+						#echo "copiar $FOLDER/$tName/classInfo.ser para $projLocalDir "
+						cp $FOLDER/$tName/AppInfo.ser $projLocalDir
+
 						#install on device
 						./install.sh $FOLDER/$tName "X" "GRADLE" $PACKAGE $projLocalDir  #COMMENT, EVENTUALLY...
 						RET=$(echo $?)
@@ -235,7 +243,7 @@ else
 						#java -jar $GD_ANALYZER $ID $PACKAGE $TESTPACKAGE $FOLDER $FOLDER/tName $localDir
 						#(java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv) > $logDir/analyzer.log  ##RR
 						java -jar $GD_ANALYZER $trace $projLocalDir/ 
-						cat $logDir/analyzer.log
+						#cat $logDir/analyzer.log
 						errorAnalyzer=$(cat $logDir/analyzer.log)
 						#TODO se der erro imprimir a vermelho e aconselhar usar o trepFix.sh
 						#break
@@ -282,8 +290,10 @@ else
 							if [[ "$RET" == "10" ]]; then
 								#everything went well, at second try
 								#let's create the results support files
-								mkdir -p $projLocalDir
-								mkdir -p $projLocalDir/all
+								$MKDIR_COMMAND -p $projLocalDir
+								$MKDIR_COMMAND -p $projLocalDir/oldRuns
+								mv  $(ls $projLocalDir | grep -v "oldRuns") $projLocalDir/oldRuns/
+								$MKDIR_COMMAND -p $projLocalDir/all
 								cat ./allMethods.txt >> $projLocalDir/all/allMethods.txt
 								echo "$ID" >> $logDir/success.log
 							elif [[ -n "$flagStatus" ]]; then
@@ -304,9 +314,15 @@ else
 						#create results support folder
 						echo "$TAG Creating support folder..."
 						$MKDIR_COMMAND -p $projLocalDir
+						$MKDIR_COMMAND -p $projLocalDir/oldRuns
+						$MV_COMMAND -f $(find  $projLocalDir/ -maxdepth 1 | $SED_COMMAND -n '1!p' |grep -v "oldRuns") $projLocalDir/oldRuns/
 						$MKDIR_COMMAND -p $projLocalDir/all
 						cat ./allMethods.txt >> $projLocalDir/all/allMethods.txt
-	
+						
+						##copy MethodMetric to support folder
+						#echo "copiar $FOLDER/$tName/classInfo.ser para $projLocalDir "
+						cp $FOLDER/$tName/AppInfo.ser $projLocalDir
+						
 						#run tests
 						./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir
 						RET=$(echo $?)
@@ -346,9 +362,9 @@ else
 	    fi
 	done
 	IFS=$OLDIFS
-	testRes=$(find $projLocalDir -name "Testresults.csv")
-	if [ -n $testRes ] ; then 
-		cat $projLocalDir/Testresults.csv | $SED_COMMAND 's/,/ ,/g' | column -t -s, | less -S
-	fi
+#	testRes=$(find $projLocalDir -name "Testresults.csv")
+#	if [ -n $testRes ] ; then 
+#		cat $projLocalDir/Testresults.csv | $SED_COMMAND 's/,/ ,/g' | column -t -s, | less -S
+#	fi
 	./trepnFix.sh
 fi
