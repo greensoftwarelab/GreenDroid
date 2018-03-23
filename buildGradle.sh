@@ -47,7 +47,7 @@ RUNNER_AUTOMATOR="2.1.2"  # ${ANDROID_HOME}/extras/android/m2repository/com/andr
 
 
 #LINT
-LINT_ISSUES="\n check\ \'Recycle\',\ \'WakeLock\',\'DrawAllocation',\'ObsoleteLayoutParam\',\'ViewHolder\'\ "
+LINT_ISSUES="\n check\ \'Recycle\',\ \'Wakelock\',\'DrawAllocation',\'ObsoleteLayoutParam\',\'ViewHolder\'\ "
 
 #DEPENDENCIES STRINGS
 TRANSITIVE=""

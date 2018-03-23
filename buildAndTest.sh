@@ -44,7 +44,7 @@ SLEEPTIME=1
 
 
 
-DIR=$HOME/tests/critical/*
+DIR=$HOME/tests/success/*
 #DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
 
 
@@ -220,9 +220,9 @@ else
 							echo "$ID" >> $logDir/errorRun.log
 							e_echo "[GD ERROR] There was an Error while running tests. Retrying... "
 							#RETRY 
-							./trepFix.sh
+							./trepnFix.sh
 							adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
-							./runTests $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir # "-gradle" $FOLDER/$tName
+							./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir # "-gradle" $FOLDER/$tName
 							RET=$(echo $?)
 							if [[ "$RET" != "0" ]]; then
 								echo "$ID" >> $logDir/errorRun.log
