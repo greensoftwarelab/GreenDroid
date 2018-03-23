@@ -75,6 +75,9 @@ public class ClassDefs {
         this.junit4suite= false;
     }
 
+    public boolean isTestClass(){
+        return hasTests() || junit4 || after || before || setUp || hasStop || tearDown || !isActivity || isSuite() || junit4suite || instrumented;
+    }
 
     public boolean hasTests() {
         return tests;

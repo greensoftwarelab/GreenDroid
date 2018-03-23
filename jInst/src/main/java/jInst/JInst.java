@@ -5,15 +5,12 @@
  */
 package jInst;
 
+import Metrics.APICallUtil;
+import Metrics.ClassInfo;
+import Metrics.GDConventions;
 import jInst.transform.InstrumentGradleHelper;
 import jInst.transform.InstrumentHelper;
-import jInst.util.XMLParser;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,11 +19,11 @@ import java.util.logging.Logger;
  * @author marco
  */
 public class JInst {
-
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        String classInfos = GDConventions.fileStreamName;
         String projType = args[0];
         switch (projType){
             case "-sdk":
@@ -44,10 +41,14 @@ public class JInst {
                         InstrumentHelper helper = new InstrumentHelper(tName, workspace, project, tests,tracemethods);
                         helper.generateTransformedProject();
                         helper.generateTransformedTests();
+                        classInfos = helper.getTransFolder() + classInfos;
+                        APICallUtil.serializeAPICallUtil(helper.getAcu(),classInfos );
+
                     } catch (Exception ex) {
                         Logger.getLogger(JInst.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+
                 break;
             case "-gradle":
                 if(args.length != 7){
@@ -60,13 +61,11 @@ public class JInst {
                     String manifestSource = args[4];
                     String manifestTests = args[5];
                     boolean tracemethods = args[6].equals("-TraceMethods") ? true :false;
-
                     try {
                         InstrumentGradleHelper helper = new InstrumentGradleHelper(tName, workspace, project, "", manifestSource, manifestTests, tracemethods);
-//                           if (!tracemethods) {
-//                            helper.setApplicationClass(XMLParser.getApplicationClass(manifestSource));
-//                        }
                         helper.generateTransformedProject();
+                        classInfos = helper.getTransFolder() + classInfos;
+                        APICallUtil.serializeAPICallUtil(helper.getAcu(),classInfos );
                     } catch (Exception ex) {
                         Logger.getLogger(JInst.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -76,21 +75,5 @@ public class JInst {
                 //
         }
 
-
    }
-
-
-
-//    public static void main(String[] args) {
-//
-//        boolean trace = true;
-//        try {
-//
-//            InstrumentGradleHelper helper = new InstrumentGradleHelper("TRANSFORMED", "X", "/home/rrua/Documents/bolsa/android_proj/gradle/0a22af29-bd03-4168-b9eb-20a7fcc02850/latest/", "", "/home/rrua/Documents/bolsa/android_proj/gradle/0a22af29-bd03-4168-b9eb-20a7fcc02850/latest/app/src/main/AndroidManifest.xml", "-", trace);
-//                        helper.generateTransformedProject();
-//                    } catch (Exception ex) {
-//                        Logger.getLogger(JInst.class.getName()).log(Level.SEVERE, null, ex);
-//                    }
-//    }
-    
 }

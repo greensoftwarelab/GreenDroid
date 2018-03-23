@@ -11,4 +11,5 @@ public interface Profiler { // abstract Product
     MethodCallExpr stopProfiler(MethodCallExpr context);
     ImportDeclaration getLibrary();
     MethodCallExpr getContext();
+    MethodCallExpr marKTest(MethodCallExpr context, String method);
 }

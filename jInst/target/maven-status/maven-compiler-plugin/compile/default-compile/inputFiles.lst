@@ -6,12 +6,12 @@
 /Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/util/XMLParser.java
 /Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/visitors/utils/ReturnFlag.java
 /Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/visitors/WhileChangerVisitor.java
-/Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/visitors/CatchChangerVisitor.java
 /Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/visitors/ReturnVisitor.java
+/Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/visitors/CatchChangerVisitor.java
 /Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/visitors/utils/ClassDefs.java
 /Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/JInst.java
-/Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/visitors/MethodVisitor.java
 /Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/visitors/ReturnFinder.java
+/Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/visitors/MethodVisitor.java
 /Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/profiler/trepn/TrepnTestOrientedProfiler.java
 /Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/profiler/TestOrientedProfiler.java
 /Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/tester.java
@@ -20,8 +20,8 @@
 /Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/visitors/TestChangerVisitor.java
 /Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/visitors/SynchChangerVisitor.java
 /Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/profiler/ProfilerAbstractFactory.java
-/Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/transform/InstrumentGradleHelper.java
 /Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/visitors/TryChangerVisitor.java
+/Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/transform/InstrumentGradleHelper.java
 /Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/visitors/ActivityChangerVisitor.java
 /Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/visitors/GenericBlockVisitor.java
 /Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/util/FileUtils.java

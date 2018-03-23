@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.Writer;
 
+
+
 /**
  * Created by rrua on 30/05/17.
  */
@@ -30,6 +32,8 @@ public class tester {
         sb.append("\n");
         w.append(sb.toString());
     }
+
+
 
 }
 

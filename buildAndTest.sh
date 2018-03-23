@@ -8,9 +8,20 @@ getSO machine
 if [ "$machine" == "Mac" ]; then
 	SED_COMMAND="gsed" #mac
 	MKDIR_COMMAND="gmkdir"
+	MV_COMMAND="gmv"
 else 
 	SED_COMMAND="sed" #linux
-	MKDIR_COMMAND="mkdir"	
+	MKDIR_COMMAND="mkdir"
+	MV_COMMAND="mv"	
+fi
+
+####################### Method or Test Oriented
+TestOriented="ON"   # ON - test oriented | !ON Method Oriented
+#######################
+if [ $TestOriented == "ON" ]; then 
+	trace="-TraceMethods"
+else
+	trace="wtv"
 fi
 
 OLDIFS=$IFS
@@ -28,8 +39,11 @@ trepnLib="TrepnLibrary-release.aar"
 trepnJar="TrepnLibrary-release.jar"
 profileHardware="YES" # YES or ""
 flagStatus="on"
-SLEEPTIME=10
+SLEEPTIME=1
 #DIR=$HOME/tests/wasSuccess/gradleProjects/*
+
+
+
 DIR=$HOME/tests/success/*
 #DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
 
@@ -119,8 +133,7 @@ else
 			else 
 				(adb shell am broadcast -a com.quicinc.trepn.load_preferences –e com.quicinc.trepn.load_preferences_file "$deviceDir/saved_preferences/trepnPreferences/Pref1.pref") > /dev/null 2>&1
 			fi
-
-			
+		
 			#first, check if this is a gradle or a maven project
 			#GRADLE=$(find ${f}/latest -maxdepth 1 -name "build.gradle")
 			GRADLE=($(find ${f}/${prefix} -name "*.gradle" -type f -print | grep -v "settings.gradle" | xargs -I{} grep "buildscript" {} /dev/null | cut -f1 -d:))
@@ -182,9 +195,15 @@ else
 						#create results support folder
 						echo "$TAG Creating support folder..."
 						$MKDIR_COMMAND -p $projLocalDir
+						$MKDIR_COMMAND -p $projLocalDir/oldRuns
+						$MV_COMMAND -f $(find  $projLocalDir/ -maxdepth 1 | $SED_COMMAND -n '1!p' |grep -v "oldRuns") $projLocalDir/oldRuns/
 						$MKDIR_COMMAND -p $projLocalDir/all
 						cat ./allMethods.txt >> $projLocalDir/all/allMethods.txt
-		
+						
+						##copy MethodMetric to support folder
+						#echo "copiar $FOLDER/$tName/classInfo.ser para $projLocalDir "
+						cp $FOLDER/$tName/AppInfo.ser $projLocalDir
+
 						#install on device
 						./install.sh $FOLDER/$tName "X" "GRADLE" $PACKAGE $projLocalDir  #COMMENT, EVENTUALLY...
 						RET=$(echo $?)
@@ -201,9 +220,9 @@ else
 							echo "$ID" >> $logDir/errorRun.log
 							e_echo "[GD ERROR] There was an Error while running tests. Retrying... "
 							#RETRY 
-							./trepFix.sh
+							./trepnFix.sh
 							adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
-							./runTests $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir # "-gradle" $FOLDER/$tName
+							./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir # "-gradle" $FOLDER/$tName
 							RET=$(echo $?)
 							if [[ "$RET" != "0" ]]; then
 								echo "$ID" >> $logDir/errorRun.log
@@ -222,14 +241,15 @@ else
 						
 						#Run greendoid!
 						#java -jar $GD_ANALYZER $ID $PACKAGE $TESTPACKAGE $FOLDER $FOLDER/tName $localDir
-						(java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv) > $logDir/analyzer.log  ##RR
-						cat $logDir/analyzer.log
+						#(java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv) > $logDir/analyzer.log  ##RR
+						java -jar $GD_ANALYZER $trace $projLocalDir/ 
+						#cat $logDir/analyzer.log
 						errorAnalyzer=$(cat $logDir/analyzer.log)
 						#TODO se der erro imprimir a vermelho e aconselhar usar o trepFix.sh
 						#break
 						./trepnFix.sh
 						w_echo "$TAG sleeping between profiling apps"
-						sleep 60
+						sleep $SLEEPTIME
 						w_echo "$TAG resuming Greendroid after nap"
 					done
 				fi
@@ -270,8 +290,10 @@ else
 							if [[ "$RET" == "10" ]]; then
 								#everything went well, at second try
 								#let's create the results support files
-								mkdir -p $projLocalDir
-								mkdir -p $projLocalDir/all
+								$MKDIR_COMMAND -p $projLocalDir
+								$MKDIR_COMMAND -p $projLocalDir/oldRuns
+								mv  $(ls $projLocalDir | grep -v "oldRuns") $projLocalDir/oldRuns/
+								$MKDIR_COMMAND -p $projLocalDir/all
 								cat ./allMethods.txt >> $projLocalDir/all/allMethods.txt
 								echo "$ID" >> $logDir/success.log
 							elif [[ -n "$flagStatus" ]]; then
@@ -292,9 +314,15 @@ else
 						#create results support folder
 						echo "$TAG Creating support folder..."
 						$MKDIR_COMMAND -p $projLocalDir
+						$MKDIR_COMMAND -p $projLocalDir/oldRuns
+						$MV_COMMAND -f $(find  $projLocalDir/ -maxdepth 1 | $SED_COMMAND -n '1!p' |grep -v "oldRuns") $projLocalDir/oldRuns/
 						$MKDIR_COMMAND -p $projLocalDir/all
 						cat ./allMethods.txt >> $projLocalDir/all/allMethods.txt
-	
+						
+						##copy MethodMetric to support folder
+						#echo "copiar $FOLDER/$tName/classInfo.ser para $projLocalDir "
+						cp $FOLDER/$tName/AppInfo.ser $projLocalDir
+						
 						#run tests
 						./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir
 						RET=$(echo $?)
@@ -320,7 +348,9 @@ else
 							#continue
 						fi
 						#Run greendoid!
-						java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv  ##RR
+						#java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv  ##RR
+						java -jar $GD_ANALYZER $trace $projLocalDir/ 
+
 						./trepnFix.sh
 						#break
 					else
@@ -332,9 +362,9 @@ else
 	    fi
 	done
 	IFS=$OLDIFS
-	testRes=$(find $projLocalDir -name "Testresults.csv")
-	if [ -n $testRes ] ; then 
-		cat $projLocalDir/Testresults.csv | $SED_COMMAND 's/,/ ,/g' | column -t -s, | less -S
-	fi
+#	testRes=$(find $projLocalDir -name "Testresults.csv")
+#	if [ -n $testRes ] ; then 
+#		cat $projLocalDir/Testresults.csv | $SED_COMMAND 's/,/ ,/g' | column -t -s, | less -S
+#	fi
 	./trepnFix.sh
 fi

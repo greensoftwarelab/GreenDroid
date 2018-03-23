@@ -18,7 +18,7 @@ public class Utils {
     public static final String batteryStatus = "Battery\\ Status.*";
     public static final String stateInt = "Application\\ State.*";
     public static final String stateDescription = "Description.*";
-    public static final String batteryRemaing = "Battery\\ Remaining.*";
+    public static final String batteryRemaining = "Battery\\ Remaining.*";
     public static final String screenbrightness = "Screen\\ Brightness.*";
     public static final String gpufreq = "GPU\\ Frequency*";
     public static final String gpuLoad = "GPU\\ Load.*";
@@ -43,18 +43,14 @@ public class Utils {
 
 
 
-
     public static Pair<Integer,Integer> getMatch(HashMap<String, Pair<Integer, Integer>> hashMap, String s){
 
        for (String st : hashMap.keySet()){
            if (st.matches(s))
                return hashMap.get(st);
        }
-
         return null;
     }
-
-
 
   // pair tempo -> coluna
     public static HashMap<String, Pair<Integer, Integer>> fetchColumns(List<String[]> resolvedData) {
@@ -71,35 +67,12 @@ public class Utils {
                     } else if (row[j].matches(stateDescription+".*")) {
                         hashMap.put(row[j ], new Pair<Integer, Integer>(j - 2, j));
                     } else if (row[j].matches(batteryPowerDelta+".*")) {
-                    hashMap.put(row[j ], new Pair<Integer, Integer>(j - 2, j));
-                }
-
+                        hashMap.put(row[j ], new Pair<Integer, Integer>(j - 2, j));
+                    }
                 }
                 break;
             }
-
         }
-
-//        for (String s : hashMap.keySet()){
-//            System.out.println("Coluna : " + s + " tem time na coluna " + hashMap.get(s).first + " e esta na coluna " + hashMap.get(s).second);
-//
-//            if (s.matches(batteryPower))
-//                System.out.println("xua");
-//            if (s.matches(stateDescription))
-//                System.out.println("xua");
-//            if (s.matches(stateInt))
-//                System.out.println("xua");
-//            if (s.matches(memory))
-//                System.out.println("xua");
-//            if (s.matches(batteryPower))
-//                System.out.println("xua");
-//
-//        }
-
-
-
         return hashMap;
     }
-
-
 }

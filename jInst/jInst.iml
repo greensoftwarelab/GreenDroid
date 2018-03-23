@@ -11,5 +11,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: com.github.javaparser:javaparser-core:2.0.0" level="project" />
     <orderEntry type="library" name="Maven: jaxen:jaxen:1.2.0-atlassian-2" level="project" />
+    <orderEntry type="library" name="Maven: com.greenlab:Metrics:1.0" level="project" />
   </component>
 </module>

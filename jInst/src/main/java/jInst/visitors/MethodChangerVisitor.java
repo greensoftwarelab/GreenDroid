@@ -358,7 +358,6 @@ public class MethodChangerVisitor extends VoidVisitorAdapter {
 
                 // then just trace the method
                 if (tracedMethod){
-                   // System.out.println("sou traçado");
                     Profiler p =InstrumentHelper.getProfiler();
 
 //                    mcB.setName("TrepnLib.traceMethod");
