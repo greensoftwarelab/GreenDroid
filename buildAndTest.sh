@@ -231,6 +231,7 @@ else
 							if [[ "$RET" != "0" ]]; then
 								echo "$ID" >> $logDir/errorRun.log
 								e_echo "[GD ERROR] FATAL ERROR RUNNING TESTS. IGNORING APP "
+								./forceUninstall.sh
 								continue
 							fi
 						fi

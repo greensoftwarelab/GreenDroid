@@ -104,7 +104,7 @@ if [ -n "$STATUS_NOK" ]; then
 		adb shell ls "$deviceDir/TracedTests/" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.txt" | xargs -I{} adb pull $deviceDir/TracedTests/{} $localDir
 		exit 10
 	else
-		echo "$TAG Unable to build project $ID"
+		e_echo "$TAG Unable to build project $ID"
 		echo "[ERROR] Aborting"
 		exit 1
 	fi

@@ -18,7 +18,6 @@ w_echo "Removing Trash Files from last run"
 (adb shell rm -rf $deviceDir/Measures/*  ) > /dev/null  2>&1
 (adb shell rm -rf $deviceDir/TracedTests/* ) > /dev/null  2>&1
 adb shell "echo 0 > $deviceDir/GDflag"
-./forceUninstall.sh
 sleep 3
 
 
