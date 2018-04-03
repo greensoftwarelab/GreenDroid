@@ -13,7 +13,7 @@ if [ "$machine" == "Mac" ]; then
 	Timeout_COMMAND="gtimeout"
 else 
 	SED_COMMAND="sed" #linux
-	Timeout_COMMAND="gtimeout"	
+	Timeout_COMMAND="timeout"	
 fi
 TIMEOUT="900" #15 minutes (60*15)
 
@@ -85,7 +85,7 @@ else
 	
 	if [[ "$flagInst" == 1 ]]; then
 		allInstrumentations=($(adb shell pm list instrumentation | cut -f2 -d: | cut -f1 -d\ ))
-		if [[ "${#allInstrumentations[@]}" == "1" ]]; then
+		if [[ "${#allInstrumentations[@]}" -ge "1" ]]; then
 			for i in ${allInstrumentations[@]}; do
 				$Timeout_COMMAND -s 9 $TIMEOUT adb shell am instrument -w $i &> runStatus.log
 				RET=$(echo $?)
@@ -113,7 +113,10 @@ Ntraces=$(adb shell ls "$deviceDir/Traces/" | wc -l)
 echo "Nº measures: $Nmeasures"
 echo "Nº traces:   $Ntraces"
 if [ $Nmeasures -le "0" ] || [ $Ntraces -le "0" ] || [ $Nmeasures -ne $Ntraces ] ; then 
-	e_echo "[GD ERROR] Something went wrong. Try run trepnFix.sh and try again"
+	e_echo "[GD ERROR] Something went wrong. Running trepnFix.sh and try again"
+	./trepnFix.sh
+	exit 2
+
 fi
 
 now=$(date +"%d_%m_%y_%H_%M_%S")

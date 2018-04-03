@@ -1,0 +1,1135 @@
+Buildfile: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/build.xml
+
+-check-env:
+ [checkenv] Android SDK Tools Revision 25.2.5
+ [checkenv] Installed at /home/greenlab/android-sdk-linux
+
+-setup:
+     [echo] Project Name: Green
+  [gettype] Project Type: Test Application
+
+-pre-clean:
+
+clean:
+   [delete] Deleting directory /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/gen
+
+-check-env:
+ [checkenv] Android SDK Tools Revision 25.2.5
+ [checkenv] Installed at /home/greenlab/android-sdk-linux
+
+-setup:
+     [echo] Project Name: Green
+  [gettype] Project Type: Application
+
+-pre-clean:
+
+clean:
+   [delete] Deleting directory /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin
+   [delete] Deleting directory /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/gen
+[getlibpath] Library dependencies:
+[getlibpath] No Libraries
+   [subant] No sub-builds to iterate on
+[getlibpath] Library dependencies:
+[getlibpath] No Libraries
+   [subant] No sub-builds to iterate on
+
+-set-mode-check:
+
+-set-debug-files:
+
+-check-env:
+ [checkenv] Android SDK Tools Revision 25.2.5
+ [checkenv] Installed at /home/greenlab/android-sdk-linux
+
+-setup:
+     [echo] Project Name: Green
+  [gettype] Project Type: Test Application
+
+-set-debug-mode:
+
+-debug-obfuscation-check:
+
+-pre-build:
+
+-build-setup:
+[getbuildtools] Using latest Build Tools: 26.0.0
+     [echo] Resolving Build Target for Green...
+[gettarget] Project Target:   Android 5.0.1
+[gettarget] API level:        21
+[gettarget] WARNING: No minSdkVersion value set. Application will install on all Android versions.
+     [echo] ----------
+     [echo] Creating output directories if needed...
+    [mkdir] Created dir: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/bin
+    [mkdir] Created dir: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/bin/res
+    [mkdir] Created dir: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/bin/rsObj
+    [mkdir] Created dir: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/bin/rsLibs
+    [mkdir] Created dir: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/gen
+    [mkdir] Created dir: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/bin/classes
+    [mkdir] Created dir: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/bin/dexedLibs
+     [echo] ----------
+     [echo] Resolving Dependencies for Green...
+[dependency] Ordered libraries:
+[dependency] 
+[dependency] ------------------
+     [echo] ----------
+     [echo] Building Libraries with 'debug'...
+   [subant] No sub-builds to iterate on
+     [echo] ----------
+     [echo] Building tested project at /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_ with 'debug'...
+
+-set-mode-check:
+
+-set-debug-files:
+
+-check-env:
+ [checkenv] Android SDK Tools Revision 25.2.5
+ [checkenv] Installed at /home/greenlab/android-sdk-linux
+
+-setup:
+     [echo] Project Name: Green
+  [gettype] Project Type: Application
+
+-set-debug-mode:
+
+-debug-obfuscation-check:
+
+-pre-build:
+
+-build-setup:
+[getbuildtools] Using latest Build Tools: 26.0.0
+     [echo] Resolving Build Target for Green...
+[gettarget] Project Target:   Android 5.0.1
+[gettarget] API level:        21
+     [echo] ----------
+     [echo] Creating output directories if needed...
+    [mkdir] Created dir: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin
+    [mkdir] Created dir: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res
+    [mkdir] Created dir: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/rsObj
+    [mkdir] Created dir: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/rsLibs
+    [mkdir] Created dir: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/gen
+    [mkdir] Created dir: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/classes
+    [mkdir] Created dir: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/dexedLibs
+     [echo] ----------
+     [echo] Resolving Dependencies for Green...
+[dependency] Library dependencies:
+[dependency] No Libraries
+[dependency] 
+[dependency] ------------------
+     [echo] ----------
+     [echo] Building Libraries with 'debug'...
+   [subant] No sub-builds to iterate on
+
+-code-gen:
+[mergemanifest] Merging AndroidManifest files into one.
+[mergemanifest] Manifest merger disabled. Using project manifest only.
+     [echo] Handling aidl files...
+     [aidl] Found 7 AIDL files.
+     [aidl] Compiling 7 AIDL files.
+     [aidl] aidl E 07-19 10:36:51  8984  8984 aidl.cpp:580] refusing to generate code from aidl file defining parcelable
+     [aidl] aidl E 07-19 10:36:51  8992  8992 aidl.cpp:580] refusing to generate code from aidl file defining parcelable
+     [aidl] aidl E 07-19 10:36:51  8996  8996 aidl.cpp:580] refusing to generate code from aidl file defining parcelable
+     [echo] ----------
+     [echo] Handling RenderScript files...
+     [echo] ----------
+     [echo] Handling Resources...
+     [aapt] Generating resource IDs...
+     [echo] ----------
+     [echo] Handling BuildConfig class...
+[buildconfig] Generating BuildConfig class.
+
+-pre-compile:
+
+-compile:
+    [javac] Compiling 420 source files to /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/classes
+    [javac] warning: [options] source value 1.5 is obsolete and will be removed in a future release
+    [javac] warning: [options] target value 1.5 is obsolete and will be removed in a future release
+    [javac] warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.
+    [javac] Note: Some input files use or override a deprecated API.
+    [javac] Note: Recompile with -Xlint:deprecation for details.
+    [javac] Note: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/src/com/android/common/SharedPreferencesCompat.java uses unchecked or unsafe operations.
+    [javac] Note: Recompile with -Xlint:unchecked for details.
+    [javac] 3 warnings
+
+-post-compile:
+
+-obfuscate:
+
+-dex:
+      [dex] input: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/classes
+      [dex] input: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/libs/TrepnLibrary-release.jar
+      [dex] input: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/libs/guava-14.0-rc1.jar
+      [dex] Pre-Dexing /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/libs/TrepnLibrary-release.jar -> TrepnLibrary-release-06c0895f76fa6a9eb98119bc1aa4ec76.jar
+      [dex] Pre-Dexing /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/libs/guava-14.0-rc1.jar -> guava-14.0-rc1-58b2dc015d440c65040c62b419472135.jar
+      [dex] Converting compiled files and external libraries into /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/classes.dex...
+       [dx] Merged dex #1 (962 defs/1761.3KiB)
+       [dx] Merged dex #2 (3 defs/11.8KiB)
+       [dx] Merged dex #3 (1595 defs/1897.5KiB)
+       [dx] Result is 2560 defs/4589.4KiB. Took 0.3s
+
+-crunch:
+   [crunch] Crunching PNG Files in source dir: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res
+   [crunch] To destination dir: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/attachment_bg_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/attachment_bg_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/attachment_bg_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/btn_check_off_normal_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/btn_check_off_normal_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/btn_check_off_normal_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/btn_check_on_normal_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/btn_check_on_normal_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/btn_check_on_normal_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/btn_maybe_off.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/btn_maybe_off.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/btn_maybe_off.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/btn_no_off.png.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/btn_no_off.png.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/btn_no_off.png.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/btn_star_off_convo_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/btn_star_off_convo_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/btn_star_off_convo_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/btn_star_off_normal_email_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/btn_star_off_normal_email_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/btn_star_off_normal_email_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/btn_star_on_convo_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/btn_star_on_convo_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/btn_star_on_convo_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/btn_star_on_normal_email_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/btn_star_on_normal_email_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/btn_star_on_normal_email_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/btn_yes_off.png.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/btn_yes_off.png.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/btn_yes_off.png.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/divider_horizontal_holo_light.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/divider_horizontal_holo_light.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/divider_horizontal_holo_light.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/expander_close_holo_light.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/expander_close_holo_light.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/expander_close_holo_light.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/expander_open_holo_light.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/expander_open_holo_light.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/expander_open_holo_light.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/gradient_bg_email_widget_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/gradient_bg_email_widget_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/gradient_bg_email_widget_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/header_bg_email_widget_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/header_bg_email_widget_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/header_bg_email_widget_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/header_convo_view_sender_bg_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/header_convo_view_sender_bg_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/header_convo_view_sender_bg_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_badge_attachment.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_badge_attachment.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_badge_attachment.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_badge_forward_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_badge_forward_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_badge_forward_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_badge_invite_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_badge_invite_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_badge_invite_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_badge_reply_forward_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_badge_reply_forward_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_badge_reply_forward_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_badge_reply_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_badge_reply_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_badge_reply_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_exchange_minitab_selected.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_exchange_minitab_selected.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_exchange_minitab_selected.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_exchange_selected.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_exchange_selected.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_exchange_selected.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_folder_drafts_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_folder_drafts_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_folder_drafts_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_folder_inbox_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_folder_inbox_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_folder_inbox_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_folder_outbox_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_folder_outbox_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_folder_outbox_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_folder_sent_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_folder_sent_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_folder_sent_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_forward_holo_dark.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_forward_holo_dark.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_forward_holo_dark.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_list_combined_inbox.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_list_combined_inbox.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_list_combined_inbox.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_mailbox_collapsed_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_mailbox_collapsed_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_mailbox_collapsed_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_menu_compose_normal_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_compose_normal_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_compose_normal_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_menu_mark_read_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_mark_read_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_mark_read_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_menu_mark_unread_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_mark_unread_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_mark_unread_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_menu_move_to_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_move_to_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_move_to_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_menu_refresh_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_refresh_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_refresh_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_menu_search_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_search_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_search_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_menu_send_disabled_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_send_disabled_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_send_disabled_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_menu_send_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_send_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_send_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_menu_send_normal_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_send_normal_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_send_normal_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_menu_star_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_star_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_star_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_menu_star_off_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_star_off_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_star_off_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_menu_trash_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_trash_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_menu_trash_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_newer_arrow_disabled_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_newer_arrow_disabled_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_newer_arrow_disabled_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_newer_arrow_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_newer_arrow_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_newer_arrow_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_notification_multiple_mail_holo_dark.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_notification_multiple_mail_holo_dark.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_notification_multiple_mail_holo_dark.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_older_arrow_disabled_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_older_arrow_disabled_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_older_arrow_disabled_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_older_arrow_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_older_arrow_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_older_arrow_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_remove_attachment_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_remove_attachment_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_remove_attachment_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_reply.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_reply.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_reply.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_reply_all.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_reply_all.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_reply_all.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_reply_all_holo_dark.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_reply_all_holo_dark.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_reply_all_holo_dark.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_reply_holo_dark.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_reply_holo_dark.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_reply_holo_dark.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_show_images_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_show_images_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_show_images_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/ic_spam_normal_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_spam_normal_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/ic_spam_normal_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/list_div_top_btm_email_widget_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/list_div_top_btm_email_widget_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/list_div_top_btm_email_widget_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-hdpi/stat_notify_email_generic.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/stat_notify_email_generic.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-hdpi/stat_notify_email_generic.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/attachment_bg_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/attachment_bg_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/attachment_bg_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/btn_check_off_normal_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/btn_check_off_normal_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/btn_check_off_normal_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/btn_check_on_normal_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/btn_check_on_normal_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/btn_check_on_normal_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/btn_maybe_off.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/btn_maybe_off.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/btn_maybe_off.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/btn_no_off.png.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/btn_no_off.png.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/btn_no_off.png.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/btn_star_off_convo_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/btn_star_off_convo_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/btn_star_off_convo_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/btn_star_off_normal_email_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/btn_star_off_normal_email_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/btn_star_off_normal_email_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/btn_star_on_convo_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/btn_star_on_convo_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/btn_star_on_convo_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/btn_star_on_normal_email_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/btn_star_on_normal_email_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/btn_star_on_normal_email_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/btn_yes_off.png.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/btn_yes_off.png.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/btn_yes_off.png.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/divider_horizontal_holo_light.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/divider_horizontal_holo_light.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/divider_horizontal_holo_light.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/expander_close_holo_light.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/expander_close_holo_light.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/expander_close_holo_light.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/expander_open_holo_light.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/expander_open_holo_light.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/expander_open_holo_light.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/gradient_bg_email_widget_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/gradient_bg_email_widget_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/gradient_bg_email_widget_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/header_bg_email_widget_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/header_bg_email_widget_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/header_bg_email_widget_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/header_convo_view_sender_bg_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/header_convo_view_sender_bg_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/header_convo_view_sender_bg_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_badge_attachment.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_badge_attachment.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_badge_attachment.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_badge_forward_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_badge_forward_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_badge_forward_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_badge_invite_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_badge_invite_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_badge_invite_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_badge_reply_forward_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_badge_reply_forward_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_badge_reply_forward_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_badge_reply_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_badge_reply_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_badge_reply_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_exchange_minitab_selected.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_exchange_minitab_selected.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_exchange_minitab_selected.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_exchange_selected.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_exchange_selected.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_exchange_selected.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_folder_drafts_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_folder_drafts_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_folder_drafts_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_folder_inbox_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_folder_inbox_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_folder_inbox_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_folder_outbox_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_folder_outbox_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_folder_outbox_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_folder_sent_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_folder_sent_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_folder_sent_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_forward_holo_dark.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_forward_holo_dark.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_forward_holo_dark.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_list_combined_inbox.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_list_combined_inbox.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_list_combined_inbox.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_mailbox_collapsed_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_mailbox_collapsed_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_mailbox_collapsed_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_menu_compose_normal_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_compose_normal_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_compose_normal_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_menu_mark_read_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_mark_read_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_mark_read_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_menu_mark_unread_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_mark_unread_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_mark_unread_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_menu_move_to_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_move_to_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_move_to_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_menu_refresh_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_refresh_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_refresh_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_menu_search_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_search_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_search_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_menu_send_disabled_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_send_disabled_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_send_disabled_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_menu_send_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_send_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_send_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_menu_send_normal_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_send_normal_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_send_normal_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_menu_star_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_star_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_star_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_menu_star_off_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_star_off_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_star_off_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_menu_trash_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_trash_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_menu_trash_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_newer_arrow_disabled_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_newer_arrow_disabled_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_newer_arrow_disabled_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_newer_arrow_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_newer_arrow_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_newer_arrow_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_notification_multiple_mail_holo_dark.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_notification_multiple_mail_holo_dark.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_notification_multiple_mail_holo_dark.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_older_arrow_disabled_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_older_arrow_disabled_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_older_arrow_disabled_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_older_arrow_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_older_arrow_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_older_arrow_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_remove_attachment_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_remove_attachment_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_remove_attachment_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_reply.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_reply.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_reply.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_reply_all.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_reply_all.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_reply_all.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_reply_all_holo_dark.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_reply_all_holo_dark.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_reply_all_holo_dark.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_reply_holo_dark.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_reply_holo_dark.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_reply_holo_dark.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_show_images_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_show_images_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_show_images_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/ic_spam_normal_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_spam_normal_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/ic_spam_normal_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/list_div_top_btm_email_widget_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/list_div_top_btm_email_widget_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/list_div_top_btm_email_widget_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-mdpi/stat_notify_email_generic.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/stat_notify_email_generic.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-mdpi/stat_notify_email_generic.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-nodpi/email_widget_preview.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-nodpi/email_widget_preview.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-nodpi/email_widget_preview.png: 103% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-sw600dp-hdpi/btn_check_off_normal_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/btn_check_off_normal_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/btn_check_off_normal_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-sw600dp-hdpi/btn_check_on_normal_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/btn_check_on_normal_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/btn_check_on_normal_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-sw600dp-hdpi/btn_star_off_normal_email_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/btn_star_off_normal_email_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/btn_star_off_normal_email_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-sw600dp-hdpi/btn_star_on_normal_email_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/btn_star_on_normal_email_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/btn_star_on_normal_email_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-sw600dp-hdpi/list_conversation_wide_read_focused_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/list_conversation_wide_read_focused_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/list_conversation_wide_read_focused_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-sw600dp-hdpi/list_conversation_wide_read_normal_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/list_conversation_wide_read_normal_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/list_conversation_wide_read_normal_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-sw600dp-hdpi/list_conversation_wide_read_pressed_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/list_conversation_wide_read_pressed_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/list_conversation_wide_read_pressed_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-sw600dp-hdpi/list_conversation_wide_read_selected_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/list_conversation_wide_read_selected_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/list_conversation_wide_read_selected_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-sw600dp-hdpi/list_conversation_wide_unread_focused_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/list_conversation_wide_unread_focused_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/list_conversation_wide_unread_focused_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-sw600dp-hdpi/list_conversation_wide_unread_normal_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/list_conversation_wide_unread_normal_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/list_conversation_wide_unread_normal_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-sw600dp-hdpi/list_conversation_wide_unread_pressed_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/list_conversation_wide_unread_pressed_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/list_conversation_wide_unread_pressed_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-sw600dp-hdpi/list_conversation_wide_unread_selected_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/list_conversation_wide_unread_selected_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-hdpi/list_conversation_wide_unread_selected_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-sw600dp-mdpi/btn_check_off_normal_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-mdpi/btn_check_off_normal_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-mdpi/btn_check_off_normal_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-sw600dp-mdpi/btn_check_on_normal_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-mdpi/btn_check_on_normal_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-mdpi/btn_check_on_normal_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-sw600dp-mdpi/btn_star_off_normal_email_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-mdpi/btn_star_off_normal_email_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-mdpi/btn_star_off_normal_email_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-sw600dp-mdpi/btn_star_on_normal_email_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-mdpi/btn_star_on_normal_email_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-mdpi/btn_star_on_normal_email_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-sw600dp-xhdpi/btn_check_off_normal_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-xhdpi/btn_check_off_normal_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-xhdpi/btn_check_off_normal_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-sw600dp-xhdpi/btn_check_on_normal_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-xhdpi/btn_check_on_normal_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-xhdpi/btn_check_on_normal_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-sw600dp-xhdpi/btn_star_off_normal_email_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-xhdpi/btn_star_off_normal_email_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-xhdpi/btn_star_off_normal_email_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-sw600dp-xhdpi/btn_star_on_normal_email_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-xhdpi/btn_star_on_normal_email_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-sw600dp-xhdpi/btn_star_on_normal_email_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/attachment_bg_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/attachment_bg_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/attachment_bg_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/btn_check_off_normal_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/btn_check_off_normal_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/btn_check_off_normal_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/btn_check_on_normal_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/btn_check_on_normal_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/btn_check_on_normal_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/btn_maybe_off.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/btn_maybe_off.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/btn_maybe_off.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/btn_no_off.png.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/btn_no_off.png.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/btn_no_off.png.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/btn_star_off_convo_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/btn_star_off_convo_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/btn_star_off_convo_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/btn_star_off_normal_email_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/btn_star_off_normal_email_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/btn_star_off_normal_email_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/btn_star_on_convo_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/btn_star_on_convo_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/btn_star_on_convo_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/btn_star_on_normal_email_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/btn_star_on_normal_email_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/btn_star_on_normal_email_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/btn_yes_off.png.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/btn_yes_off.png.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/btn_yes_off.png.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/divider_horizontal_holo_light.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/divider_horizontal_holo_light.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/divider_horizontal_holo_light.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/expander_close_holo_light.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/expander_close_holo_light.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/expander_close_holo_light.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/expander_open_holo_light.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/expander_open_holo_light.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/expander_open_holo_light.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/gradient_bg_email_widget_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/gradient_bg_email_widget_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/gradient_bg_email_widget_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/header_bg_email_widget_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/header_bg_email_widget_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/header_bg_email_widget_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/header_convo_view_sender_bg_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/header_convo_view_sender_bg_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/header_convo_view_sender_bg_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_badge_attachment.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_badge_attachment.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_badge_attachment.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_badge_forward_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_badge_forward_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_badge_forward_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_badge_invite_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_badge_invite_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_badge_invite_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_badge_reply_forward_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_badge_reply_forward_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_badge_reply_forward_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_badge_reply_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_badge_reply_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_badge_reply_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_exchange_minitab_selected.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_exchange_minitab_selected.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_exchange_minitab_selected.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_exchange_selected.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_exchange_selected.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_exchange_selected.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_folder_drafts_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_folder_drafts_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_folder_drafts_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_folder_inbox_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_folder_inbox_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_folder_inbox_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_folder_outbox_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_folder_outbox_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_folder_outbox_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_folder_sent_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_folder_sent_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_folder_sent_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_forward_holo_dark.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_forward_holo_dark.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_forward_holo_dark.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_list_combined_inbox.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_list_combined_inbox.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_list_combined_inbox.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_mailbox_collapsed_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_mailbox_collapsed_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_mailbox_collapsed_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_menu_compose_normal_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_compose_normal_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_compose_normal_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_menu_mark_read_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_mark_read_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_mark_read_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_menu_mark_unread_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_mark_unread_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_mark_unread_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_menu_move_to_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_move_to_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_move_to_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_menu_refresh_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_refresh_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_refresh_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_menu_search_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_search_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_search_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_menu_send_disabled_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_send_disabled_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_send_disabled_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_menu_send_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_send_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_send_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_menu_send_normal_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_send_normal_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_send_normal_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_menu_star_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_star_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_star_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_menu_star_off_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_star_off_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_star_off_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_menu_trash_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_trash_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_menu_trash_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_newer_arrow_disabled_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_newer_arrow_disabled_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_newer_arrow_disabled_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_newer_arrow_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_newer_arrow_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_newer_arrow_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_notification_multiple_mail_holo_dark.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_notification_multiple_mail_holo_dark.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_notification_multiple_mail_holo_dark.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_older_arrow_disabled_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_older_arrow_disabled_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_older_arrow_disabled_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_older_arrow_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_older_arrow_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_older_arrow_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_remove_attachment_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_remove_attachment_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_remove_attachment_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_reply.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_reply.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_reply.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_reply_all.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_reply_all.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_reply_all.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_reply_all_holo_dark.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_reply_all_holo_dark.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_reply_all_holo_dark.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_reply_holo_dark.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_reply_holo_dark.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_reply_holo_dark.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_show_images_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_show_images_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_show_images_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/ic_spam_normal_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_spam_normal_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/ic_spam_normal_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/list_div_top_btm_email_widget_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/list_div_top_btm_email_widget_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/list_div_top_btm_email_widget_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable-xhdpi/stat_notify_email_generic.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/stat_notify_email_generic.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable-xhdpi/stat_notify_email_generic.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable/bg_separator.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/bg_separator.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/bg_separator.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable/chip_background.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/chip_background.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/chip_background.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable/chip_background_invalid.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/chip_background_invalid.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/chip_background_invalid.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable/chip_background_selected.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/chip_background_selected.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/chip_background_selected.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable/chip_checkmark.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/chip_checkmark.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/chip_checkmark.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable/chip_delete.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/chip_delete.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/chip_delete.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable/ic_attachment_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/ic_attachment_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/ic_attachment_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable/ic_cancel_holo_light.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/ic_cancel_holo_light.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/ic_cancel_holo_light.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable/ic_contact_picture.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/ic_contact_picture.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/ic_contact_picture.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable/list_activated_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/list_activated_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/list_activated_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable/list_focused_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/list_focused_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/list_focused_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable/list_pressed_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/list_pressed_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/list_pressed_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable/list_read_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/list_read_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/list_read_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable/list_selected_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/list_selected_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/list_selected_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/drawable/list_unread_holo.9.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/list_unread_holo.9.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/drawable/list_unread_holo.9.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/mipmap-hdpi/ic_launcher_email.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/mipmap-hdpi/ic_launcher_email.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/mipmap-hdpi/ic_launcher_email.png: 19% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/mipmap-mdpi/ic_launcher_email.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/mipmap-mdpi/ic_launcher_email.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/mipmap-mdpi/ic_launcher_email.png: 0% size of source)
+   [crunch] Processing image to cache: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/res/mipmap-xhdpi/ic_launcher_email.png => /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/mipmap-xhdpi/ic_launcher_email.png
+   [crunch]   (processed image to cache entry /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/res/mipmap-xhdpi/ic_launcher_email.png: 33% size of source)
+   [crunch] Crunched 207 PNG files to update cache
+
+-package-resources:
+     [aapt] Creating full resource package...
+
+-package:
+[apkbuilder] Current build type is different than previous build: forced apkbuilder run.
+[apkbuilder] Creating Green-debug-unaligned.apk and signing it with a debug key...
+
+-post-package:
+
+-do-debug:
+ [zipalign] Running zip align on final apk...
+     [echo] Debug Package: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/Green-debug.apk
+[propertyfile] Creating new property file: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/build.prop
+[propertyfile] Updating property file: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/build.prop
+[propertyfile] Updating property file: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/build.prop
+[propertyfile] Updating property file: /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/build.prop
+
+-post-build:
+
+debug:
+[testedprojectclasspath] Resolved classpath:
+[testedprojectclasspath] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/libs/TrepnLibrary-release.jar
+[testedprojectclasspath] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/libs/guava-14.0-rc1.jar
+[testedprojectclasspath] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/bin/classes
+
+-code-gen:
+[mergemanifest] Merging AndroidManifest files into one.
+[mergemanifest] Manifest merger disabled. Using project manifest only.
+     [echo] Handling aidl files...
+     [aidl] No AIDL files to compile.
+     [echo] ----------
+     [echo] Handling RenderScript files...
+     [echo] ----------
+     [echo] Handling Resources...
+     [aapt] Generating resource IDs...
+     [echo] ----------
+     [echo] Handling BuildConfig class...
+[buildconfig] Generating BuildConfig class.
+
+-pre-compile:
+
+-compile:
+    [javac] Compiling 45 source files to /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/bin/classes
+    [javac] warning: [options] source value 1.5 is obsolete and will be removed in a future release
+    [javac] warning: [options] target value 1.5 is obsolete and will be removed in a future release
+    [javac] warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/AccountTestCase.java:25: error: cannot find symbol
+    [javac] import com.appaholics.email.provider.ProviderTestUtils;
+    [javac]                                     ^
+    [javac]   symbol:   class ProviderTestUtils
+    [javac]   location: package com.appaholics.email.provider
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:23: error: cannot find symbol
+    [javac] import com.appaholics.email.provider.ProviderTestUtils;
+    [javac]                                     ^
+    [javac]   symbol:   class ProviderTestUtils
+    [javac]   location: package com.appaholics.email.provider
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/LegacyConversionsTests.java:19: error: cannot find symbol
+    [javac] import com.appaholics.email.provider.ProviderTestUtils;
+    [javac]                                     ^
+    [javac]   symbol:   class ProviderTestUtils
+    [javac]   location: package com.appaholics.email.provider
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/LegacyConversionsTests.java:30: error: cannot find symbol
+    [javac] import com.android.emailcommon.mail.MessageTestUtils;
+    [javac]                                    ^
+    [javac]   symbol:   class MessageTestUtils
+    [javac]   location: package com.android.emailcommon.mail
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/LegacyConversionsTests.java:31: error: package com.android.emailcommon.mail.MessageTestUtils does not exist
+    [javac] import com.android.emailcommon.mail.MessageTestUtils.MessageBuilder;
+    [javac]                                                     ^
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/LegacyConversionsTests.java:32: error: package com.android.emailcommon.mail.MessageTestUtils does not exist
+    [javac] import com.android.emailcommon.mail.MessageTestUtils.MultipartBuilder;
+    [javac]                                                     ^
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/MockSharedPreferences.java:18: error: package com.google.android.collect does not exist
+    [javac] import com.google.android.collect.Maps;
+    [javac]                                  ^
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/NotificationControllerTest.java:23: error: cannot find symbol
+    [javac] import com.appaholics.email.provider.ProviderTestUtils;
+    [javac]                                     ^
+    [javac]   symbol:   class ProviderTestUtils
+    [javac]   location: package com.appaholics.email.provider
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/RefreshManagerTest.java:18: error: cannot find symbol
+    [javac] import com.appaholics.email.provider.ProviderTestUtils;
+    [javac]                                     ^
+    [javac]   symbol:   class ProviderTestUtils
+    [javac]   location: package com.appaholics.email.provider
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/UtilityLargeTest.java:18: error: cannot find symbol
+    [javac] import com.appaholics.email.provider.ProviderTestUtils;
+    [javac]                                     ^
+    [javac]   symbol:   class ProviderTestUtils
+    [javac]   location: package com.appaholics.email.provider
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/activity/MessageFileViewTest.java:20: error: cannot find symbol
+    [javac] import com.appaholics.email.provider.ProviderTestUtils;
+    [javac]                                     ^
+    [javac]   symbol:   class ProviderTestUtils
+    [javac]   location: package com.appaholics.email.provider
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/activity/MessageListTests.java:19: error: cannot find symbol
+    [javac] import com.appaholics.email.provider.ProviderTestUtils;
+    [javac]                                     ^
+    [javac]   symbol:   class ProviderTestUtils
+    [javac]   location: package com.appaholics.email.provider
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/activity/setup/AccountSetupExchangeTests.java:27: error: cannot find symbol
+    [javac] import com.appaholics.email.provider.ProviderTestUtils;
+    [javac]                                     ^
+    [javac]   symbol:   class ProviderTestUtils
+    [javac]   location: package com.appaholics.email.provider
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/mail/StoreTests.java:22: error: cannot find symbol
+    [javac] import com.appaholics.email.provider.ProviderTestUtils;
+    [javac]                                     ^
+    [javac]   symbol:   class ProviderTestUtils
+    [javac]   location: package com.appaholics.email.provider
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/mail/store/Pop3StoreUnitTests.java:25: error: cannot find symbol
+    [javac] import com.appaholics.email.provider.ProviderTestUtils;
+    [javac]                                     ^
+    [javac]   symbol:   class ProviderTestUtils
+    [javac]   location: package com.appaholics.email.provider
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/mail/store/imap/ImapUtilityTests.java:21: error: package libcore.util does not exist
+    [javac] import libcore.util.EmptyArray;
+    [javac]                    ^
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/service/AttachmentDownloadServiceTests.java:22: error: cannot find symbol
+    [javac] import com.appaholics.email.provider.ProviderTestUtils;
+    [javac]                                     ^
+    [javac]   symbol:   class ProviderTestUtils
+    [javac]   location: package com.appaholics.email.provider
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/service/EmailBroadcastProcessorServiceTests.java:19: error: cannot find symbol
+    [javac] import com.appaholics.email.provider.ProviderTestUtils;
+    [javac]                                     ^
+    [javac]   symbol:   class ProviderTestUtils
+    [javac]   location: package com.appaholics.email.provider
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/service/MailServiceTests.java:29: error: cannot find symbol
+    [javac] import com.appaholics.email.provider.ProviderTestUtils;
+    [javac]                                     ^
+    [javac]   symbol:   class ProviderTestUtils
+    [javac]   location: package com.appaholics.email.provider
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/AccountTestCase.java:76: error: cannot find symbol
+    [javac]         return ProviderTestUtils.setupAccount(username, true, getMockContext());
+    [javac]                ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class AccountTestCase
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:148: error: cannot find symbol
+    [javac]         Account account = ProviderTestUtils.setupAccount("mailboxid", true, mProviderContext);
+    [javac]                           ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:150: error: cannot find symbol
+    [javac]         Mailbox box = ProviderTestUtils.setupMailbox("box", accountId, false, mProviderContext);
+    [javac]                       ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:173: error: cannot find symbol
+    [javac]         Account account1 = ProviderTestUtils.setupAccount("message-move", true, mProviderContext);
+    [javac]                            ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:175: error: cannot find symbol
+    [javac]         Mailbox box1 = ProviderTestUtils.setupMailbox("box1", account1Id, true, mProviderContext);
+    [javac]                        ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:177: error: cannot find symbol
+    [javac]         Mailbox box2 = ProviderTestUtils.setupMailbox("box2", account1Id, true, mProviderContext);
+    [javac]                        ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:179: error: cannot find symbol
+    [javac]         Mailbox boxDest = ProviderTestUtils.setupMailbox("d", account1Id, true, mProviderContext);
+    [javac]                           ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:181: error: cannot find symbol
+    [javac]         Message message1 = ProviderTestUtils.setupMessage("message1", account1Id, box1Id, false, true, mProviderContext);
+    [javac]                            ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:182: error: cannot find symbol
+    [javac]         Message message2 = ProviderTestUtils.setupMessage("message2", account1Id, box2Id, false, true, mProviderContext);
+    [javac]                            ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:198: error: cannot find symbol
+    [javac]         Account account1 = ProviderTestUtils.setupAccount("message-delete", true, mProviderContext);
+    [javac]                            ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:200: error: cannot find symbol
+    [javac]         Mailbox box = ProviderTestUtils.setupMailbox("box1", account1Id, true, mProviderContext);
+    [javac]                       ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:202: error: cannot find symbol
+    [javac]         Mailbox trashBox = ProviderTestUtils.setupMailbox("box2", account1Id, false, mProviderContext);
+    [javac]                            ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:206: error: cannot find symbol
+    [javac]         Mailbox draftBox = ProviderTestUtils.setupMailbox("box3", account1Id, false, mProviderContext);
+    [javac]                            ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:212: error: cannot find symbol
+    [javac]             Message message = ProviderTestUtils.setupMessage("message1", account1Id, boxId, false, true, mProviderContext);
+    [javac]                               ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:221: error: cannot find symbol
+    [javac]             Message message = ProviderTestUtils.setupMessage("message3", account1Id, trashBoxId, false, true, mProviderContext);
+    [javac]                               ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:229: error: cannot find symbol
+    [javac]             Message message = ProviderTestUtils.setupMessage("message3", account1Id, draftBoxId, false, true, mProviderContext);
+    [javac]                               ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:241: error: cannot find symbol
+    [javac]         Account account1 = ProviderTestUtils.setupAccount("message-delete-notrash", true, mProviderContext);
+    [javac]                            ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:243: error: cannot find symbol
+    [javac]         Mailbox box1 = ProviderTestUtils.setupMailbox("box1", account1Id, true, mProviderContext);
+    [javac]                        ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:245: error: cannot find symbol
+    [javac]         Message message1 = ProviderTestUtils.setupMessage("message1", account1Id, box1Id, false, true, mProviderContext);
+    [javac]                            ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:261: error: cannot find symbol
+    [javac]         Account account1 = ProviderTestUtils.setupAccount("read-unread", false, mProviderContext);
+    [javac]                            ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:262: error: cannot find symbol
+    [javac]         account1.mHostAuthRecv = ProviderTestUtils.setupHostAuth("read-unread", 0, false, mProviderContext);
+    [javac]                                  ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:266: error: cannot find symbol
+    [javac]         Message message1 = ProviderTestUtils.setupMessage("message1", account1Id, box1Id, false, true, mProviderContext);
+    [javac]                            ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:286: error: cannot find symbol
+    [javac]         Account account1 = ProviderTestUtils.setupAccount("favorites", false, mProviderContext);
+    [javac]                            ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:287: error: cannot find symbol
+    [javac]         account1.mHostAuthRecv = ProviderTestUtils.setupHostAuth("favorites", 0, false, mProviderContext);
+    [javac]                                  ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:291: error: cannot find symbol
+    [javac]         Message message1 = ProviderTestUtils.setupMessage("message1", account1Id, box1Id, false, true, mProviderContext);
+    [javac]                            ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:315: error: cannot find symbol
+    [javac]         ProviderTestUtils.setupMessage("message1", 0, box.mId, false, true, mProviderContext);
+    [javac]         ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:316: error: cannot find symbol
+    [javac]         ProviderTestUtils.setupMessage("message2", 0, box.mId, false, true, mProviderContext);
+    [javac]         ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:331: error: cannot find symbol
+    [javac]         Account account1 = ProviderTestUtils.setupAccount("wipe-synced-1", false, mProviderContext);
+    [javac]                            ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:335: error: cannot find symbol
+    [javac]         Mailbox box1 = ProviderTestUtils.setupMailbox("box1", account1Id, false, mProviderContext);
+    [javac]                        ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:340: error: cannot find symbol
+    [javac]         Mailbox box2 = ProviderTestUtils.setupMailbox("box2", account1Id, true, mProviderContext);
+    [javac]                        ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:343: error: cannot find symbol
+    [javac]         Mailbox eas = ProviderTestUtils.setupMailbox("eas", account1Id, false, mProviderContext);
+    [javac]                       ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:346: error: cannot find symbol
+    [javac]         Account account2 = ProviderTestUtils.setupAccount("wipe-synced-2", false, mProviderContext);
+    [javac]                            ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:350: error: cannot find symbol
+    [javac]         Mailbox box3 = ProviderTestUtils.setupMailbox("box3", account2Id, false, mProviderContext);
+    [javac]                        ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:355: error: cannot find symbol
+    [javac]         Mailbox box4 = ProviderTestUtils.setupMailbox("box4", account2Id, true, mProviderContext);
+    [javac]                        ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:358: error: cannot find symbol
+    [javac]         Message message = ProviderTestUtils.setupMessage("message1", account1Id, box1Id, false, true, mProviderContext);
+    [javac]                           ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:360: error: cannot find symbol
+    [javac]         message = ProviderTestUtils.setupMessage("message2", account1Id, box2Id, false, true, mProviderContext);
+    [javac]                   ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:362: error: cannot find symbol
+    [javac]         message = ProviderTestUtils.setupMessage("message3", account2Id, box3Id, false, true, mProviderContext);
+    [javac]                   ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:364: error: cannot find symbol
+    [javac]         message = ProviderTestUtils.setupMessage("message4", account2Id, box4Id, false, true, mProviderContext);
+    [javac]                   ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:394: error: cannot find symbol
+    [javac]         Uri fileUri = ProviderTestUtils.createTempEmlFile(mProviderContext, msg, mContext.getFilesDir());
+    [javac]                       ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:420: error: cannot find symbol
+    [javac]         Account account1 = ProviderTestUtils.setupAccount("account1", false, mProviderContext);
+    [javac]                            ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:424: error: cannot find symbol
+    [javac]         Account account2 = ProviderTestUtils.setupAccount("account2", false, mProviderContext);
+    [javac]                            ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:428: error: cannot find symbol
+    [javac]         Account account3 = ProviderTestUtils.setupAccount("account3", false, mProviderContext);
+    [javac]                            ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/ControllerProviderOpsTests.java:432: error: cannot find symbol
+    [javac]         Account account4 = ProviderTestUtils.setupAccount("account4", false, mProviderContext);
+    [javac]                            ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class ControllerProviderOpsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/LegacyConversionsTests.java:205: error: cannot find symbol
+    [javac]         final EmailContent.Message localMessage = ProviderTestUtils.setupMessage("local-message", accountId, mailboxId, false, true, mProviderContext);
+    [javac]                                                   ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class LegacyConversionsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/LegacyConversionsTests.java:209: error: cannot find symbol
+    [javac]         final EmailContent.Message localMessage2 = ProviderTestUtils.setupMessage("local-message", accountId, mailboxId, false, true, mProviderContext);
+    [javac]                                                    ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class LegacyConversionsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/LegacyConversionsTests.java:256: error: cannot find symbol
+    [javac]         attachmentPart = MessageTestUtils.bodyPart("image/jpg", null);
+    [javac]                          ^
+    [javac]   symbol:   variable MessageTestUtils
+    [javac]   location: class LegacyConversionsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/LegacyConversionsTests.java:263: error: cannot find symbol
+    [javac]         attachmentPart = MessageTestUtils.bodyPart("image/gif", null);
+    [javac]                          ^
+    [javac]   symbol:   variable MessageTestUtils
+    [javac]   location: class LegacyConversionsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/LegacyConversionsTests.java:270: error: cannot find symbol
+    [javac]         attachmentPart = MessageTestUtils.bodyPart("text/calendar", null);
+    [javac]                          ^
+    [javac]   symbol:   variable MessageTestUtils
+    [javac]   location: class LegacyConversionsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/LegacyConversionsTests.java:276: error: cannot find symbol
+    [javac]         final EmailContent.Message localMessage = ProviderTestUtils.setupMessage("local-message", accountId, mailboxId, false, true, mProviderContext);
+    [javac]                                                   ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class LegacyConversionsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/LegacyConversionsTests.java:291: error: cannot find symbol
+    [javac]         final EmailContent.Message localMessage = ProviderTestUtils.setupMessage("local-message", accountId, mailboxId, false, true, mProviderContext);
+    [javac]                                                   ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class LegacyConversionsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/LegacyConversionsTests.java:333: error: cannot find symbol
+    [javac]             BodyPart attachmentPart = MessageTestUtils.bodyPart("image/jpg", null);
+    [javac]                                       ^
+    [javac]   symbol:   variable MessageTestUtils
+    [javac]   location: class LegacyConversionsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/LegacyConversionsTests.java:350: error: cannot find symbol
+    [javac]         MultipartBuilder mpBuilder = new  MultipartBuilder("multipart/mixed");
+    [javac]         ^
+    [javac]   symbol:   class MultipartBuilder
+    [javac]   location: class LegacyConversionsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/LegacyConversionsTests.java:350: error: cannot find symbol
+    [javac]         MultipartBuilder mpBuilder = new  MultipartBuilder("multipart/mixed");
+    [javac]                                           ^
+    [javac]   symbol:   class MultipartBuilder
+    [javac]   location: class LegacyConversionsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/LegacyConversionsTests.java:355: error: cannot find symbol
+    [javac]         final Message legacyMessage = new  MessageBuilder().setBody(new  MultipartBuilder("multipart/mixed").addBodyPart(MessageTestUtils.bodyPart("text/html", null)).addBodyPart(mpBuilder.buildBodyPart()).build()).build();
+    [javac]                                                                                                                          ^
+    [javac]   symbol:   variable MessageTestUtils
+    [javac]   location: class LegacyConversionsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/LegacyConversionsTests.java:355: error: cannot find symbol
+    [javac]         final Message legacyMessage = new  MessageBuilder().setBody(new  MultipartBuilder("multipart/mixed").addBodyPart(MessageTestUtils.bodyPart("text/html", null)).addBodyPart(mpBuilder.buildBodyPart()).build()).build();
+    [javac]                                                                          ^
+    [javac]   symbol:   class MultipartBuilder
+    [javac]   location: class LegacyConversionsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/LegacyConversionsTests.java:355: error: cannot find symbol
+    [javac]         final Message legacyMessage = new  MessageBuilder().setBody(new  MultipartBuilder("multipart/mixed").addBodyPart(MessageTestUtils.bodyPart("text/html", null)).addBodyPart(mpBuilder.buildBodyPart()).build()).build();
+    [javac]                                            ^
+    [javac]   symbol:   class MessageBuilder
+    [javac]   location: class LegacyConversionsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/LegacyConversionsTests.java:421: error: cannot find symbol
+    [javac]         EmailContent.Message localMessage1 = ProviderTestUtils.setupMessage("make-legacy", account1Id, mailbox1Id, false, true, mProviderContext);
+    [javac]                                              ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class LegacyConversionsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/LegacyConversionsTests.java:425: error: cannot find symbol
+    [javac]         EmailContent.Message localMessage2 = ProviderTestUtils.setupMessage("make-legacy", account1Id, mailbox1Id, true, false, mProviderContext);
+    [javac]                                              ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class LegacyConversionsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/LegacyConversionsTests.java:434: error: cannot find symbol
+    [javac]         EmailContent.Message localMessage3 = ProviderTestUtils.setupMessage("make-legacy", account1Id, mailbox1Id, true, false, mProviderContext);
+    [javac]                                              ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class LegacyConversionsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/LegacyConversionsTests.java:441: error: cannot find symbol
+    [javac]         EmailContent.Message localMessage4 = ProviderTestUtils.setupMessage("make-legacy", account1Id, mailbox1Id, true, false, mProviderContext);
+    [javac]                                              ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class LegacyConversionsTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/MockSharedPreferences.java:31: error: cannot find symbol
+    [javac]     private HashMap<String, Object> mValues = Maps.newHashMap();
+    [javac]                                               ^
+    [javac]   symbol:   variable Maps
+    [javac]   location: class MockSharedPreferences
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/MockSharedPreferences.java:33: error: cannot find symbol
+    [javac]     private HashMap<String, Object> mTempValues = Maps.newHashMap();
+    [javac]                                                   ^
+    [javac]   symbol:   variable Maps
+    [javac]   location: class MockSharedPreferences
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/NotificationControllerTest.java:75: error: cannot find symbol
+    [javac]         final Account a1 = ProviderTestUtils.setupAccount("a1", true, c);
+    [javac]                            ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class NotificationControllerTest
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/NotificationControllerTest.java:210: error: cannot find symbol
+    [javac]         Account a1 = ProviderTestUtils.setupAccount("a1", true, c);
+    [javac]                      ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class NotificationControllerTest
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/NotificationControllerTest.java:211: error: cannot find symbol
+    [javac]         Mailbox b1 = ProviderTestUtils.setupMailbox("inbox", a1.mId, true, c, Mailbox.TYPE_INBOX);
+    [javac]                      ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class NotificationControllerTest
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/NotificationControllerTest.java:212: error: cannot find symbol
+    [javac]         Message m1 = ProviderTestUtils.setupMessage("message", a1.mId, b1.mId, true, true, c);
+    [javac]                      ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class NotificationControllerTest
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/NotificationControllerTest.java:230: error: cannot find symbol
+    [javac]         Account a1 = ProviderTestUtils.setupAccount("a1", true, c);
+    [javac]                      ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class NotificationControllerTest
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/NotificationControllerTest.java:231: error: cannot find symbol
+    [javac]         Mailbox b1 = ProviderTestUtils.setupMailbox("inbox", a1.mId, true, c, Mailbox.TYPE_INBOX);
+    [javac]                      ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class NotificationControllerTest
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/NotificationControllerTest.java:232: error: cannot find symbol
+    [javac]         Message m1 = ProviderTestUtils.setupMessage("message", a1.mId, b1.mId, true, false, c);
+    [javac]                      ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class NotificationControllerTest
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/RefreshManagerTest.java:337: error: cannot find symbol
+    [javac]         Account acct1 = ProviderTestUtils.setupAccount("acct1", true, mProviderContext);
+    [javac]                         ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class RefreshManagerTest
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/RefreshManagerTest.java:338: error: cannot find symbol
+    [javac]         Account acct2 = ProviderTestUtils.setupAccount("acct2", true, mProviderContext);
+    [javac]                         ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class RefreshManagerTest
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/UtilityLargeTest.java:50: error: cannot find symbol
+    [javac]         Account acct1 = ProviderTestUtils.setupAccount("acct1", true, mProviderContext);
+    [javac]                         ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class UtilityLargeTest
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/UtilityLargeTest.java:51: error: cannot find symbol
+    [javac]         Account acct2 = ProviderTestUtils.setupAccount("acct2", true, mProviderContext);
+    [javac]                         ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class UtilityLargeTest
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/activity/MessageFileViewTest.java:72: error: cannot find symbol
+    [javac]         return ProviderTestUtils.createTempEmlFile(mProviderContext, msg, getInstrumentation().getContext().getFilesDir());
+    [javac]                ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class MessageFileViewTest
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/activity/MessageListTests.java:49: error: cannot find symbol
+    [javac]         final Account a1 = ProviderTestUtils.setupAccount("a1", true, c);
+    [javac]                            ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class MessageListTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/activity/MessageListTests.java:50: error: cannot find symbol
+    [javac]         final Account a2 = ProviderTestUtils.setupAccount("a2", true, c);
+    [javac]                            ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class MessageListTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/activity/setup/AccountSetupExchangeTests.java:181: error: cannot find symbol
+    [javac]         Account account = ProviderTestUtils.setupAccount("account", false, mActivity.getBaseContext());
+    [javac]                           ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class AccountSetupExchangeTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/activity/setup/AccountSetupExchangeTests.java:182: error: cannot find symbol
+    [javac]         account.mHostAuthRecv = ProviderTestUtils.setupHostAuth("eas", "hostauth", false, mActivity.getBaseContext());
+    [javac]                                 ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class AccountSetupExchangeTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/mail/StoreTests.java:56: error: cannot find symbol
+    [javac]         Account testAccount = ProviderTestUtils.setupAccount("pop", false, mMockContext);
+    [javac]                               ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class StoreTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/mail/StoreTests.java:67: error: cannot find symbol
+    [javac]         testAccount = ProviderTestUtils.setupAccount("pop", false, mMockContext);
+    [javac]                       ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class StoreTests
+    [javac] /home/greenlab/androidTests/3e72068d-93f5-4345-bca9-f5d2a3e836f5/latest/_TRANSFORMED_/tests/src/com/android/email/mail/StoreTests.java:78: error: cannot find symbol
+    [javac]         testAccount = ProviderTestUtils.setupAccount("unknown", false, mMockContext);
+    [javac]                       ^
+    [javac]   symbol:   variable ProviderTestUtils
+    [javac]   location: class StoreTests
+    [javac] Note: Some input files use or override a deprecated API.
+    [javac] Note: Recompile with -Xlint:deprecation for details.
+    [javac] 100 errors
+    [javac] 3 warnings
+
+BUILD FAILED
+/home/greenlab/android-sdk-linux/tools/ant/build.xml:716: The following error occurred while executing this line:
+/home/greenlab/android-sdk-linux/tools/ant/build.xml:730: Compile failed; see the compiler error output for details.
+
+Total time: 17 seconds
