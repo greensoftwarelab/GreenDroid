@@ -15,7 +15,7 @@ else
 	SED_COMMAND="sed" #linux
 	Timeout_COMMAND="timeout"	
 fi
-TIMEOUT="900" #15 minutes (60*15)
+TIMEOUT="600" #15 minutes (60*10)
 
 TAG="[APP RUNNER]"
 
@@ -132,6 +132,17 @@ adb shell ls "$deviceDir/Measures/" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio 
 #adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
 adb shell ls "$deviceDir/Traces/" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.txt" | xargs -I{} adb pull $deviceDir/Traces/{} $localDir
 adb shell ls "$deviceDir/TracedTests/" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.txt" | xargs -I{} adb pull $deviceDir/TracedTests/{} $localDir
+
+csvs=$(find $localDir -name "*.csv")
+for i in $csvs; do
+	tags=$(cat $i |  grep "stopped" | wc -l)
+	if [[ tags -lt "2" ]]; then
+		e_echo " $i contains an error "
+		echo "$i" >> logs/csvErrors.log
+	fi
+done
+
+
 # In case the missing instrumentation error occured, let's remove all apps with instrumentations now!
 #« if [[ "$flagInst" == 1 ]]; then
 #	instTests=($(adb shell pm list instrumentation | cut -f2 -d: | cut -f1 -d\ | cut -f1 -d/))

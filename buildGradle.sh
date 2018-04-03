@@ -421,7 +421,7 @@ if [ -n "$STATUS_NOK" ]; then
 	buildSDKerror=$(egrep "The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)" $logDir/buildStatus.log)
 	(export PATH=$ANDROID_HOME/tools/bin:$PATH)
 	(sdkmanager --list) > sdks.txt
-	echo "availablle _> $availableSdkTools"
+	#echo "available _> $availableSdkTools"
 	while [[ (-n "$minSDKerror") || (-n "$buildSDKerror") || (-n "$libsError") ]]; do
 		((try--))
 		w_echo "$TAG Common Error. Trying again..."

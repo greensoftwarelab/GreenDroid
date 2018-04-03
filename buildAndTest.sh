@@ -45,8 +45,8 @@ SLEEPTIME=10
 
 #DIR=/media/data/android_apps/failed/*
 #DIR=/media/data/android_apps/success/*
-DIR=/home/greenlab/repos/GreenDroid/testApp/failed/*
-#DIR=$HOME/tests/success/*
+#DIR=/home/greenlab/repos/GreenDroid/testApp/failed/*
+DIR=$HOME/tests/actual/*
 #DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
 
 
@@ -80,7 +80,8 @@ else
 		e_echo "$TAG Could not determine the device's external storage. Check and try again..."
 		exit 1
 	fi
-	i_echo "$TAG 📲  Attached device recognized"
+	device=$( adb devices -l | grep -o "model.*" | cut -f2 -d: | cut -f1 -d\ )
+	i_echo "$TAG 📲  Attached device ($device) recognized "
 	#TODO include mode to choose the conected device and echo the device name
 	#Start Trepn
 	adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
@@ -186,6 +187,7 @@ else
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
 							echo "$ID" >> $logDir/errorBuild.log
+							cp $logDir/buildStatus.log $f/buildStatus.log
 							if [[ -n "$flagStatus" ]]; then
 								cp $logDir/buildStatus.log debugBuild/$ID.log
 							fi
