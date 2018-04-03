@@ -2,7 +2,7 @@
 
 source settings.sh
 
-TAG="[GD CLEANER]"
+iTAG="[GD CLEANER]"
 deviceDir="/sdcard/trepn"
 
 #deviceDir=$(cat deviceDir.txt) # TODO improve later (receive as parameter from other script??)
@@ -18,6 +18,7 @@ w_echo "Removing Trash Files from last run"
 (adb shell rm -rf $deviceDir/Measures/*  ) > /dev/null  2>&1
 (adb shell rm -rf $deviceDir/TracedTests/* ) > /dev/null  2>&1
 adb shell "echo 0 > $deviceDir/GDflag"
+./forceUninstall.sh
 sleep 3
 
 

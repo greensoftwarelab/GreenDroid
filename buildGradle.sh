@@ -421,7 +421,7 @@ if [ -n "$STATUS_NOK" ]; then
 	buildSDKerror=$(egrep "The SDK Build Tools revision \((.+)\) is too low for project ':(.+)'. Minimum required is (.+)" $logDir/buildStatus.log)
 	(export PATH=$ANDROID_HOME/tools/bin:$PATH)
 	(sdkmanager --list) > sdks.txt
-	availableSdkTools=$(grep "build-tools/$newBuild" sdks.txt)	
+	echo "availablle _> $availableSdkTools"
 	while [[ (-n "$minSDKerror") || (-n "$buildSDKerror") || (-n "$libsError") ]]; do
 		((try--))
 		w_echo "$TAG Common Error. Trying again..."
@@ -458,12 +458,14 @@ if [ -n "$STATUS_NOK" ]; then
 			if [[ -n "$oldBuild" ]] ; then
 				#echo " avaliables -> $availableSdkTools"
 				# if don't have that build tools version		
+				availableSdkTools=$(grep "build-tools/$newBuild" sdks.txt)
 				if [[ -z "$availableSdkTools" ]] ; then 
 					#download via sdkmanager 
 					e_echo "No suitable build-tools found. Downloading build tools $newBuild."
 					($Timeout_COMMAND -s 9 $TIMEOUT sdkmanager "build-tools;$newBuild") &> $logDir/downloads.log
 				fi
-				$SED_COMMAND -ri.bak "s#buildToolsVersion \"$oldBuild\"#buildToolsVersion \"$newBuild\"#g" $x
+				$SED_COMMAND -ri.bak "s#([ \t]*)buildToolsVersion(( )|( ?= ?))(.+)#\1buildToolsVersion\2\""$newBuild"\"#g" $x
+				#$SED_COMMAND -ri.bak "s#buildToolsVersion \"$oldBuild\"#buildToolsVersion \"$newBuild\"#g" $x
 				#cat $x
 			fi
 

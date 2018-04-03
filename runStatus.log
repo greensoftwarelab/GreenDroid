@@ -1,21 +1,5 @@
 
-com.example.android.documentcentricapps.tests.DocumentCentricAppsInstrumentationTest:
-Failure in testNewDocument_CreatesOverviewEntry:
-junit.framework.AssertionFailedError: # of recentAppTasks does not match expected:<2> but was:<1>
-	at com.example.android.documentcentricapps.tests.DocumentCentricAppsInstrumentationTest.testNewDocument_CreatesOverviewEntry(DocumentCentricAppsInstrumentationTest.java:44)
-	at android.test.InstrumentationTestCase.runMethod(InstrumentationTestCase.java:220)
-	at android.test.InstrumentationTestCase.runTest(InstrumentationTestCase.java:205)
-	at android.test.ActivityInstrumentationTestCase2.runTest(ActivityInstrumentationTestCase2.java:192)
-	at android.test.AndroidTestRunner.runTest(AndroidTestRunner.java:198)
-	at android.test.AndroidTestRunner.runTest(AndroidTestRunner.java:183)
-	at android.test.InstrumentationTestRunner.onStart(InstrumentationTestRunner.java:560)
-	at android.app.Instrumentation$InstrumentationThread.run(Instrumentation.java:1939)
-
-com.example.android.documentcentricapps.tests.DocumentCentricAppsUnitTest:..
-Test results for InstrumentationTestRunner=.F..
-Time: 1.737
-
-FAILURES!!!
-Tests run: 3,  Failures: 1,  Errors: 0
-
-
+com.bingzer.android.dbv.content.ConfigTest:........
+com.bingzer.android.dbv.content.ContentPagingTest:.....
+com.bingzer.android.dbv.content.ContentStrictTest:.....................................
+com.bingzer.android.dbv.content.ContentTest:...

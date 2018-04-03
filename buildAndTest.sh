@@ -39,12 +39,14 @@ trepnLib="TrepnLibrary-release.aar"
 trepnJar="TrepnLibrary-release.jar"
 profileHardware="YES" # YES or ""
 flagStatus="on"
-SLEEPTIME=1
+SLEEPTIME=10
 #DIR=$HOME/tests/wasSuccess/gradleProjects/*
 
 
-
-DIR=$HOME/tests/success/*
+#DIR=/media/data/android_apps/failed/*
+#DIR=/media/data/android_apps/success/*
+DIR=/home/greenlab/repos/GreenDroid/testApp/failed/*
+#DIR=$HOME/tests/success/*
 #DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
 
 
