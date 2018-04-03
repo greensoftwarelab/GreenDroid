@@ -13,7 +13,7 @@ junit.framework.AssertionFailedError: # of recentAppTasks does not match expecte
 
 com.example.android.documentcentricapps.tests.DocumentCentricAppsUnitTest:..
 Test results for InstrumentationTestRunner=.F..
-Time: 1.737
+Time: 1.54
 
 FAILURES!!!
 Tests run: 3,  Failures: 1,  Errors: 0

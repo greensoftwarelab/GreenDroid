@@ -27,8 +27,9 @@ public class Analyzer {
     public static APICallUtil acu = null;
     public static final String testResultsFile = GDConventions.TestOutputName;
     public static final String appResultsFile = GDConventions.AppOutputName;
+    public static final String appIssuesFile = GDConventions.IssuesOutputName;
     public static final String serializedFile = GDConventions.fileStreamName;
-
+    public static final String analyzerTag= "[Analyzer] ";
 
 
 
@@ -82,7 +83,8 @@ public class Analyzer {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(analyzerTag + " : File containing methods (allMethods.txt) not found!");
+            // e.printStackTrace();
         }
 
 
@@ -397,6 +399,18 @@ public class Analyzer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+//        try {
+//            File f3 = new File(resultDirPath+"/" + appIssuesFile);
+//            if (!f3.exists()){
+//                f3.createNewFile();
+//            }
+//            FileWriter fwIssues = new FileWriter(f3);
+//            l.add("Issue");l.add("Severity");l.add("Category");l.add("Message"); l.add("File"); l.add("Line"); l.add("Explanation");
+//            List<Issue> issueList = Utils.parseLintResulsXML()
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public static Consumption getDataFromRow( HashMap<String, Pair<Integer, Integer>> columns,String[] row) {
@@ -498,7 +512,8 @@ public class Analyzer {
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            System.out.println(analyzerTag + " : File containing traced Methods of file (TracedMethods"+number+".txt) not found! Assumed 0 traced methods");
+            //e.printStackTrace();
         }
         return p;
 

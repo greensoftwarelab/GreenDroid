@@ -13,25 +13,10 @@ import java.io.Writer;
  */
 public class tester {
 
-    public static void write (Writer w, List<String> l) throws IOException {
-
-        boolean first = true;
-        StringBuilder sb = new StringBuilder();
-        for (String value: l)
-        {
-            if(!first){
-                sb.append(",");
-                sb.append(value);
-            }
-            else {
-                sb.append(value);
-                first=false;
-            }
-        }
-
-        sb.append("\n");
-        w.append(sb.toString());
-    }
+//    public static void main(String[] args) {
+//        String file = "/Users/ruirua/tests/success/2bb46be6-f071-413d-9221-c090a8f0cb29/latest/_TRANSFORMED_/app/build/reports/lint-results.xml";
+//        Utils.parseLintResulsXML(file);
+//    }
 
 
 

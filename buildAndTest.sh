@@ -330,8 +330,8 @@ else
 							echo "$ID" >> $logDir/errorRun.log
 							e_echo "[GD ERROR] There was an Error while running tests. Retrying... "
 							#RETRY 
-							./trepFix.sh
 							adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
+							sleep 3
 							./runTests $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir # "-gradle" $FOLDER/$tName
 							RET=$(echo $?)
 							if [[ "$RET" != "0" ]]; then

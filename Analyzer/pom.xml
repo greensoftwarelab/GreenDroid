@@ -96,14 +96,17 @@
             <version>1.0</version>
             <type>jar</type>
         </dependency>
-        <!--dependency>
-            <groupId>greenlab</groupId>
-            <artifactId>Metrics</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/../jars/GDMetrics.jar</systemPath>
-            <type>jar</type>
-        </dependency-->
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>1.2.0-atlassian-2</version>
+        </dependency>
     </dependencies>
+    <repositories>
+        <repository>
+            <id>com.atlassian.3rdparty</id>
+            <url>https://maven.atlassian.com/3rdparty/</url>
+        </repository>
+    </repositories>
 
 </project>

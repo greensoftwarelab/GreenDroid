@@ -21,14 +21,42 @@
       <file leaf-file-name="Analyzer.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/Analyzer/Analyzer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="389" column="26" lean-forward="true" selection-start-line="389" selection-start-column="26" selection-end-line="389" selection-end-column="26" />
+            <state relative-caret-position="603">
+              <caret line="240" column="28" lean-forward="true" selection-start-line="240" selection-start-column="28" selection-end-line="240" selection-end-column="28" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="method#getRespectiveTracedMethodsFile#0;class#Analyzer#0" expanded="false" />
                 <element signature="method#methodOriented#0;class#Analyzer#0" expanded="false" />
                 <element signature="method#copyToGlobalReturnList#0;class#Analyzer#0" expanded="false" />
                 <element signature="method#closestMemMeasure#0;class#Analyzer#0" expanded="false" />
+                <element signature="method#totalCoverage#0;class#Analyzer#0" expanded="false" />
+                <element signature="method#methodCoverageTestOriented#0;class#Analyzer#0" expanded="false" />
+                <element signature="method#getTestName#0;class#Analyzer#0" expanded="false" />
+                <element signature="method#getAllCsvs#0;class#Analyzer#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Utils.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/Analyzer/Utils.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="945">
+              <caret line="102" column="32" lean-forward="false" selection-start-line="102" selection-start-column="31" selection-end-line="102" selection-end-column="32" />
+              <folding>
+                <element signature="method#getMatch#0;class#Utils#0" expanded="false" />
+                <element signature="method#fetchColumns#0;class#Utils#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Issue.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/Analyzer/Issue.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="30">
+              <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -36,8 +64,8 @@
       <file leaf-file-name="tester.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/Analyzer/tester.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="17" column="21" lean-forward="false" selection-start-line="17" selection-start-column="21" selection-end-line="17" selection-end-column="21" />
+            <state relative-caret-position="360">
+              <caret line="24" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -45,49 +73,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pom.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/pom.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="915">
-              <caret line="64" column="93" lean-forward="false" selection-start-line="64" selection-start-column="93" selection-end-line="64" selection-end-column="93" />
-              <folding>
-                <element signature="n#configuration#0;n#plugin#0;n#plugins#0;n#build#0;n#project#0;n#!!top" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TracedMethods0.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/TracedMethods0.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Testresults.csv" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/Testresults.csv">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tracedTests.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/tracedTests.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
@@ -104,9 +97,12 @@
       <find>replace</find>
       <find>tracedtest</find>
       <find>number</find>
-      <find>fw</find>
       <find>[ana</find>
       <find>println</find>
+      <find>load</find>
+      <find>appres</find>
+      <find>fw</find>
+      <find>fwApp</find>
     </findStrings>
   </component>
   <component name="GradleLocalSettings">
@@ -117,20 +113,21 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/Analyzer/Utils.java" />
         <option value="$PROJECT_DIR$/src/main/java/Analyzer/MethodOriented.java" />
         <option value="$PROJECT_DIR$/test/GreendroidResultTrace0.csv" />
         <option value="$PROJECT_DIR$/src/main/java/Analyzer/Metrics/APICallUtil.java" />
         <option value="$PROJECT_DIR$/src/main/java/Analyzer/Metrics/ClassInfo.java" />
         <option value="$PROJECT_DIR$/src/main/java/Analyzer/Metrics/CyclomaticCalculator.java" />
         <option value="$PROJECT_DIR$/src/main/java/Analyzer/Metrics/MethodInfo.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Analyzer/tester.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/Analyzer/Issue.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Analyzer/Utils.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Analyzer/tester.java" />
         <option value="$PROJECT_DIR$/src/main/java/Analyzer/Analyzer.java" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6" fullScreen="true">
+  <component name="ProjectFrameBounds" fullScreen="true">
     <option name="x" value="722" />
     <option name="y" value="23" />
     <option name="width" value="718" />
@@ -152,6 +149,8 @@
     </navigator>
     <panes>
       <pane id="Scratches" />
+      <pane id="AndroidView" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -203,9 +202,7 @@
           <select />
         </subPane>
       </pane>
-      <pane id="AndroidView" />
       <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -227,7 +224,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.muchoCoverage">
+  <component name="RunManager" selected="Application.tester">
     <configuration name="Analyzer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
@@ -370,15 +367,36 @@
       <module name="Analyzer" />
       <envs />
     </configuration>
-    <list size="4">
+    <configuration name="tester" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="Analyzer.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="MAIN_CLASS_NAME" value="Analyzer.tester" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="Analyzer" />
+      <envs />
+    </configuration>
+    <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Application.AnalyzerTest" />
       <item index="1" class="java.lang.String" itemvalue="Application.muchoCoverage" />
       <item index="2" class="java.lang.String" itemvalue="Application.Another" />
       <item index="3" class="java.lang.String" itemvalue="Application.Analyzer" />
+      <item index="4" class="java.lang.String" itemvalue="Application.tester" />
     </list>
     <recent_temporary>
-      <list size="1">
-        <item index="0" class="java.lang.String" itemvalue="Application.Analyzer" />
+      <list size="2">
+        <item index="0" class="java.lang.String" itemvalue="Application.tester" />
+        <item index="1" class="java.lang.String" itemvalue="Application.Analyzer" />
       </list>
     </recent_temporary>
   </component>
@@ -405,32 +423,33 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1440" height="900" extended-state="6" />
+    <frame x="0" y="0" width="1440" height="900" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32889965" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32889965" sideWeight="0.5028612" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32889965" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32769045" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32889965" sideWeight="0.49713877" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2756953" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.12160229" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22889842" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39903265" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39903265" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32889965" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32889965" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
@@ -443,74 +462,73 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/Analyzer/Analyzer.java</url>
-          <line>90</line>
+          <line>92</line>
           <properties />
           <option name="timeStamp" value="11" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/Analyzer/Analyzer.java</url>
-          <line>668</line>
+          <line>683</line>
           <properties />
           <option name="timeStamp" value="24" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/Analyzer/Analyzer.java</url>
-          <line>371</line>
+          <line>373</line>
           <properties />
           <option name="timeStamp" value="25" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/Analyzer/Analyzer.java</url>
-          <line>612</line>
+          <line>627</line>
           <properties />
           <option name="timeStamp" value="28" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/Analyzer/Analyzer.java</url>
-          <line>67</line>
+          <line>68</line>
           <properties />
           <option name="timeStamp" value="29" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/Analyzer/Analyzer.java</url>
-          <line>45</line>
+          <line>46</line>
           <properties />
           <option name="timeStamp" value="30" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/Analyzer/Analyzer.java</url>
-          <line>61</line>
+          <line>62</line>
           <properties />
           <option name="timeStamp" value="31" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/Analyzer/Analyzer.java</url>
-          <line>58</line>
+          <line>59</line>
           <properties />
           <option name="timeStamp" value="32" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/Analyzer/Analyzer.java</url>
-          <line>653</line>
+          <line>668</line>
           <properties />
           <option name="timeStamp" value="33" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/Analyzer/Analyzer.java</url>
+          <line>417</line>
+          <properties />
+          <option name="timeStamp" value="34" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="34" />
+      <option name="time" value="35" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/test/GreendroidResultTrace0.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="615">
-          <caret line="41" column="67" lean-forward="true" selection-start-line="41" selection-start-column="67" selection-end-line="41" selection-end-column="67" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Analyzer/Utils.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="675">
@@ -524,29 +542,14 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="method#getRespectiveTracedMethodsFile#0;class#Analyzer#0" expanded="false" />
             <element signature="method#methodOriented#0;class#Analyzer#0" expanded="false" />
             <element signature="method#copyToGlobalReturnList#0;class#Analyzer#0" expanded="false" />
             <element signature="method#closestMemMeasure#0;class#Analyzer#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Analyzer/Utils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="675">
-          <caret line="46" column="45" lean-forward="false" selection-start-line="46" selection-start-column="45" selection-end-line="46" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Analyzer/Analyzer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#methodOriented#0;class#Analyzer#0" expanded="false" />
-            <element signature="method#copyToGlobalReturnList#0;class#Analyzer#0" expanded="false" />
-            <element signature="method#closestMemMeasure#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#totalCoverage#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#methodCoverageTestOriented#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getTestName#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getAllCsvs#0;class#Analyzer#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -564,9 +567,14 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="method#getRespectiveTracedMethodsFile#0;class#Analyzer#0" expanded="false" />
             <element signature="method#methodOriented#0;class#Analyzer#0" expanded="false" />
             <element signature="method#copyToGlobalReturnList#0;class#Analyzer#0" expanded="false" />
             <element signature="method#closestMemMeasure#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#totalCoverage#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#methodCoverageTestOriented#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getTestName#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getAllCsvs#0;class#Analyzer#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -584,9 +592,14 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="method#getRespectiveTracedMethodsFile#0;class#Analyzer#0" expanded="false" />
             <element signature="method#methodOriented#0;class#Analyzer#0" expanded="false" />
             <element signature="method#copyToGlobalReturnList#0;class#Analyzer#0" expanded="false" />
             <element signature="method#closestMemMeasure#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#totalCoverage#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#methodCoverageTestOriented#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getTestName#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getAllCsvs#0;class#Analyzer#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -604,9 +617,14 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="method#getRespectiveTracedMethodsFile#0;class#Analyzer#0" expanded="false" />
             <element signature="method#methodOriented#0;class#Analyzer#0" expanded="false" />
             <element signature="method#copyToGlobalReturnList#0;class#Analyzer#0" expanded="false" />
             <element signature="method#closestMemMeasure#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#totalCoverage#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#methodCoverageTestOriented#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getTestName#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getAllCsvs#0;class#Analyzer#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -624,9 +642,14 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="method#getRespectiveTracedMethodsFile#0;class#Analyzer#0" expanded="false" />
             <element signature="method#methodOriented#0;class#Analyzer#0" expanded="false" />
             <element signature="method#copyToGlobalReturnList#0;class#Analyzer#0" expanded="false" />
             <element signature="method#closestMemMeasure#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#totalCoverage#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#methodCoverageTestOriented#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getTestName#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getAllCsvs#0;class#Analyzer#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -644,9 +667,14 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="method#getRespectiveTracedMethodsFile#0;class#Analyzer#0" expanded="false" />
             <element signature="method#methodOriented#0;class#Analyzer#0" expanded="false" />
             <element signature="method#copyToGlobalReturnList#0;class#Analyzer#0" expanded="false" />
             <element signature="method#closestMemMeasure#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#totalCoverage#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#methodCoverageTestOriented#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getTestName#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getAllCsvs#0;class#Analyzer#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -664,9 +692,39 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="method#getRespectiveTracedMethodsFile#0;class#Analyzer#0" expanded="false" />
             <element signature="method#methodOriented#0;class#Analyzer#0" expanded="false" />
             <element signature="method#copyToGlobalReturnList#0;class#Analyzer#0" expanded="false" />
             <element signature="method#closestMemMeasure#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#totalCoverage#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#methodCoverageTestOriented#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getTestName#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getAllCsvs#0;class#Analyzer#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Analyzer/Utils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="675">
+          <caret line="46" column="45" lean-forward="false" selection-start-line="46" selection-start-column="45" selection-end-line="46" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Analyzer/Analyzer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#getRespectiveTracedMethodsFile#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#methodOriented#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#copyToGlobalReturnList#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#closestMemMeasure#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#totalCoverage#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#methodCoverageTestOriented#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getTestName#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getAllCsvs#0;class#Analyzer#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -677,9 +735,14 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="method#getRespectiveTracedMethodsFile#0;class#Analyzer#0" expanded="false" />
             <element signature="method#methodOriented#0;class#Analyzer#0" expanded="false" />
             <element signature="method#copyToGlobalReturnList#0;class#Analyzer#0" expanded="false" />
             <element signature="method#closestMemMeasure#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#totalCoverage#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#methodCoverageTestOriented#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getTestName#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getAllCsvs#0;class#Analyzer#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -690,9 +753,14 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="method#getRespectiveTracedMethodsFile#0;class#Analyzer#0" expanded="false" />
             <element signature="method#methodOriented#0;class#Analyzer#0" expanded="false" />
             <element signature="method#copyToGlobalReturnList#0;class#Analyzer#0" expanded="false" />
             <element signature="method#closestMemMeasure#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#totalCoverage#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#methodCoverageTestOriented#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getTestName#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getAllCsvs#0;class#Analyzer#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -703,9 +771,14 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="method#getRespectiveTracedMethodsFile#0;class#Analyzer#0" expanded="false" />
             <element signature="method#methodOriented#0;class#Analyzer#0" expanded="false" />
             <element signature="method#copyToGlobalReturnList#0;class#Analyzer#0" expanded="false" />
             <element signature="method#closestMemMeasure#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#totalCoverage#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#methodCoverageTestOriented#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getTestName#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getAllCsvs#0;class#Analyzer#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -801,13 +874,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Analyzer/Utils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="735">
-          <caret line="50" column="8" lean-forward="false" selection-start-line="50" selection-start-column="8" selection-end-line="50" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Analyzer/PairMetodoInt.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
@@ -848,7 +914,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -856,7 +921,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -864,7 +928,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -872,31 +935,11 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/Analyzer/Metrics/CyclomaticCalculator.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/Analyzer/Metrics/MethodInfo.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/Analyzer/Metrics/APICallUtil.java" />
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="915">
-          <caret line="64" column="93" lean-forward="false" selection-start-line="64" selection-start-column="93" selection-end-line="64" selection-end-column="93" />
-          <folding>
-            <element signature="n#configuration#0;n#plugin#0;n#plugins#0;n#build#0;n#project#0;n#!!top" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Analyzer/Consumption.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-80">
           <caret line="5" column="13" lean-forward="false" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Analyzer/tester.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="17" column="21" lean-forward="false" selection-start-line="17" selection-start-column="21" selection-end-line="17" selection-end-column="21" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -908,15 +951,59 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Analyzer/Analyzer.java">
+    <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="389" column="26" lean-forward="true" selection-start-line="389" selection-start-column="26" selection-end-line="389" selection-end-column="26" />
+        <state relative-caret-position="431">
+          <caret line="108" column="21" lean-forward="false" selection-start-line="108" selection-start-column="21" selection-end-line="108" selection-end-column="21" />
+          <folding>
+            <element signature="n#configuration#0;n#plugin#0;n#plugins#0;n#build#0;n#project#0;n#!!top" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Analyzer/Issue.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Analyzer/Utils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="945">
+          <caret line="102" column="32" lean-forward="false" selection-start-line="102" selection-start-column="31" selection-end-line="102" selection-end-column="32" />
+          <folding>
+            <element signature="method#getMatch#0;class#Utils#0" expanded="false" />
+            <element signature="method#fetchColumns#0;class#Utils#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Analyzer/tester.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="24" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Analyzer/Analyzer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="603">
+          <caret line="240" column="28" lean-forward="true" selection-start-line="240" selection-start-column="28" selection-end-line="240" selection-end-column="28" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#getRespectiveTracedMethodsFile#0;class#Analyzer#0" expanded="false" />
             <element signature="method#methodOriented#0;class#Analyzer#0" expanded="false" />
             <element signature="method#copyToGlobalReturnList#0;class#Analyzer#0" expanded="false" />
             <element signature="method#closestMemMeasure#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#totalCoverage#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#methodCoverageTestOriented#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getTestName#0;class#Analyzer#0" expanded="false" />
+            <element signature="method#getAllCsvs#0;class#Analyzer#0" expanded="false" />
           </folding>
         </state>
       </provider>
