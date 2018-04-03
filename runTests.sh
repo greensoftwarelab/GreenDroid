@@ -113,8 +113,7 @@ Ntraces=$(adb shell ls "$deviceDir/Traces/" | wc -l)
 echo "Nº measures: $Nmeasures"
 echo "Nº traces:   $Ntraces"
 if [ $Nmeasures -le "0" ] || [ $Ntraces -le "0" ] || [ $Nmeasures -ne $Ntraces ] ; then 
-	e_echo "[GD ERROR] Something went wrong. Running trepnFix.sh and try again"
-	./trepnFix.sh
+	e_echo "[GD ERROR] Something went wrong. try run trepnFix.sh and try again"
 	exit 2
 
 fi

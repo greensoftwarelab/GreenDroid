@@ -46,7 +46,7 @@ SLEEPTIME=10
 #DIR=/media/data/android_apps/failed/*
 #DIR=/media/data/android_apps/success/*
 #DIR=/home/greenlab/repos/GreenDroid/testApp/failed/*
-DIR=$HOME/tests/actual/*
+DIR=$HOME/tests/critical/*
 #DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
 
 
@@ -224,7 +224,8 @@ else
 							echo "$ID" >> $logDir/errorRun.log
 							e_echo "[GD ERROR] There was an Error while running tests. Retrying... "
 							#RETRY 
-							./trepnFix.sh
+							./trepnFix
+							sleep 3
 							adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
 							./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir # "-gradle" $FOLDER/$tName
 							RET=$(echo $?)
@@ -252,7 +253,6 @@ else
 						errorAnalyzer=$(cat $logDir/analyzer.log)
 						#TODO se der erro imprimir a vermelho e aconselhar usar o trepFix.sh
 						#break
-						./trepnFix.sh
 						w_echo "$TAG sleeping between profiling apps"
 						sleep $SLEEPTIME
 						w_echo "$TAG resuming Greendroid after nap"
@@ -356,7 +356,7 @@ else
 						#java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv  ##RR
 						java -jar $GD_ANALYZER $trace $projLocalDir/ 
 
-						./trepnFix.sh
+						
 						#break
 					else
 						e_echo "$TAG ERROR!"
@@ -365,6 +365,7 @@ else
 			fi
 	    	
 	    fi
+
 	done
 	IFS=$OLDIFS
 #	testRes=$(find $projLocalDir -name "Testresults.csv")
