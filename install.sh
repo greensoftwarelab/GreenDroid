@@ -45,7 +45,7 @@ if [ "${#appAPK[@]}" != 1 ] || [ "${#testAPK[@]}" != 1 ]; then
 		echo "folder is -> $ppAux"
 		bqq=($(find $ppAux -name "*debug-androidTest*.apk"))
 		echo "testApk -> $bqq"
-		if [ "${#bqq[@]}" >= 1 ]; then
+		if [ "${#bqq[@]}" -ge "1" ]; then
 			OK="1"
 		fi
 	else
