@@ -43,7 +43,7 @@ else
 	adb shell rm -rf "$deviceDir/Traces/*"  ##RR
 	adb shell rm -rf "$deviceDir/TracedMethods.txt"  ##RR
 	adb shell rm -rf "$deviceDir/Measures/*"  ##RR
-
+	adb shell rm -rf "$deviceDir/TracedTests/*"  ##RR									TracedTests
 	rm -rf $localDir/*.csv
 	w_echo "$TAG using runner with $runner"
 

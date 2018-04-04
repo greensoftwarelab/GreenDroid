@@ -46,7 +46,7 @@ SLEEPTIME=10
 #DIR=/media/data/android_apps/failed/*
 #DIR=/media/data/android_apps/success/*
 #DIR=/home/greenlab/repos/GreenDroid/testApp/failed/*
-DIR=$HOME/tests/critical/*
+DIR=$HOME/tests/success/*
 #DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
 
 
@@ -83,12 +83,14 @@ else
 	device=$( adb devices -l | grep -o "model.*" | cut -f2 -d: | cut -f1 -d\ )
 	i_echo "$TAG 📲  Attached device ($device) recognized "
 	#TODO include mode to choose the conected device and echo the device name
+	deviceDir="$deviceExternal/trepn"  #GreenDroid
+	#put Trepn preferences on device
+	(adb push trepnPreferences/ $deviceDir/saved_preferences/) > /dev/null  2>&1 #new
 	#Start Trepn
 	adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
-	#put Trepn preferences on device
-	(adb push trepnPreferences/ $deviceDir/saved_preferences) > /dev/null  2>&1 #new
+	
 
-	deviceDir="$deviceExternal/trepn"  #GreenDroid
+	
 	(echo $deviceDir > deviceDir.txt) 
 	(adb shell mkdir $deviceDir) > /dev/null  2>&1
 	(adb shell mkdir $deviceDir/Traces) > /dev/null  2>&1
@@ -102,7 +104,8 @@ else
 		($MKDIR_COMMAND debugBuild ) > /dev/null  2>&1 #new
 
 	fi
-	
+	w_echo "removing old instrumentations "
+	./forceUninstall.sh
 	#for each Android Proj in $DIR folder...
 	w_echo "$TAG searching for Android Projects in -> $DIR"
 	for f in $DIR/
@@ -238,7 +241,8 @@ else
 						fi
 						
 						#uninstall the app & tests
-						./uninstall.sh $PACKAGE $TESTPACKAGE
+						#./uninstall.sh $PACKAGE $TESTPACKAGE
+						./forceUninstall.sh 
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
 							echo "$ID" >> $logDir/errorUninstall.log
@@ -346,7 +350,8 @@ else
 							fi
 						fi
 						#uninstall the app & tests
-						./uninstall.sh $PACKAGE $TESTPACKAGE
+						#./uninstall.sh $PACKAGE $TESTPACKAGE
+						./forceUninstall.sh $PACKAGE $TESTPACKAGE
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
 							echo "$ID" >> $logDir/errorUninstall.log
