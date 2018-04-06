@@ -221,7 +221,7 @@ public class TestChangerVisitor extends VoidVisitorAdapter{
                         mcS = ((MethodOrientedProfiler) InstrumentHelper.getProfiler()).stopProfiler(getContext);
                     }
 
-                    x.add(x.size(), new ExpressionStmt(mcS));
+                    x.add(x.size()-1 >0 ? x.size()-1:0, new ExpressionStmt(mcS));
                     // x.add(1, new ExpressionStmt(mcS));
                     n.getBody().setStmts(x);
 
@@ -295,7 +295,7 @@ public class TestChangerVisitor extends VoidVisitorAdapter{
                     }
 
 //                    ASTHelper.addArgument(mcT, getContext);
-                    x.add(0, new ExpressionStmt(mcT));
+                    x.add(x.size()-1 >0 ? x.size()-1:0, new ExpressionStmt(mcT));
                     n.getBody().setStmts(x);
                 }
 

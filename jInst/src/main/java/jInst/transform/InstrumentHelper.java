@@ -706,7 +706,7 @@ public class InstrumentHelper {
                     body.add(new ExpressionStmt(mcT));
                     newTearDown.getBody().setStmts(body);
 
-                    x.getMembers().add(0, newTearDown);
+                    x.getMembers().add(x.getMembers().size()-1 >0 ? x.getMembers().size()-1 : 0 , newTearDown);
                     imp4 = new ImportDeclaration(ASTHelper.createNameExpr("org.junit.AfterClass"), false, false);
                 }
 
@@ -800,7 +800,7 @@ public class InstrumentHelper {
                         ArrayList<Statement> body = new ArrayList<Statement>();
                         body.add(new ExpressionStmt(mcT));
                         newTearDown.getBody().setStmts(body);
-                        x.getMembers().add(0, newTearDown);
+                        x.getMembers().add(x.getMembers().size()-1 >0 ? x.getMembers().size()-1 :0, newTearDown);
                         imp4 = new ImportDeclaration(ASTHelper.createNameExpr("org.junit.After"), false, false);
                     }
                 }
@@ -895,7 +895,7 @@ public class InstrumentHelper {
                         body.add(new ExpressionStmt(superTearDown));
                         newTearDown.getBody().setStmts(body);
 
-                        x.getMembers().add(0, newTearDown);
+                        x.getMembers().add(x.getMembers().size()-1 >0 ? x.getMembers().size()-1:0, newTearDown);
                     }
                 }
             }
