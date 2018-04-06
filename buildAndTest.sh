@@ -189,7 +189,7 @@ else
 						./buildGradle.sh $ID $FOLDER/$tName ${GRADLE[0]}
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
-							echo "$ID" >> $logDir/errorBuild.log
+							echo "$ID" >> $logDir/errorBuildGradle.log
 							cp $logDir/buildStatus.log $f/buildStatus.log
 							if [[ -n "$flagStatus" ]]; then
 								cp $logDir/buildStatus.log debugBuild/$ID.log
@@ -295,7 +295,7 @@ else
 						./buildSDK.sh $ID $PACKAGE $SOURCE/$tName $SOURCE/$tName/tests $deviceDir $localDir
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
-							echo "$ID" >> $logDir/errorBuild.log
+							echo "$ID" >> $logDir/errorBuildSDK.log
 							if [[ "$RET" == "10" ]]; then
 								#everything went well, at second try
 								#let's create the results support files
