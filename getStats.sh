@@ -7,13 +7,15 @@ getSO machine
 if [ "$machine" == "Mac" ]; then
     SED_COMMAND="gsed" #mac
     MKDIR_COMMAND="gmkdir"
+    TAC_COMMAND="gtac"
 else 
     SED_COMMAND="sed" #linux
-    MKDIR_COMMAND="mkdir"   
+    MKDIR_COMMAND="mkdir"
+    TAC_COMMAND="tac"
 fi
 
 OLDIFS=$IFS
-DIR="$HOME/GDResults/GDResults/*"
+DIR="$HOME/GDResults/*"
 #DIR="/Users/ruirua/GDResults/2bb46be6-f071-413d-9221-c090a8f0cb29/15_02_18_15_25_51"
 
 #DIR="$HOME/GDResults/GDResults/*"
@@ -144,7 +146,7 @@ for f in $DIR/
     #if nr of tests >0 , parse csv to get stats
     if [ "$nr_result_files" -ne 0 ]; then
         #total_faulty_runs=$(($total_faulty_runs + 1))  
-        tests_coverage=$(cut -d, -f4  $f/$TEST_RESUME_FILE |  grep "[0-9]*\.\?[0-9]\+" | gtac | grep -m 1 '.')
+        tests_coverage=$(cut -d, -f4  $f/$TEST_RESUME_FILE |  grep "[0-9]*\.\?[0-9]\+" | $TAC_COMMAND | grep -m 1 '.')
         echo "total coverage $tests_coverage"
         energy_consumption=$(cut -d, -f2  $f/$TEST_RESUME_FILE |  grep "[-+]\?[0-9]*\.\?[0-9]\+" )
         memory_consumption=$(cut -d, -f10  $f/$TEST_RESUME_FILE |  grep "[-+]\?[0-9]*\.\?[0-9]\+" )
@@ -159,7 +161,7 @@ for f in $DIR/
         # check if coverage is above limit
         echo " $tests_coverage"
         bigger_than_coverage_limit=$(echo "$tests_coverage>=$coverage_limit" | bc)
-        if [ $bigger_than_coverage_limit -gt 0 ] ; then
+        if [ $bigger_than_coverage_limit -gt "0" ] ; then
             coverage_list+=("$f")
             echo "coverage = $tests_coverage"
         fi
