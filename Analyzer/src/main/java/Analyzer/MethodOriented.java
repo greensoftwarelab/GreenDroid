@@ -1,5 +1,7 @@
 package Analyzer;
 
+import Metrics.GDConventions;
+import Metrics.MethodInfo;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 
@@ -20,9 +22,14 @@ public class MethodOriented {
     public static Map<String, Set<Integer>> nInvocaoes = new HashMap<>(); // <method, states>
     public static PairMetodoInt ultimo = new PairMetodoInt("",0);
     public static Map<String, Double []> methodInfos = new HashMap<>();
+    public static final String methodFilename = GDConventions.MethodOutputName;
+
+
+
+
 
     // receives filenames as args
-    public static void methodOriented (String [] args) throws FileNotFoundException {
+    public static void methodOriented (List<String> args) throws FileNotFoundException {
 
         CsvParserSettings settings = new CsvParserSettings();
         settings.getFormat().setLineSeparator("\n");
@@ -33,7 +40,7 @@ public class MethodOriented {
             }
             System.out.println("Processing " + file);
             List<List<PairMetodoInt>> states = new ArrayList<>(); // lista para guardar cada uma das execucoes
-            List<Consumption> consumptions = new ArrayList<Consumption>(); // todos os consumos
+            List<Consumption>  consumptions = new ArrayList<Consumption>(); // todos os consumos
             CsvParser parser = new CsvParser(settings);
             List<String[]> resolvedData = null;
             resolvedData = parser.parseAll(new FileReader(file));
@@ -51,7 +58,10 @@ public class MethodOriented {
                 row = resolvedData.get(i);
                 // se ha amostra de consumo de energia
                 if(row[Utils.getMatch(columns,Utils.batteryPower).first]!=null){
-                    consumptions.add(Analyzer.getDataFromRow(columns, row));
+                    Consumption com =  Analyzer.getDataFromRow(columns, row);
+                    com.setTimeBatteryPowerRaw(Integer.parseInt(row[Utils.getMatch(columns,Utils.batteryPower).first]));
+                    com.setBatteryPowerRaw(Integer.parseInt(row[Utils.getMatch(columns,Utils.batteryPower).second]));
+                    consumptions.add(com);
                     /*int timeTrepn = Integer.parseInt(row[Utils.getMatch(columns,Utils.batteryRemaing).first]);
                     int timeBatttery = Integer.parseInt(row[Utils.getMatch(columns,Utils.batteryPower).first]);
                     double watts = Double.parseDouble(row[Utils.getMatch(columns,Utils.batteryPower).second]);
@@ -131,7 +141,7 @@ public class MethodOriented {
                     tempofrente = lista.get(i).timeState;
                     Consumption closest = perto(consumptions,tempofrente);
                     addClosestConsumption(met,closest);
-                    double potfrente = closest.getConsumption();
+                    double potfrente = closest.getBatteryPowerRaw();
                     double deltat = tempofrente-tempo;
                     deltat = (double) deltat /1000;
                    // potencia += deltat * potfrente;
@@ -152,7 +162,7 @@ public class MethodOriented {
 
             FileWriter fw = null;
             try {
-                File f = new File(Analyzer.resultDirPath + "/" + file.replace("/", "").replace(".", "").replace("csv","")+".csv");
+                File f = new File(Analyzer.resultDirPath + "/" + methodFilename);
                 System.out.println(f.getAbsolutePath());
                 if (!f.exists()){
                     f.createNewFile();
@@ -170,7 +180,7 @@ public class MethodOriented {
             }
             l.clear();
 
-            System.out.println("-------------Test " + file+" CONSUMPTION" + "-------------");
+            System.out.println("-------------Test " + file+ " CONSUMPTION" + "-------------");
             System.out.println("----------------------------------------------------");
 
             for (String x : consumos.keySet()){
@@ -188,12 +198,52 @@ public class MethodOriented {
 
             }
 
+            l.add("Class"); l.add("Method"); l.add("Times invoked");
+            l.add("CC");l.add("LoC"); l.add("AndroidAPIs"); l.add("N args");
+
+            FileWriter fwApp = null;
+            try {
+                File f = new File(Analyzer.resultDirPath + "/" + methodFilename);
+                System.out.println(f.getAbsolutePath());
+                if (!f.exists()){
+                    f.createNewFile();
+                }
+                fwApp= new FileWriter(f.getAbsolutePath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            for ( String s : methodInfos.keySet()){
+                try {
+                    Analyzer.write(fwApp,l);
+                    l.clear();
+                    String [] xx = s.split("<");
+                    String methodName = xx[xx.length-1].replace(">","");
+                    l.add(xx[0]); l.add(methodName) ;l.add(String.valueOf(methodInfos.get(s)[12]));
+                    String s1 = s.replaceAll("<.*?>", "");
+                    MethodInfo mi = Analyzer.acu.getMethodOfClass(methodName,s1);
+                    l.add(String.valueOf(mi.cyclomaticComplexity)); l.add(String.valueOf(mi.linesOfCode+(Analyzer.isTestOriented?1:0))); l.add(String.valueOf(mi.androidApi.size())); l.add(String.valueOf(mi.nr_args));
+
+                } catch (IOException  | NullPointerException exc) {
+                    exc.printStackTrace();
+                }
+            }
+
+            try {
+                Analyzer.write(fwApp,l);
+                l.clear();
+                fwApp.flush();
+                fwApp.close();
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
             System.out.println("\nTests Total coverage : " +  (methodCoverage()*100)+ " %");
             try {
                 fw.flush();
                 fw.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException exp) {
+                exp.printStackTrace();
             }
         }
         nInvocaoes.clear();

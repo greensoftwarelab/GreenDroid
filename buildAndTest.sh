@@ -46,7 +46,7 @@ SLEEPTIME=10
 #DIR=/media/data/android_apps/failed/*
 #DIR=/media/data/android_apps/success/*
 #DIR=/home/greenlab/repos/GreenDroid/testApp/failed/*
-DIR=$HOME/tests/success/*
+DIR=$HOME/tests/critical/*
 #DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
 
 

@@ -6,7 +6,6 @@ package jInst.transform;
 
 //import greendroid.tools.Util;
 import Metrics.APICallUtil;
-import com.github.javaparser.*;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ASTHelper;
 import com.github.javaparser.JavaParser;
@@ -23,9 +22,6 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.VoidType;
 
 import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 import jInst.profiler.Profiler;
@@ -65,9 +61,9 @@ public class InstrumentHelper {
     protected String projectDesc;
     protected String devPackage;
     protected ArrayList<PackageM> packages;
-    protected boolean traceMethods;
+    protected boolean testOriented;
     protected String originalManifest;
-
+    public static boolean monkeyTest = false;
 
     //protected int JUnitVersion;
     protected Map<String,String> testType = new HashMap<>();
@@ -112,7 +108,7 @@ public class InstrumentHelper {
             this.profiler = pfact.createTestOrientedProfiler();
         }
         else {
-            System.out.println("Criei method oriented profiler");
+            //System.out.println("Criei method oriented profiler");
             this.profiler = pfact.createMethodOrientedProfiler();
         }
     }
@@ -132,7 +128,7 @@ public class InstrumentHelper {
         this.aux = transFolder+"_aux_/";
         this.devPackage = "";
         this.packages = new ArrayList<>();
-        this.traceMethods = trace;
+        this.testOriented = trace;
 
         instrumented.add("ActivityUnitTestCase");
         instrumented.add("ActivityIntrumentationTestCase2");
@@ -446,7 +442,7 @@ public class InstrumentHelper {
         // ImportDeclaration imp2 = new ImportDeclaration(ASTHelper.createNameExpr(" com.greenlab.trepnlib.TrepnLib"), false, false);
         ImportDeclaration imp2 = profiler.getLibrary();
         ImportDeclaration imp3 = null;
-//        if (!traceMethods)
+//        if (!testOriented)
 //             imp3 = new ImportDeclaration(ASTHelper.createNameExpr((appPackage.getPack()+"." + appPackage.getName())), false, false);
 
 
@@ -510,15 +506,15 @@ public class InstrumentHelper {
                 }
             }
 
-           if(!traceMethods) {
+           if(!testOriented) {
                ClassOrInterfaceVisitor v = new ClassOrInterfaceVisitor();
                v.setCu(cu);
-               v.setTracedMethod(traceMethods);
+               v.setTracedMethod(testOriented);
                v.visit(cu, cDef);
            }
             MethodChangerVisitor v1= new MethodChangerVisitor();
             v1.setCu(cu);
-            v1.setTracedMethod(traceMethods);
+            v1.setTracedMethod(testOriented);
             v1.visit(cu, cDef);
 
         }
@@ -616,7 +612,7 @@ public class InstrumentHelper {
 //            cDef.setInstrumented(true);
         if(isTestable){
             TestChangerVisitor t = new TestChangerVisitor();
-            t.traceMethod = this.traceMethods;
+            t.traceMethod = this.testOriented;
             t.visit(cu, ((Object)cDef) );
 
             if(cDef.isJunit4suite()){
@@ -635,7 +631,7 @@ public class InstrumentHelper {
                     newSetUp.setBody(new BlockStmt());
 //                    MethodCallExpr mcS = new MethodCallExpr();
 
-//                    if(traceMethods){
+//                    if(testOriented){
 ////                        mcS.setName("TrepnLib.startProfilingTest");
 //
 //                    }
@@ -683,7 +679,7 @@ public class InstrumentHelper {
                     newTearDown.setAnnotations(anot);
                     newTearDown.setBody(new BlockStmt());
 //                    MethodCallExpr mcT = new MethodCallExpr();
-//                    if(traceMethods){
+//                    if(testOriented){
 //                        mcT.setName("TrepnLib.stopProfilingTest");
 //                    }
 //                    else {
@@ -778,7 +774,7 @@ public class InstrumentHelper {
                         newTearDown.setAnnotations(anot);
                         newTearDown.setBody(new BlockStmt());
 //                        MethodCallExpr mcT = new MethodCallExpr();
-//                        if(traceMethods){
+//                        if(testOriented){
 //                            mcT.setName("TrepnLib.stopProfilingTest");
 //                        }
 //                        else {
@@ -871,7 +867,7 @@ public class InstrumentHelper {
                         MethodCallExpr superTearDown = new MethodCallExpr();
                         superTearDown.setName("super.tearDown");
 //                        MethodCallExpr mcT = new MethodCallExpr();
-//                        if(traceMethods){
+//                        if(testOriented){
 //                            mcT.setName("TrepnLib.stopProfilingTest");
 //                        }
 //                        else {
@@ -1181,6 +1177,17 @@ public class InstrumentHelper {
         metodo.setArgs(list);
         return exp;
     }
+
+
+//    public static String inferContext(ClassOrInterfaceDeclaration cid ) {
+//
+//        if (monkeyTest){
+//            for( ClassOrInterfaceType cit : cid.getExtends()){
+//
+//            }
+//        }
+//        return null;
+//    }
 
 
 }

@@ -34,7 +34,7 @@ import java.util.LinkedList;
 public class MethodChangerVisitor extends VoidVisitorAdapter {
     private static LinkedList<PackageM> packages = new LinkedList<PackageM>();
 
-    private static final int NUMBER_OF_OPERATIONS = 7;
+    private static final int NUMBER_OF_OPERATIONS = 0; // TODO
 
     public static void restartPackages(){
         packages.clear();
@@ -388,6 +388,8 @@ public class MethodChangerVisitor extends VoidVisitorAdapter {
 //                        } else {
 //                            getContext.setName("getInstrumentation().getTargetContext");
 //                        }
+
+
                         getContext.setName(InstrumentHelper.getApplicationFullName() + ".getAppContext");
 
                         MethodCallExpr mcB = ((MethodOrientedProfiler) InstrumentHelper.getProfiler()).markMethodStart(getContext,metodo);
@@ -451,6 +453,8 @@ public class MethodChangerVisitor extends VoidVisitorAdapter {
             }
         }
     }
+
+
 
 
 

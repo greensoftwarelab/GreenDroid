@@ -119,7 +119,7 @@ for f in $DIR/
     do
     echo "$f"
     #nr of tests
-    nr_tests=$(find $f/ -not \( -path $f/oldRuns -prune \) -name "Green*.csv" -maxdepth 2 | wc -l)
+    nr_tests=$(find $f/ -not \( -path $f/oldRuns -prune \) -maxdepth 2 -name "Green*.csv" | wc -l)
     echo "qtos testes ? $nr_tests"
     if [ "$nr_tests" -gt "$max_tests" ]; then
     	max_tests=$nr_tests # apps with more tests

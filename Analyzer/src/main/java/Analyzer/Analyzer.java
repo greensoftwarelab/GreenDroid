@@ -30,7 +30,9 @@ public class Analyzer {
     public static final String appIssuesFile = GDConventions.IssuesOutputName;
     public static final String serializedFile = GDConventions.fileStreamName;
     public static final String analyzerTag= "[Analyzer] ";
-
+    public static  String folderPrefix= "Test";
+    public static int stoppedState = 0;
+    private static boolean mergeOldRuns= false;
 
 
     private static List<String> loadTests(String csvFile) throws Exception {
@@ -54,7 +56,8 @@ public class Analyzer {
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            System.out.println("TracedTests not found");
+            return alltests;
         }
 
             try (Stream<String> lines = Files.lines (p, StandardCharsets.UTF_8)) {
@@ -197,7 +200,7 @@ public class Analyzer {
                 row  = resolvedData.get(i);
                 if(row.length<=5) break;
                 if(row[ Utils.getMatch(columns,Utils.stateDescription).first]!=null&&row[ Utils.getMatch(columns,Utils.stateDescription).second]!=null) { // if this line has state and descrip
-                    state = Integer.parseInt(row[Utils.getMatch(columns,Utils.stateInt).second]) > 0;
+                    state = Integer.parseInt(row[Utils.getMatch(columns,Utils.stateInt).second]) != stoppedState;
                     method = new String(row[Utils.getMatch(columns,Utils.stateDescription).second]);
 
                     if(state&&method.equals("started") && first){
@@ -250,6 +253,7 @@ public class Analyzer {
             }
             if(! timeConsumption.containsKey(closestStart) || ! timeConsumption.containsKey(closestStop)){
                 System.out.println("[Analyzer] Warning: Ignoring test " + number + "; Missing columns in test results .csv file");
+                System.out.println("Closest start -> " + closestStart +"  closest stop -> "+ closestStop);
                 continue;
             }
 
@@ -425,8 +429,8 @@ public class Analyzer {
         double gpuLoad = Utils.getMatch(columns, Utils.gpuLoad)!=null? (row[Utils.getMatch(columns, Utils.gpuLoad).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.gpuLoad).second])) : returnList[7]) : returnList[7];
         double cpuLoadNormalized = Utils.getMatch(columns, Utils.cpuLoadNormalized)!=null?  (row[Utils.getMatch(columns, Utils.cpuLoadNormalized).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.cpuLoadNormalized).second])) : returnList[8]) : returnList[8];
         double gps = Utils.getMatch(columns, Utils.gpsSate)!=null? (row[Utils.getMatch(columns, Utils.gpsSate).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.gpsSate).second])) : returnList[9]) : returnList[9];
-        return new Consumption(((int) memUsage), ((int) mobileData), ((int) wifiState), ((int) wifiRSSI), ((int) screenState), 0, 0, ((int) batteryStatus), ((int) bluetooth), ((int) gpuLoad), ((int) gps), ((int) cpuLoadNormalized));
-
+        Consumption c = new  Consumption(((int) memUsage), ((int) mobileData), ((int) wifiState), ((int) wifiRSSI), ((int) screenState), 0, 0, ((int) batteryStatus), ((int) bluetooth), ((int) gpuLoad), ((int) gps), ((int) cpuLoadNormalized));
+        return c;
     }
 
 
@@ -520,7 +524,7 @@ public class Analyzer {
     }
 
 
-    public  static void methodOriented(String[] arg1) {
+    public  static void methodOriented(List<String> arg1) {
         try {
             MethodOriented.methodOriented(arg1);
         } catch (FileNotFoundException e) {
@@ -620,7 +624,6 @@ public class Analyzer {
         //Path path = Paths.get(f.getAbsoluteFile().getParent());
         //System.out.println("folde3r " + path);
 
-
         List <String> list = new ArrayList<>( );
         Path path = Paths.get(resultDirPath);
         try{
@@ -628,9 +631,12 @@ public class Analyzer {
             stream = Files.newDirectoryStream(path);
             // foreach file in resulDir folder
             for (Path entry : stream) {
+                if(!entry.getFileName().toString().startsWith(folderPrefix)){
+                    continue;
+                }
+
                 if(Files.isDirectory(entry)) { // if is a folder
                     //get files of that folder
-
                     DirectoryStream<Path> streamChild = null;
                     try {
                         streamChild = Files.newDirectoryStream(Paths.get(entry.toString()));
@@ -638,14 +644,13 @@ public class Analyzer {
                         e.printStackTrace();
                         return list;
                     }
-                    for (Path entry1 : streamChild) { //foreach file of that foler
+                    for (Path entry1 : streamChild) { //foreach file of that folder
                         if (entry.equals(path))
                             continue;
                         if (entry1.getFileName().toString().matches("GreendroidResultTrace[0-9]+\\.csv")) {
                             list.add(entry1.toString());
                         }
                     }
-
                 }
                 else {
                     if (entry.equals(path))
@@ -654,7 +659,6 @@ public class Analyzer {
                         list.add(entry.toString());
                     }
                 }
-
             }
             stream.close();
         }
@@ -666,13 +670,25 @@ public class Analyzer {
             System.out.println("ficheiro " +l);
         }*/
 
+        if (mergeOldRuns){
+            resultDirPath+="oldRuns/";
+            mergeOldRuns = false;
+            List<String> x = getAllCsvs(resultDirPath);
+            list.addAll(x);
+            mergeOldRuns = true;
+        }
+
         return list;
     }
 
     public static void main(String[] args) {
-        if (args.length>1) {
-            isTestOriented = args[0].equals("-TraceMethods");
+        mergeOldRuns = false; // TODO
+        if (args.length>2) {
+            isTestOriented = args[0].equals("-TestOriented");
+            if(!isTestOriented)
+                folderPrefix="Method";
             resultDirPath =args[1];
+            stoppedState = args[2].equals("-Monkey")?2:0;
            // boolean analyzeOldRuns=  args[2].equals("-oldRuns");
             allMethodsDir = resultDirPath + "/all/";
             allmethods = loadMethods(allMethodsDir);
@@ -688,14 +704,16 @@ public class Analyzer {
                     e.printStackTrace();
                 }
             } else {
-                methodOriented(Arrays.copyOfRange(args, 3, args.length));
+                acu = APICallUtil.deserializeAPiCallUtil(resultDirPath + "/" + serializedFile);
+                methodOriented(getAllCsvs(resultDirPath));
+                // methodOriented(Arrays.copyOfRange(args, 3, args.length));
             }
 
 
             //System.out.println(acu);
         }
         else {
-            System.out.println("Bad argument length for Greendroid Analyzer! Usage ->  -TraceMethods resultsdir [pathAllMethods] [pathTocsv]*");
+            System.out.println("Bad argument length for Greendroid Analyzer! Usage ->  [-(Test|Method)Oriented] resultsdir [-Monkey|XXX]");
         }
     }
 

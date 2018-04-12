@@ -71,7 +71,7 @@ public class InstrumentGradleHelper extends InstrumentHelper{
         }
         File auxF = new File(aux); auxF.mkdir();
 //        FileUtils.writeFile(new File(aux+"AllMethods"), allMethods);
-        packages.clear();
+        packages.clear() ;
         MethodChangerVisitor.restartPackages();
 
         this.addPermission();

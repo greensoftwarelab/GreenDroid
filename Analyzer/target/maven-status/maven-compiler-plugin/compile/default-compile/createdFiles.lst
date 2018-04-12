@@ -3,6 +3,7 @@ Analyzer/MethodOriented.class
 Analyzer/tester.class
 Analyzer/PairMetodoInt.class
 Analyzer/PairMethodIntComparator.class
+Analyzer/Issue.class
 Analyzer/Pair.class
 Analyzer/Utils.class
 Analyzer/ConsumptionComparator.class
