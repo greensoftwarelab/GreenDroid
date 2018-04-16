@@ -12,7 +12,7 @@ w_echo "Stopping Trepn Profiler"
 adb shell am broadcast –a com.quicinc.trepn.stop_profiling
 adb shell am stopservice com.quicinc.trepn/.TrepnService
 
-adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
+#adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
 
 
 #remove trash files

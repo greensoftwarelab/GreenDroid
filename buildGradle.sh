@@ -404,8 +404,8 @@ if [ -n "$WRAPPER" ]; then
 	$SED_COMMAND -ri.bak "s#distributionUrl.+#distributionUrl=http\://services.gradle.org/distributions/gradle-$GRADLE_VERSION-all.zip#g" $WRAPPER
 fi 
 
-#gradle --no-daemon -b $GRADLE clean build assembleAndroidTest &> $logDir/buildStatus.log
-gradle -b $GRADLE clean build assembleAndroidTest &> $logDir/buildStatus.log
+gradle --no-daemon -b $GRADLE clean build assembleAndroidTest &> $logDir/buildStatus.log
+#gradle -b $GRADLE clean build assembleAndroidTest &> $logDir/buildStatus.log
 
 ## The 'RR' way:
 ## chmod +x $FOLDER/gradlew
@@ -476,8 +476,8 @@ if [ -n "$STATUS_NOK" ]; then
 			fi
 			
 		done
-		#gradle --no-daemon -b $GRADLE clean build assembleAndroidTest &> $logDir/buildStatus.log
-		gradle -b $GRADLE clean build assembleAndroidTest &> $logDir/buildStatus.log
+		gradle --no-daemon -b $GRADLE clean build assembleAndroidTest &> $logDir/buildStatus.log
+		#gradle -b $GRADLE clean build assembleAndroidTest &> $logDir/buildStatus.log
 
 		libsError=$(egrep "No signature of method: java.util.ArrayList.call() is applicable for argument types: (java.lang.String) values: [libs]" $logDir/buildStatus.log)
 		minSDKerror=$(egrep "uses-sdk:minSdkVersion (.+) cannot be smaller than version (.+) declared in" $logDir/buildStatus.log)

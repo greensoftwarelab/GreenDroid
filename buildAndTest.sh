@@ -91,6 +91,8 @@ else
 	w_echo "$TAG searching for Android Projects in -> $DIR"
 	for f in $DIR/
 		do
+
+
 		#clean previous list of all methods and device results
 		rm -rf ./allMethods.txt
 		adb shell rm -rf "$deviceDir/TracedMethods.txt"
@@ -104,10 +106,8 @@ else
 		ID=${arr[*]: -1}
 		IFS=$(echo -en "\n\b")
 		now=$(date +"%d_%m_%y_%H_%M_%S")
-
 		if [ "$ID" != "success" ] && [ "$ID" != "failed" ] && [ "$ID" != "unknown" ]; then
 			projLocalDir=$localDir/$ID
-			rm -rf $projLocalDir/all/*
 			if [[ $trace == "-TestOriented" ]]; then
 				w_echo "	Test Oriented Profiling:      ✔"
 				folderPrefix="Test"
@@ -128,7 +128,7 @@ else
 			POM=$(find ${f}/${prefix} -maxdepth 1 -name "pom.xml")
 			if [ -n "$POM" ]; then
 				POM=${POM// /\\ }
-				# Maven porjects are not considered yet...
+				# Maven projects are not considered yet...
 			elif [ -n "${GRADLE[0]}" ]; then
 				MANIFESTS=($(find $f -name "AndroidManifest.xml" | egrep -v "/build/|$tName"))
 				if [[ "${#MANIFESTS[@]}" > 0 ]]; then
@@ -145,27 +145,27 @@ else
 						MANIF_S="${RESULT[0]}/AndroidManifest.xml"
 						MANIF_T="-"
 						
-						FOLDER=${f}${prefix} #$f
-						#delete previously instrumented project, if any					
 
+						FOLDER=${f}${prefix} 				
 						oldInstrumentation=$(cat $FOLDER/$tName/instrumentationType.txt | grep "Test*")
 						if [[ $oldInstrumentation != $trace ]]; then
 							w_echo "Different type of instrumentation. instrumenting again..."
 							rm -rf $FOLDER/$tName
 							java -jar $GD_INSTRUMENT "-gradle" $tName "X" $FOLDER $MANIF_S $MANIF_T $trace $monkey ##RR
+							#create results support folder
+							echo "$TAG Creating support folder..."
+							$MKDIR_COMMAND -p $projLocalDir
+							$MKDIR_COMMAND -p $projLocalDir/oldRuns
+							$MKDIR_COMMAND -p $projLocalDir/all
+							rm -rf $projLocalDir/all/*
+							$MV_COMMAND ./allMethods.txt $projLocalDir/all/allMethods.txt
 						else 
 							w_echo "Same instrumentation of last time. Skipping instrumentation phase"
 						fi
-
-						
-
-						#instrument
-						#echo "folder of app to instrument ----> $FOLDER"
+						xx=$(find  $projLocalDir/ -maxdepth 1 | $SED_COMMAND -n '1!p' |grep -v "oldRuns" | grep -v "all" )
+						echo "xx -> $xx"
+						$MV_COMMAND -f $xx $projLocalDir/oldRuns/
 						echo "$FOLDER/$tName" > lastTranformedApp.txt
-						#echo "java -jar jar -gradle _TRANSFORMED_ X $FOLDER $MANIF_S $MANIF_T $trace"
-						
-						
-						#copy the trace/measure lib
 						#folds=($(find $FOLDER/$tName/ -type d | egrep -v "\/res|\/gen|\/build|\/.git|\/src|\/.gradle"))
 						for D in `find $FOLDER/$tName/ -type d | egrep -v "\/res|\/gen|\/build|\/.git|\/src|\/.gradle"`; do  ##RR
 						    if [ -d "${D}" ]; then  ##RR
@@ -178,7 +178,13 @@ else
 						#GRADLE=$(find $FOLDER/$tName -maxdepth 1 -name "build.gradle")
 						GRADLE=($(find $FOLDER/$tName -name "*.gradle" -type f -print | grep -v "settings.gradle" | xargs grep -L "com.android.library" | xargs grep -l "buildscript" | cut -f1 -d:))
 						#echo "gradle script invocation -> ./buildGradle.sh $ID $FOLDER/$tName ${GRADLE[0]}"
-						./buildGradle.sh $ID $FOLDER/$tName ${GRADLE[0]}
+						if [[ $oldInstrumentation != $trace ]]; then
+							w_echo "[APP BUILDER] Different instrumentation since last time. Building Again"
+							./buildGradle.sh $ID $FOLDER/$tName ${GRADLE[0]}
+						else 
+							w_echo "[APP BUILDER] No changes since last run. Not building again"
+						fi
+
 						(echo $trace) > $FOLDER/$tName/instrumentationType.txt
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
@@ -191,28 +197,17 @@ else
 						else 
 							i_echo "BUILD SUCCESSFULL"
 						fi
-						
-						#create results support folder
-						echo "$TAG Creating support folder..."
-						$MKDIR_COMMAND -p $projLocalDir
-						$MKDIR_COMMAND -p $projLocalDir/oldRuns
-						$MV_COMMAND -f $(find  $projLocalDir/ -maxdepth 1 | $SED_COMMAND -n '1!p' |grep -v "oldRuns") $projLocalDir/oldRuns/
-						$MKDIR_COMMAND -p $projLocalDir/all
-						cat ./allMethods.txt >> $projLocalDir/all/allMethods.txt
-						
+	
 						##copy MethodMetric to support folder
-						#echo "copiar $FOLDER/$tName/classInfo.ser para $projLocalDir "
 						cp $FOLDER/$tName/AppInfo.ser $projLocalDir
-
 						#install on device
 						./install.sh $FOLDER/$tName "X" "GRADLE" $PACKAGE $projLocalDir  #COMMENT, EVENTUALLY...
 						RET=$(echo $?)
-						#if [[ "$RET" != "0" ]]; then
-						#	echo "$ID" >> errorInstall.log
-						#	continue
-						#fi
+						if [[ "$RET" != "0" ]]; then
+							echo "$ID" >> errorInstall.log
+							continue
+						fi
 						echo "$ID" >> $logDir/success.log
-						
 						#run tests
 						./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir $folderPrefix # "-gradle" $FOLDER/$tName
 						RET=$(echo $?)
@@ -234,7 +229,6 @@ else
 								continue
 							fi
 						fi
-						
 						#uninstall the app & tests
 						#./uninstall.sh $PACKAGE $TESTPACKAGE
 						./forceUninstall.sh 
@@ -244,14 +238,8 @@ else
 							#continue
 						fi
 						
-						#Run greendoid!
-						#java -jar $GD_ANALYZER $ID $PACKAGE $TESTPACKAGE $FOLDER $FOLDER/tName $localDir
-						#(java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv) > $logDir/analyzer.log  ##RR
 						java -jar $GD_ANALYZER $trace $projLocalDir/ $monkey
-						#cat $logDir/analyzer.log
-						errorAnalyzer=$(cat $logDir/analyzer.log)
-						#TODO se der erro imprimir a vermelho e aconselhar usar o trepFix.sh
-						#break
+						#errorAnalyzer=$(cat $logDir/analyzer.log)
 						w_echo "$TAG sleeping between profiling apps"
 						sleep $SLEEPTIME
 						w_echo "$TAG resuming Greendroid after nap"
