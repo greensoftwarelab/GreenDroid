@@ -62,7 +62,6 @@ else
 	#adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
 	
 	adb shell am startservice --user 0 com.quicinc.trepn/.TrepnService
-	sleep 8
 	
 	(echo $deviceDir > deviceDir.txt) 
 	(adb shell mkdir $deviceDir) > /dev/null  2>&1

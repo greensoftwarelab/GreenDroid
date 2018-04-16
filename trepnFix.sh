@@ -10,6 +10,11 @@ deviceDir="/sdcard/trepn"
 w_echo "Stopping Trepn Profiler"
 #shutdown trepn
 adb shell am broadcast –a com.quicinc.trepn.stop_profiling
+adb shell am stopservice com.quicinc.trepn/.TrepnService
+
+adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
+
+
 #remove trash files
 w_echo "Removing Trash Files from last run"
 (adb shell rm -rf $deviceDir/*.db )> /dev/null  2>&1

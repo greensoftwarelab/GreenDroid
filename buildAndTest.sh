@@ -24,6 +24,8 @@ else
 	trace="wtv"
 fi
 
+monkey="-Not"
+folderPrefix=""
 OLDIFS=$IFS
 tName="_TRANSFORMED_"
 deviceDir=""
@@ -31,7 +33,8 @@ prefix="latest" # "latest" or ""
 deviceExternal=""
 logDir="logs"
 localDir="$HOME/GDResults"
-trace="-TraceMethods"   #trace=$2  ##RR
+#trace="-MethodOriented"     ##RR
+trace="-TestOriented"     ##RR
 GD_ANALYZER="jars/Analyzer.jar"  # "analyzer/greenDroidAnalyzer.jar"
 GD_INSTRUMENT="jars/jInst.jar"
 treprefix=""
@@ -40,35 +43,13 @@ trepnJar="TrepnLibrary-release.jar"
 profileHardware="YES" # YES or ""
 flagStatus="on"
 SLEEPTIME=10
-#DIR=$HOME/tests/wasSuccess/gradleProjects/*
 
-
-#DIR=/media/data/android_apps/failed/*
-#DIR=/media/data/android_apps/success/*
-#DIR=/home/greenlab/repos/GreenDroid/testApp/failed/*
-DIR=$HOME/tests/critical/*
+DIR=$HOME/tests/actual/*
 #DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
-
-
-#Quickly check the folder containing the apps to be tested for inconsistencies
-#if [ "${DIR: -1}" == "*" ]; then
-#	TEST_DIR="${DIR:0:-1}"
-#else 
-#	TEST_DIR=$DIR
-#qfi
 
 echo ""
 i_echo "### GRENDROID PROFILING TOOL ###     "
 
-if [ ! -d $TEST_DIR ]; then
-	e_echo "$TAG Error: Folder $TEST_DIR does not exist"
-	exit 1
-fi
-
-if [ -z "$(ls -A $TEST_DIR)" ]; then
-	e_echo "$TAG Error: Folder $TEST_DIR is empty"
-	exit 1
-fi
 
 adb kill-server
 DEVICE=$(adb devices -l | egrep "device .+ product:")
@@ -87,8 +68,8 @@ else
 	#put Trepn preferences on device
 	(adb push trepnPreferences/ $deviceDir/saved_preferences/) > /dev/null  2>&1 #new
 	#Start Trepn
-	adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
-	
+	#adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
+	adb shell am startservice --user 0 com.quicinc.trepn/.TrepnService
 
 	
 	(echo $deviceDir > deviceDir.txt) 
@@ -96,9 +77,9 @@ else
 	(adb shell mkdir $deviceDir/Traces) > /dev/null  2>&1
 	(adb shell mkdir $deviceDir/Measures) > /dev/null  2>&1
 	(adb shell mkdir $deviceDir/TracedTests) > /dev/null  2>&1
-	adb shell rm -rf $deviceDir/Measures/*  ##RR
-	adb shell rm -rf $deviceDir/Traces/*  ##RR
-	adb shell rm -rf $deviceDir/TracedTests/*  ##RR
+	#adb shell rm -rf $deviceDir/Measures/*  ##RR
+	#adb shell rm -rf $deviceDir/Traces/*  ##RR
+	#adb shell rm -rf $deviceDir/TracedTests/*  ##RR
 
 	if [[ -n "$flagStatus" ]]; then
 		($MKDIR_COMMAND debugBuild ) > /dev/null  2>&1 #new
@@ -112,11 +93,10 @@ else
 		do
 		#clean previous list of all methods and device results
 		rm -rf ./allMethods.txt
-
-		adb shell rm -rf "$deviceDir/allMethods.txt"
 		adb shell rm -rf "$deviceDir/TracedMethods.txt"
 		adb shell rm -rf "$deviceDir/Traces/*"
 		adb shell rm -rf "$deviceDir/Measures/*"
+		adb shell rm -rf "$deviceDir/TracedTests/*"
 
 		IFS='/' read -ra arr <<< "$f"
 		#ID=${arr[-1]} # MC
@@ -128,10 +108,12 @@ else
 		if [ "$ID" != "success" ] && [ "$ID" != "failed" ] && [ "$ID" != "unknown" ]; then
 			projLocalDir=$localDir/$ID
 			rm -rf $projLocalDir/all/*
-			if [[ $trace == "-TraceMethods" ]]; then
+			if [[ $trace == "-TestOriented" ]]; then
 				w_echo "	Test Oriented Profiling:      ✔"
+				folderPrefix="Test"
 			else 
 				w_echo "	Method Oriented profiling:    ✔"
+				folderPrefix="Method"
 			fi 
 			if [[ $profileHardware == "YES" ]]; then
 				w_echo "	Profiling hardware:           ✔"
@@ -164,14 +146,24 @@ else
 						MANIF_T="-"
 						
 						FOLDER=${f}${prefix} #$f
-						#delete previously instrumented project, if any
-						rm -rf $FOLDER/$tName
+						#delete previously instrumented project, if any					
+
+						oldInstrumentation=$(cat $FOLDER/$tName/instrumentationType.txt | grep "Test*")
+						if [[ $oldInstrumentation != $trace ]]; then
+							w_echo "Different type of instrumentation. instrumenting again..."
+							rm -rf $FOLDER/$tName
+							java -jar $GD_INSTRUMENT "-gradle" $tName "X" $FOLDER $MANIF_S $MANIF_T $trace $monkey ##RR
+						else 
+							w_echo "Same instrumentation of last time. Skipping instrumentation phase"
+						fi
+
+						
 
 						#instrument
 						#echo "folder of app to instrument ----> $FOLDER"
 						echo "$FOLDER/$tName" > lastTranformedApp.txt
 						#echo "java -jar jar -gradle _TRANSFORMED_ X $FOLDER $MANIF_S $MANIF_T $trace"
-						java -jar $GD_INSTRUMENT "-gradle" $tName "X" $FOLDER $MANIF_S $MANIF_T $trace ##RR
+						
 						
 						#copy the trace/measure lib
 						#folds=($(find $FOLDER/$tName/ -type d | egrep -v "\/res|\/gen|\/build|\/.git|\/src|\/.gradle"))
@@ -187,6 +179,7 @@ else
 						GRADLE=($(find $FOLDER/$tName -name "*.gradle" -type f -print | grep -v "settings.gradle" | xargs grep -L "com.android.library" | xargs grep -l "buildscript" | cut -f1 -d:))
 						#echo "gradle script invocation -> ./buildGradle.sh $ID $FOLDER/$tName ${GRADLE[0]}"
 						./buildGradle.sh $ID $FOLDER/$tName ${GRADLE[0]}
+						(echo $trace) > $FOLDER/$tName/instrumentationType.txt
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
 							echo "$ID" >> $logDir/errorBuildGradle.log
@@ -221,16 +214,18 @@ else
 						echo "$ID" >> $logDir/success.log
 						
 						#run tests
-						./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir # "-gradle" $FOLDER/$tName
+						./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir $folderPrefix # "-gradle" $FOLDER/$tName
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
 							echo "$ID" >> $logDir/errorRun.log
 							e_echo "[GD ERROR] There was an Error while running tests. Retrying... "
 							#RETRY 
-							./trepnFix
+							./trepnFix.sh
 							sleep 3
-							adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
-							./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir # "-gradle" $FOLDER/$tName
+							#adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
+							adb shell am startservice --user 0 com.quicinc.trepn/.TrepnService
+							sleep 5
+							./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir $folderPrefix # "-gradle" $FOLDER/$tName
 							RET=$(echo $?)
 							if [[ "$RET" != "0" ]]; then
 								echo "$ID" >> $logDir/errorRun.log
@@ -252,7 +247,7 @@ else
 						#Run greendoid!
 						#java -jar $GD_ANALYZER $ID $PACKAGE $TESTPACKAGE $FOLDER $FOLDER/tName $localDir
 						#(java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv) > $logDir/analyzer.log  ##RR
-						java -jar $GD_ANALYZER $trace $projLocalDir/ 
+						java -jar $GD_ANALYZER $trace $projLocalDir/ $monkey
 						#cat $logDir/analyzer.log
 						errorAnalyzer=$(cat $logDir/analyzer.log)
 						#TODO se der erro imprimir a vermelho e aconselhar usar o trepFix.sh
@@ -278,11 +273,11 @@ else
 						rm -rf $SOURCE/$tName
 						#instrument
 						if [[ "$SOURCE" != "$TESTS" ]]; then
-							java -jar $GD_INSTRUMENT "-sdk" $tName "X" $SOURCE $TESTS $trace
+							java -jar $GD_INSTRUMENT "-sdk" $tName "X" $SOURCE $TESTS $trace $monkey
 						else
 							MANIF_S="${SOURCE}/AndroidManifest.xml"
 							MANIF_T="-"
-							java -jar $GD_INSTRUMENT "-gradle" $tName "X" $SOURCE $MANIF_S $MANIF_T $trace ##RR
+							java -jar $GD_INSTRUMENT "-gradle" $tName "X" $SOURCE $MANIF_S $MANIF_T $trace $monkey ##RR
 						fi
 
 						#copy the test runner
@@ -293,6 +288,7 @@ else
 	
 						#build
 						./buildSDK.sh $ID $PACKAGE $SOURCE/$tName $SOURCE/$tName/tests $deviceDir $localDir
+						(echo $trace) > $FOLDER/$tName/instrumentationType.txt
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
 							echo "$ID" >> $logDir/errorBuildSDK.log
@@ -333,7 +329,7 @@ else
 						cp $FOLDER/$tName/AppInfo.ser $projLocalDir
 						
 						#run tests
-						./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir
+						./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir $folderPrefix 
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
 							echo "$ID" >> $logDir/errorRun.log
@@ -341,7 +337,7 @@ else
 							#RETRY 
 							adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
 							sleep 3
-							./runTests $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir # "-gradle" $FOLDER/$tName
+							./runTests $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir $folderPrefix # "-gradle" $FOLDER/$tName
 							RET=$(echo $?)
 							if [[ "$RET" != "0" ]]; then
 								echo "$ID" >> $logDir/errorRun.log

@@ -5,7 +5,8 @@ pack=$1
 testPack=$2
 deviceDir=$3
 localDir=$4
-projType=$5
+folderPrefix=$5
+#echo "ui ui olha o prefix  $folderPrefix"
 machine=''
 getSO machine
 if [ "$machine" == "Mac" ]; then
@@ -27,82 +28,64 @@ else
 	runner="android.test.InstrumentationTestRunner"
 fi
 
+rm -rf $localDir/*.csv
+w_echo "$TAG using runner with $runner"
 
+w_echo "$TAG Running the tests (Measuring)"
+adb shell "echo 1 > $deviceDir/GDflag"
+($Timeout_COMMAND -s 9 $TIMEOUT adb shell am instrument -w $testPack/$runner) &> runStatus.log
 
-#i_echo "$TAG Running"
-
-if [ "$projType" == "-gradle" ]; then
-	FOLDER=$6
-	chmod +x $FOLDER/gradlew
-	echo  "$TAG Building and running tests....."
-	cd $FOLDER ; ($FOLDER/gradlew connectedAndroidTest &> buildStatus.log)
-else
-
-	w_echo "$TAG Cleaning files of previous runs"  ##RR
-	adb shell rm -rf "$deviceDir/allMethods.txt"  ##RR
-	adb shell rm -rf "$deviceDir/Traces/*"  ##RR
-	adb shell rm -rf "$deviceDir/TracedMethods.txt"  ##RR
-	adb shell rm -rf "$deviceDir/Measures/*"  ##RR
-	adb shell rm -rf "$deviceDir/TracedTests/*"  ##RR									TracedTests
-	rm -rf $localDir/*.csv
-	w_echo "$TAG using runner with $runner"
-
-	w_echo "$TAG Running the tests (Measuring)"
-	adb shell "echo 1 > $deviceDir/GDflag"
-	($Timeout_COMMAND -s 9 $TIMEOUT adb shell am instrument -w $testPack/$runner) &> runStatus.log
-
-	missingInstrumentation=$(grep "Unable to find instrumentation info for" runStatus.log)
-	flagInst="0"
-	if [[ -n "$missingInstrumentation" ]]; then
-		# Something went wrong during instalation and run. 
-		# Let's try running all existing instrumentations (should not be bigger than one)
-		flagInst="1"
-		adb shell "pm list instrumentation"
-		allInstrumentations=($(adb shell pm list instrumentation | cut -f2 -d: | cut -f1 -d\ ))
-		echo "instrumenting"
-		echo "$allInstrumentations"
-		if [[ "${#allInstrumentations[@]}" -ge "1" ]]; then
-			for i in ${allInstrumentations[@]}; do
-				($Timeout_COMMAND -s 9 $TIMEOUT adb shell am instrument -w $i) &> runStatus.log
-				RET=$(echo $?)
-				if [[ "$RET" != 0 ]]; then
-					./forceUninstall.sh
-					exit -1
-				fi
-			done
-		else
-			e_echo "$TAG Wrong number of instrumentations: Found ${#allInstrumentations[@]}, Expected 1."
-		fi
-	fi
-
-	#Stop the app, if it is still running
-	adb shell am force-stop $pack
-	adb shell am force-stop $testPack
-	adb shell am start -a android.intent.action.MAIN -c android.intent.category.HOME > /dev/null 2>&1
-	
-	w_echo "$TAG Running the tests (Tracing)"
-	adb shell "echo -1 > $deviceDir/GDflag"
-	
-	if [[ "$flagInst" == 1 ]]; then
-		allInstrumentations=($(adb shell pm list instrumentation | cut -f2 -d: | cut -f1 -d\ ))
-		if [[ "${#allInstrumentations[@]}" -ge "1" ]]; then
-			for i in ${allInstrumentations[@]}; do
-				$Timeout_COMMAND -s 9 $TIMEOUT adb shell am instrument -w $i &> runStatus.log
-				RET=$(echo $?)
-				if [[ "$RET" != 0 ]]; then
-					./forceUninstall.sh
-					exit -1
-				fi
-			done
-		else
-			e_echo "$TAG Wrong number of instrumentations: Found ${#allInstrumentations[@]}, Expected 1."
-		fi
+missingInstrumentation=$(grep "Unable to find instrumentation info for" runStatus.log)
+flagInst="0"
+if [[ -n "$missingInstrumentation" ]]; then
+	# Something went wrong during instalation and run. 
+	# Let's try running all existing instrumentations (should not be bigger than one)
+	flagInst="1"
+	#adb shell "pm list instrumentation"
+	allInstrumentations=($(adb shell pm list instrumentation | cut -f2 -d: | cut -f1 -d\ ))
+	echo "instrumenting"
+	echo "$allInstrumentations"
+	if [[ "${#allInstrumentations[@]}" -ge "1" ]]; then
+		for i in ${allInstrumentations[@]}; do
+			($Timeout_COMMAND -s 9 $TIMEOUT adb shell am instrument -w $i) &> runStatus.log
+			RET=$(echo $?)
+			if [[ "$RET" != 0 ]]; then
+				./forceUninstall.sh
+				exit -1
+			fi
+		done
 	else
-		$Timeout_COMMAND -s 9 $TIMEOUT adb shell am instrument -w $testPack/$runner &> runStatus.log
+		e_echo "$TAG Wrong number of instrumentations: Found ${#allInstrumentations[@]}, Expected 1."
 	fi
-	adb shell am start -a android.intent.action.MAIN -c android.intent.category.HOME > /dev/null 2>&1
-
 fi
+
+#Stop the app, if it is still running
+adb shell am force-stop $pack
+adb shell am force-stop $testPack
+adb shell am start -a android.intent.action.MAIN -c android.intent.category.HOME > /dev/null 2>&1
+
+w_echo "$TAG Running the tests (Tracing)"
+adb shell "echo -1 > $deviceDir/GDflag"
+
+if [[ "$flagInst" == 1 ]]; then
+	allInstrumentations=($(adb shell pm list instrumentation | cut -f2 -d: | cut -f1 -d\ ))
+	if [[ "${#allInstrumentations[@]}" -ge "1" ]]; then
+		for i in ${allInstrumentations[@]}; do
+			$Timeout_COMMAND -s 9 $TIMEOUT adb shell am instrument -w $i &> runStatus.log
+			RET=$(echo $?)
+			if [[ "$RET" != 0 ]]; then
+				./forceUninstall.sh
+				exit -1
+			fi
+		done
+	else
+		e_echo "$TAG Wrong number of instrumentations: Found ${#allInstrumentations[@]}, Expected 1."
+	fi
+else
+	$Timeout_COMMAND -s 9 $TIMEOUT adb shell am instrument -w $testPack/$runner &> runStatus.log
+fi
+adb shell am start -a android.intent.action.MAIN -c android.intent.category.HOME > /dev/null 2>&1
+
 
 # TODO: Include output check from 'adb shell instrument' to assert that the tests were actually executed.
 
@@ -119,7 +102,7 @@ if [ $Nmeasures -le "0" ] || [ $Ntraces -le "0" ] || [ $Nmeasures -ne $Ntraces ]
 fi
 
 now=$(date +"%d_%m_%y_%H_%M_%S")
-localDir=$localDir/$ID$now
+localDir=$localDir/$ID/$folderPrefix$now
 echo "$TAG Creating support folder..."
 mkdir -p $localDir
 mkdir -p $localDir/all

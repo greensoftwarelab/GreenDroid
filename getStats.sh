@@ -239,7 +239,12 @@ echo "Correct Runned Apps : $(($total_apps - $total_faulty_runs))"
  echo "App with more tests : $app_max_tests -> $max_tests tests"
  
 if [ "$coverage_flag" -gt 0 ]; then
-    echo "Apps with that coverage ${coverage_list[*]}"
+    echo "Nº Apps with that coverage -> ${#coverage_list[@]}"
+    for i in "${coverage_list[@]}"
+    do
+       x_tests=$(find $i -not \( -path $i/oldRuns -prune \) -name "Green*.csv" | wc -l)
+       echo "$i  nr of tests ->  $x_tests tests"
+    done
 fi
 
 if [ "$tests_flag" -gt 0 ]; then
