@@ -119,7 +119,7 @@ for f in $DIR/
     do
     echo "$f"
     #nr of tests
-    nr_tests=$(find $f/ -not \( -path $f/oldRuns -prune \) -maxdepth 2 -name "Green*.csv" | wc -l)
+    nr_tests=$(find $f/ -maxdepth 2 -not \( -path $f/oldRuns -prune \) -name "Green*.csv" | wc -l)
     echo "qtos testes ? $nr_tests"
     if [ "$nr_tests" -gt "$max_tests" ]; then
     	max_tests=$nr_tests # apps with more tests
@@ -242,7 +242,7 @@ if [ "$coverage_flag" -gt 0 ]; then
     echo "Nº Apps with that coverage -> ${#coverage_list[@]}"
     for i in "${coverage_list[@]}"
     do
-       x_tests=$(find $i -not \( -path $i/oldRuns -prune \) -name "Green*.csv" | wc -l)
+       x_tests=$(find $i -maxdepth 2 -not \( -path $i/oldRuns -prune \) -name "Green*.csv" | wc -l)
        echo "$i  nr of tests ->  $x_tests tests"
     done
 fi
