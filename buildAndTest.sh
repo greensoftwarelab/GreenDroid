@@ -144,19 +144,20 @@ else
 						fi
 						MANIF_S="${RESULT[0]}/AndroidManifest.xml"
 						MANIF_T="-"
+						echo "$TAG Creating support folder..."
+						$MKDIR_COMMAND -p $projLocalDir
+						$MKDIR_COMMAND -p $projLocalDir/oldRuns
+						$MKDIR_COMMAND -p $projLocalDir/all
 						
 
 						FOLDER=${f}${prefix} 				
 						oldInstrumentation=$(cat $FOLDER/$tName/instrumentationType.txt | grep "Test*")
-						if [[ $oldInstrumentation != $trace ]]; then
+						allmethods=$(find $projLocalDir/all -maxdepth 1 -name "allMethods.txt")
+						if [ $oldInstrumentation != $trace ] || [ -z "$allmethods" ]; then
 							w_echo "Different type of instrumentation. instrumenting again..."
 							rm -rf $FOLDER/$tName
 							java -jar $GD_INSTRUMENT "-gradle" $tName "X" $FOLDER $MANIF_S $MANIF_T $trace $monkey ##RR
 							#create results support folder
-							echo "$TAG Creating support folder..."
-							$MKDIR_COMMAND -p $projLocalDir
-							$MKDIR_COMMAND -p $projLocalDir/oldRuns
-							$MKDIR_COMMAND -p $projLocalDir/all
 							rm -rf $projLocalDir/all/*
 							$MV_COMMAND ./allMethods.txt $projLocalDir/all/allMethods.txt
 						else 
@@ -178,7 +179,7 @@ else
 						#GRADLE=$(find $FOLDER/$tName -maxdepth 1 -name "build.gradle")
 						GRADLE=($(find $FOLDER/$tName -name "*.gradle" -type f -print | grep -v "settings.gradle" | xargs grep -L "com.android.library" | xargs grep -l "buildscript" | cut -f1 -d:))
 						#echo "gradle script invocation -> ./buildGradle.sh $ID $FOLDER/$tName ${GRADLE[0]}"
-						if [[ $oldInstrumentation != $trace ]]; then
+						if [ $oldInstrumentation != $trace ] || [ -z "$allmethods" ]; then
 							w_echo "[APP BUILDER] Different instrumentation since last time. Building Again"
 							./buildGradle.sh $ID $FOLDER/$tName ${GRADLE[0]}
 						else 

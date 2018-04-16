@@ -11,9 +11,11 @@ machine=''
 getSO machine
 if [ "$machine" == "Mac" ]; then
 	SED_COMMAND="gsed" #mac
+	MKDIR_COMMAND="gmkdir"
 	Timeout_COMMAND="gtimeout"
 else 
 	SED_COMMAND="sed" #linux
+	MKDIR_COMMAND="mkdir"
 	Timeout_COMMAND="timeout"	
 fi
 TIMEOUT="600" #15 minutes (60*10)
@@ -104,9 +106,9 @@ fi
 now=$(date +"%d_%m_%y_%H_%M_%S")
 localDir=$localDir/$ID/$folderPrefix$now
 echo "$TAG Creating support folder..."
-mkdir -p $localDir
-mkdir -p $localDir/all
-#cat ./allMethods.txt >> $localDir/all/allMethods.txt
+$MKDIR_COMMAND -p $localDir
+$MKDIR_COMMAND -p $localDir/all
+#cat ./ethods.txt >> $localDir/all/allMethods.txt
 
 
 
