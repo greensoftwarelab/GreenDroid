@@ -1,10 +1,11 @@
 package Analyzer;
 
 
+import GDUtils.GreenRepoRun;
 import Metrics.APICallUtil;
-import Metrics.CyclomaticCalculator;
 import Metrics.GDConventions;
 import Metrics.MethodInfo;
+import Metrics.Variable;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 
@@ -21,6 +22,7 @@ public class Analyzer {
     public  static String resultDirPath = "results/" ;
     public static Double [] returnList = new Double[13];
     public static HashMap<String , List<Double []>>  globalReturnList = new HashMap<>();
+    public static HashMap<String ,String>  testNameNumber = new HashMap<>();
     public static String allMethodsDir = "";
     public static List<String> alltests= new ArrayList<>();
     public static HashSet<String> allmethods= new HashSet<>();
@@ -32,8 +34,11 @@ public class Analyzer {
     public static final String analyzerTag= "[Analyzer] ";
     public static  String folderPrefix= "Test";
     public static int stoppedState = 0;
+    public static boolean monkey = false;
     private static boolean mergeOldRuns= false;
-
+    public static String applicationID = "unknown";
+    public static List<String> actualTestMethods = new ArrayList<>();
+    public static GreenRepoRun grr = new GreenRepoRun();
 
     private static List<String> loadTests(String csvFile) throws Exception {
         alltests = new ArrayList<String>();
@@ -60,7 +65,7 @@ public class Analyzer {
             return alltests;
         }
 
-            try (Stream<String> lines = Files.lines (p, StandardCharsets.UTF_8)) {
+        try (Stream<String> lines = Files.lines (p, StandardCharsets.UTF_8)) {
                 for (String line : (Iterable<String>) lines::iterator)
                 {
                     alltests.add(line);
@@ -156,7 +161,7 @@ public class Analyzer {
             e.printStackTrace();
         }
         List<String> l = new ArrayList<>();
-        l.add("Test Number");l.add("Consumption (J)"); l.add("Time (ms)"); l.add("Method coverage (%)");l.add("Wifi?");l.add("Mobile Data?");l.add("Screen state");l.add("Battery Charging?");l.add("Avg RSSI Level");l.add("Avg Mem Usage");l.add("Bluetooth?");l.add("Avg gpu Load");l.add("Avg CPU Load");l.add("GPS?");
+        l.add("Test Number");l.add("Test Name");l.add("Consumption (J)"); l.add("Time (ms)"); l.add("Method coverage (%)");l.add("Wifi?");l.add("Mobile Data?");l.add("Screen state");l.add("Battery Charging?");l.add("Avg RSSI Level");l.add("Avg Mem Usage");l.add("Bluetooth?");l.add("Avg gpu Load");l.add("Avg CPU Load");l.add("GPS?");
         try {
             write(fw,l);
         } catch (IOException e) {
@@ -165,185 +170,189 @@ public class Analyzer {
         l.clear();
         for (int j = 0; j <args.size() ; j++) {
 
-            for (int i = 0; i < 13; i++) { returnList[i]=0.0;}
+            for (int i = 0; i < 13; i++) {
+                returnList[i] = 0.0;
+            }
 
-            if(!args.get(j).matches(".*.csv.*") || args.get(j).matches(".*Testresults.csv")) continue;
+            if (!args.get(j).matches(".*.csv.*") || args.get(j).matches(".*Testresults.csv")) continue;
             System.out.println("--- " + args.get(j) + " ---");
             CsvParser parser = new CsvParser(settings);
             // 3rd, parses all rows of data in selected columns from the CSV file into a matrix
             List<String[]> resolvedData = null;
             try {
-                File f  = new File(args.get(j));
+                File f = new File(args.get(j));
                 resolvedData = parser.parseAll(new FileReader(f.getAbsolutePath()));
             } catch (FileNotFoundException e) {
-                System.out.println("[ANALYZER]: File Not Found: There is no " +args.get(j) +" csv file in directory! to generate results");
+                System.out.println("[ANALYZER]: File Not Found: There is no " + args.get(j) + " csv file in directory! to generate results");
                 continue;
             }
 
             HashMap<String, Pair<Integer, Integer>> columns = null;
             try {
-                columns= Utils.fetchColumns(resolvedData);
-            }
-            catch (Exception e){
+                columns = Utils.fetchColumns(resolvedData);
+            } catch (Exception e) {
                 System.out.println("[ANALYZER] Error fetching columns. Result csv might have an error");
             }
 
-            String number = args.get(j).replaceAll(".+GreendroidResultTrace(.+)\\..+","$1");
+            String number = args.get(j).replaceAll(".+GreendroidResultTrace(.+)\\..+", "$1");
 
             int timeStart = 0;
             int timeEnd = 0;
             String[] row = new String[32];
             boolean state = false;
             String method = "";
-            boolean first= true, stop = true;
-            for(int i =4; i< resolvedData.size();i++) {
-                row  = resolvedData.get(i);
-                if(row.length<=5) break;
-                if(row[ Utils.getMatch(columns,Utils.stateDescription).first]!=null&&row[ Utils.getMatch(columns,Utils.stateDescription).second]!=null) { // if this line has state and descrip
-                    state = Integer.parseInt(row[Utils.getMatch(columns,Utils.stateInt).second]) != stoppedState;
-                    method = new String(row[Utils.getMatch(columns,Utils.stateDescription).second]);
+            boolean first = true, stop = true;
+            for (int i = 4; i < resolvedData.size(); i++) {
+                row = resolvedData.get(i);
+                if (row.length <= 5) break;
+                if (row[Utils.getMatch(columns, Utils.stateDescription).first] != null && row[Utils.getMatch(columns, Utils.stateDescription).second] != null) { // if this line has state and descrip
+                    state = Integer.parseInt(row[Utils.getMatch(columns, Utils.stateInt).second]) != stoppedState;
+                    method = new String(row[Utils.getMatch(columns, Utils.stateDescription).second]);
 
-                    if(state&&method.equals("started") && first){
-                         timeStart  = Integer.parseInt(row[Utils.getMatch(columns,Utils.stateDescription).first]);
-                         first=false;
-                    }
-                    else if(!state && method.equals("stopped") ){
-                          timeEnd  = Integer.parseInt(row[Utils.getMatch(columns,Utils.stateDescription).first]);
-                          i= resolvedData.size()+1;
-                          stop=false;
+                    if (state && method.equals("started") && first) {
+                        timeStart = Integer.parseInt(row[Utils.getMatch(columns, Utils.stateDescription).first]);
+                        first = false;
+                    } else if (!state && method.equals("stopped")) {
+                        timeEnd = Integer.parseInt(row[Utils.getMatch(columns, Utils.stateDescription).first]);
+                        i = resolvedData.size() + 1;
+                        stop = false;
                     }
 
-                    if(Utils.getMatch(columns,Utils.batteryPower)!=null&&row[Utils.getMatch(columns, Utils.batteryPower).first]!=null) {
+                    if (Utils.getMatch(columns, Utils.batteryPower) != null && row[Utils.getMatch(columns, Utils.batteryPower).first] != null) {
                         int timeBatttery = Integer.parseInt(row[Utils.getMatch(columns, Utils.batteryPower).first]);
                         int watts = Integer.parseInt(row[Utils.getMatch(columns, Utils.batteryPower).second]);
                         timeConsumption.put(timeBatttery, watts);
-                        consumptionList.add(getDataFromRow(columns,row));
+                        consumptionList.add(getDataFromRow(columns, row));
                     }
-                    timeStates.add(Integer.parseInt(row[Utils.getMatch(columns,Utils.stateDescription).first]));
+                    timeStates.add(Integer.parseInt(row[Utils.getMatch(columns, Utils.stateDescription).first]));
                 }
-                if(row[Utils.getMatch(columns,Utils.batteryPower).first]!=null && row[Utils.getMatch(columns,Utils.batteryPower).first]!=null){
+                if (row[Utils.getMatch(columns, Utils.batteryPower).first] != null && row[Utils.getMatch(columns, Utils.batteryPower).first] != null) {
                     // add power measures to Map
-                    int watts = Integer.parseInt(row[Utils.getMatch(columns,Utils.batteryPower).second]);
-                    int timeBatttery = Integer.parseInt(row[Utils.getMatch(columns,Utils.batteryPower).first]);
-                    timeConsumption.put(timeBatttery,watts);
+                    int watts = Integer.parseInt(row[Utils.getMatch(columns, Utils.batteryPower).second]);
+                    int timeBatttery = Integer.parseInt(row[Utils.getMatch(columns, Utils.batteryPower).first]);
+                    timeConsumption.put(timeBatttery, watts);
 
                 }
-                if(!state && method.equals("stopped"))
+                if (!state && method.equals("stopped"))
                     break;
             }
             // calcular a medida de bateria mais aproximada
             int closestStart = 1000000, closestStop = 1000000;
             int difStart = 1000000, diffEnd = 1000000;
-            int alternativeEnd = 0, alternativeStart=0;
+            int alternativeEnd = 0, alternativeStart = 0;
             for (Integer i : timeConsumption.keySet()) {
-                if(Math.abs(timeStart-i) <= difStart){
-                    difStart = Math.abs(timeStart-i);
-                    alternativeStart =closestStart;
-                    closestStart =  i;
+                if (Math.abs(timeStart - i) <= difStart) {
+                    difStart = Math.abs(timeStart - i);
+                    alternativeStart = closestStart;
+                    closestStart = i;
                 }
-                if(Math.abs(timeEnd-i) < diffEnd){
-                    if(i<=timeEnd){
+                if (Math.abs(timeEnd - i) < diffEnd) {
+                    if (i <= timeEnd) {
                         closestStop = i;
-                        diffEnd = Math.abs(timeEnd-i);
-                    }
-                    else {
+                        diffEnd = Math.abs(timeEnd - i);
+                    } else {
                         alternativeEnd = i;
                     }
                 }
             }
-            if(! timeConsumption.containsKey(closestStart) || ! timeConsumption.containsKey(closestStop)){
+            if (!timeConsumption.containsKey(closestStart) || !timeConsumption.containsKey(closestStop)) {
                 System.out.println("[Analyzer] Warning: Ignoring test " + number + "; Missing columns in test results .csv file");
-                System.out.println("Closest start -> " + closestStart +"  closest stop -> "+ closestStop);
+                System.out.println("Closest start -> " + closestStart + "  closest stop -> " + closestStop);
                 continue;
             }
 
             int startConsum = timeConsumption.get(closestStart);
-            int stopConsum  = timeConsumption.get(closestStop);
+            int stopConsum = timeConsumption.get(closestStop);
 //            int total = stopConsum-startConsum;
             int total = stopConsum;
-            int totaltime = timeEnd-timeStart;
+            int totaltime = timeEnd - timeStart;
 
 
             // if is a relevant test (in terms of time)
 
-            if(total<=0 && alternativeEnd!=0){
-                 stopConsum  = timeConsumption.get(alternativeEnd);
+            if (total <= 0 && alternativeEnd != 0) {
+                stopConsum = timeConsumption.get(alternativeEnd);
 //                 total = stopConsum-startConsum;.csv 
                 total = startConsum;
-                 totaltime = timeEnd-timeStart;
+                totaltime = timeEnd - timeStart;
             }
-            if(total<=0 && alternativeStart!=0){
-                startConsum  = timeConsumption.get(alternativeStart);
+            if (total <= 0 && alternativeStart != 0) {
+                startConsum = timeConsumption.get(alternativeStart);
 //                total = stopConsum-startConsum;
                 total = startConsum;
-                totaltime = timeEnd-timeStart;
+                totaltime = timeEnd - timeStart;
             }
             TreeSet<Integer> ts = (TreeSet<Integer>) timeStates;
 
 
             int totalconsum = 0;
-            double delta_seconds =0, watt =0;
-            int toma =0, delta = 0, ultimo = ts.first();
-            for(Integer i : ts){
-                toma =i;
-                delta = toma -ultimo;
-                delta_seconds = ((double)totaltime/((double)1000));
-                watt = (double) (closestMemMeasure(timeConsumption,toma))/((double) 1000000);
+            double delta_seconds = 0, watt = 0;
+            int toma = 0, delta = 0, ultimo = ts.first();
+            for (Integer i : ts) {
+                toma = i;
+                delta = toma - ultimo;
+                delta_seconds = ((double) totaltime / ((double) 1000));
+                watt = (double) (closestMemMeasure(timeConsumption, toma)) / ((double) 1000000);
                 //totalconsum+= (delta * (closestMemMeasure(timeConsumption,toma)));
-                totalconsum+= (delta_seconds * watt);
+                totalconsum += (delta_seconds * watt);
                 ultimo = i;
             }
 
 
             //double watt = (double) total/((double) 1000000);
-            double joules = ((double)(((double)totaltime/((double)1000))) * (watt));
+            double joules = ((double) (((double) totaltime / ((double) 1000))) * (watt));
 
             try {
                 alltests = loadTests(args.get(j));
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println("[ANALYZER] Error tracing tests... Assuming order of tests instead of names");
             }
             Path p = getRespectiveTracedMethodsFile(args.get(j));
 
-            if (total>0)
-            {
-                System.out.println("---------"+ " TEST CONSUMPTION" + "-----------");
+            if (total > 0) {
+                System.out.println("---------" + " TEST CONSUMPTION" + "-----------");
                 //System.out.println("--"+ " Filename: " + args[j] + " -----------");
-                System.out.println("--"+ " Test Name: " + getTestName(number)+" --");
+                System.out.println("--" + " Test Name: " + getTestName(number) + " --");
                 System.out.println("----------------------------------------------");
-                System.out.println("| Test Total Consumption (J) : " +joules+ " J|");
-               // System.out.println("| Test Total Consumption (W) : " + watt + " W|");
+                System.out.println("| Test Total Consumption (J) : " + joules + " J|");
+                // System.out.println("| Test Total Consumption (W) : " + watt + " W|");
                 System.out.println("| Test Total Time (ms)       : " + totaltime + " ms|");
                 System.out.println("----------------------------------------------");
 
             }
 
+            testNameNumber.put(getTestName(number), number);
 
-
-            double totalcoverage = (methodCoverageTestOriented(p)*100);
+            double totalcoverage = (methodCoverageTestOriented(p) * 100);
             System.out.println("---------------Method Coverage of Test------------------");
-            System.out.println("percentage: " +  totalcoverage+ " %");
+            System.out.println("percentage: " + totalcoverage + " %");
             System.out.println("------------------------------------------------");
             showData(consumptionList);
 
             returnList[10] = ((double) totaltime);
-            returnList[11] =  joules;
-            returnList[12] =  totalcoverage;
+            returnList[11] = joules;
+            returnList[12] = totalcoverage;
 
-            copyToGlobalReturnList(getTestName(number));
 
-            // end of csv file processing
+            copyToGlobalReturnList(number);
+
+            grr.testResults = (Utils.getTestResult("0", "nada", grr.getActualTestID(), "greendroid", grr.getActualDeviceID(), "1", "1")); // TODO
+            grr.testResults = GreenRepoRun.sendTestResultToDB(grr.testResults.toJSONString());
+            grr.allTestResults.add(grr.testResults);
+            grr.testMetrics.addAll(Utils.getTestMetrics(grr.getActualTestResultsID(), returnList, joules, totaltime, totalcoverage));
+            grr.methodsInvoked.addAll(Utils.getMethodsInvoked(grr.getActualTestResultsID(), getMethodHashList()));
+            // end of csv file processing [END]
         }
 
         // final Results
 
         //  print to file the results and name of test
+        Double [] testResults = new Double[13];
+        for (String testNr: globalReturnList.keySet()) {
 
-        for (String testName: globalReturnList.keySet()) {
-
-            Double [] testResults = showGlobalData(testName);
-            l.add(String.valueOf(testName));
+            testResults = showGlobalData(testNr);
+            l.add(testNr);
+            l.add(getTestName(testNr));
             l.add(String.valueOf(testResults[11]));
             l.add( String.valueOf(testResults[10]));
             l.add( String.valueOf(testResults[12]));
@@ -364,10 +373,7 @@ public class Analyzer {
         System.out.println("------------------------------------------------");
 
         try {
-            l.add("Total method coverage"); l.add(String.valueOf(0)); l.add( String.valueOf(0)); l.add(String.valueOf(tc));
-            write(fw,l);
-            l.clear();
-            l.add(""); l.add(""); l.add(""); l.add( "");l.add("");
+            l.add("Total method coverage"); l.add(String.valueOf(0));l.add(String.valueOf(0)); l.add( String.valueOf(0)); l.add(String.valueOf(tc));
             write(fw,l);
             l.clear();
         } catch (IOException e) {
@@ -383,7 +389,9 @@ public class Analyzer {
                 String methodName = xx[xx.length-1].replace(">","");
                 l.add(xx[0]); l.add(methodName) ;l.add(String.valueOf(allTracedMethods.get(s)));
                 String s1 = s.replaceAll("<.*?>", "");
-                MethodInfo mi = acu.getMethodOfClass(methodName,s1);
+               // System.out.println(" metodo detetetado no tracedmethods " + s);
+               // System.out.println("method "+ methodName + "  classname "+ s1  );
+                MethodInfo mi = acu!=null? acu.getMethodOfClass(methodName,s1) : new MethodInfo();
                 l.add(String.valueOf(mi.cyclomaticComplexity)); l.add(String.valueOf(mi.linesOfCode+(isTestOriented?1:0))); l.add(String.valueOf(mi.androidApi.size())); l.add(String.valueOf(mi.nr_args));
 
             } catch (IOException  | NullPointerException e) {
@@ -415,6 +423,27 @@ public class Analyzer {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
+        //Utils.sendApiCallUtil(acu);
+
+
+        //send results do DBASE
+
+        // send testmetrics
+        System.out.println("sending " + grr.methodsInvoked.size() + " test metrics");
+        System.out.println(grr.testMetrics.toJSONString());
+        GreenRepoRun.sendTestsMetricsToDB(grr.testMetrics.toJSONString());
+//        //send methods
+        System.out.println("sending " + grr.methods.size() + " methods");
+        System.out.println(grr.methods.toJSONString());
+        GreenRepoRun.sendMethodsToDB(grr.methods.toJSONString());
+//        // send methods invoked
+        System.out.println("sending " + grr.methodsInvoked.size() + " methods invoked");
+        System.out.println(grr.methodsInvoked.toJSONString());
+        GreenRepoRun.sendMethodsInvokedToDB(grr.methodsInvoked.toJSONString());
+//        // send methods metrics ??
+        System.out.println("sending " + grr.methodMetrics.size() + " method metrics");
+        System.out.println(grr.methodMetrics.toJSONString());
+        GreenRepoRun.sendMethodsMetricsToDB(grr.methodMetrics.toJSONString());
     }
 
     public static Consumption getDataFromRow( HashMap<String, Pair<Integer, Integer>> columns,String[] row) {
@@ -431,6 +460,24 @@ public class Analyzer {
         double gps = Utils.getMatch(columns, Utils.gpsSate)!=null? (row[Utils.getMatch(columns, Utils.gpsSate).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.gpsSate).second])) : returnList[9]) : returnList[9];
         Consumption c = new  Consumption(((int) memUsage), ((int) mobileData), ((int) wifiState), ((int) wifiRSSI), ((int) screenState), 0, 0, ((int) batteryStatus), ((int) bluetooth), ((int) gpuLoad), ((int) gps), ((int) cpuLoadNormalized));
         return c;
+    }
+
+
+    public static List<String> getMethodHashList(){
+        List<String> l = new ArrayList<>();
+        for(String s: actualTestMethods){
+            String [] xx = s.split("<");
+            String methodName = xx[xx.length-1].replace(">","");
+            String className = s.replaceAll("<.*?>", "");
+            MethodInfo mi = acu.getMethodOfClass(methodName,className);
+            String args ="";
+            for (Variable v : mi.args){
+                args+=v.isArray+v.type+v.varName;
+            }
+            String metId= mi.ci.classPackage+"."+mi.ci.className+"."+ mi.methodName+"."+args.hashCode();
+            l.add(metId);
+        }
+        return l;
     }
 
 
@@ -487,11 +534,6 @@ public class Analyzer {
 
         return finalReturnList;
     }
-
-
-
-
-
 
 
     public static Path getRespectiveTracedMethodsFile(String csvFile){
@@ -577,6 +619,7 @@ public class Analyzer {
     // recebe como paramentro o Path para ficheiro TracedMethods[0-9].txt correspondente
     public static double methodCoverageTestOriented(Path pathTraced){
         HashSet<String> set = allmethods;
+        actualTestMethods = new ArrayList<>();
         if(pathTraced==null) return 0;
 
         HashMap<String, Integer> thisTest = new HashMap<>();
@@ -594,9 +637,13 @@ public class Analyzer {
                     if(thisTest.containsKey(line)){
                         int x = thisTest.get(line);
                         thisTest.put(line,++x);
+                        actualTestMethods.add(line);
                     }
-                    else
+                    else{
                         thisTest.put(line,1);
+                        actualTestMethods.add(line);
+                    }
+
                 }
             }
         } catch (IOException e) {
@@ -626,6 +673,9 @@ public class Analyzer {
 
         List <String> list = new ArrayList<>( );
         Path path = Paths.get(resultDirPath);
+        String pathPermissions = "";
+        String pathApp = "";
+        String pathDevice = "";
         try{
             DirectoryStream<Path> stream;
             stream = Files.newDirectoryStream(path);
@@ -650,13 +700,38 @@ public class Analyzer {
                         if (entry1.getFileName().toString().matches("GreendroidResultTrace[0-9]+\\.csv")) {
                             list.add(entry1.toString());
                         }
+                        if (entry1.getFileName().toString().matches("appPermissions.json")) {
+                            pathPermissions = entry1.toString();
+                            System.out.println(pathPermissions);
+                        }
+                        if (entry1.getFileName().toString().matches("application.json")) {
+                            pathApp=entry1.toString();
+                            System.out.println(pathApp);
+                        }
+                        if (entry1.getFileName().toString().matches("device.json")) {
+                            pathDevice= entry1.toString();
+                            System.out.println(pathDevice);
+                        }
                     }
                 }
                 else {
+
                     if (entry.equals(path))
                         continue;
                     if (entry.getFileName().toString().matches("GreendroidResultTrace[0-9]+\\.csv")) {
                         list.add(entry.toString());
+                    }
+                    if (entry.getFileName().toString().matches("appPermissions.json")) {
+                        pathPermissions = entry.getFileName().toString();
+                        System.out.println(pathPermissions);
+                    }
+                    if (entry.getFileName().toString().matches("application.json")) {
+                        pathApp=entry.getFileName().toString();
+                        System.out.println(pathApp);
+                    }
+                    if (entry.getFileName().toString().matches("device.json")) {
+                        pathDevice= entry.getFileName().toString();
+                        System.out.println(pathDevice);
                     }
                 }
             }
@@ -678,17 +753,30 @@ public class Analyzer {
             mergeOldRuns = true;
         }
 
+
+       grr.app=GreenRepoRun.sendApplicationToDB( GreenRepoRun.loadApplication(pathApp).toJSONString());
+       GreenRepoRun.sendAppPermissionsToDB( GreenRepoRun.loadAppPermissions(pathPermissions).toJSONString());
+       grr.device=GreenRepoRun.sendDeviceToDB( GreenRepoRun.loadDevice(pathDevice).toJSONString());
+
         return list;
     }
 
+    public static String getApplication(String path){
+        String [] x = path.split("/");
+        return x.length>0? x[x.length-1]:"unknown";
+    }
+
     public static void main(String[] args) {
+
         mergeOldRuns = false; // TODO
         if (args.length>2) {
             isTestOriented = args[0].equals("-TestOriented");
             if(!isTestOriented)
                 folderPrefix="Method";
             resultDirPath =args[1];
+            applicationID =getApplication(resultDirPath);
             stoppedState = args[2].equals("-Monkey")?2:0;
+            monkey=stoppedState==2;
            // boolean analyzeOldRuns=  args[2].equals("-oldRuns");
             allMethodsDir = resultDirPath + "/all/";
             allmethods = loadMethods(allMethodsDir);
@@ -696,16 +784,35 @@ public class Analyzer {
             if (isTestOriented) {
                 try {
                     //testOriented(Arrays.copyOfRange(args, 3, args.length));
-                     acu = APICallUtil.deserializeAPiCallUtil(resultDirPath + "/" + serializedFile);
-                    testOriented(getAllCsvs(resultDirPath));
+
+                    List<String> allcsvs = getAllCsvs(resultDirPath); // this send apppermissions.json
+                    grr.test =  Utils.getTest();
+                    System.out.println(grr.test);
+                    grr.test = GreenRepoRun.sendTestToDB(grr.test.toJSONString());
+                    System.out.println(grr.test.toJSONString());
+                    try{
+                        acu = APICallUtil.deserializeAPiCallUtil(resultDirPath + "/" + serializedFile);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    grr.methods.addAll(Utils.getAppMethodsAndMetrics(acu));
+                    testOriented(allcsvs);
 
                 } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
 //                  System.out.println("[Analyzer] Error parsing the file. Please run again or restart Trepn");
                     e.printStackTrace();
                 }
             } else {
-                acu = APICallUtil.deserializeAPiCallUtil(resultDirPath + "/" + serializedFile);
-                methodOriented(getAllCsvs(resultDirPath));
+                List<String> allcsvs = getAllCsvs(resultDirPath);
+                try{
+                    acu = APICallUtil.deserializeAPiCallUtil(resultDirPath + "/" + serializedFile);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+
+                methodOriented(allcsvs);
                 // methodOriented(Arrays.copyOfRange(args, 3, args.length));
             }
 

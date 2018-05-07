@@ -220,7 +220,7 @@ public class MethodOriented {
                     String methodName = xx[xx.length-1].replace(">","");
                     l.add(xx[0]); l.add(methodName) ;l.add(String.valueOf(methodInfos.get(s)[12]));
                     String s1 = s.replaceAll("<.*?>", "");
-                    MethodInfo mi = Analyzer.acu.getMethodOfClass(methodName,s1);
+                    MethodInfo mi = Analyzer.acu!=null? Analyzer.acu.getMethodOfClass(methodName,s1) : new MethodInfo();
                     l.add(String.valueOf(mi.cyclomaticComplexity)); l.add(String.valueOf(mi.linesOfCode+(Analyzer.isTestOriented?1:0))); l.add(String.valueOf(mi.androidApi.size())); l.add(String.valueOf(mi.nr_args));
 
                 } catch (IOException  | NullPointerException exc) {

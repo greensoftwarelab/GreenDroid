@@ -17,14 +17,20 @@ public class tester {
 
     public static MethodCallExpr me = new MethodCallExpr();
 
-//    public static void main(String[] args) throws ParseException, IOException {
+//   public static void main(String[] args){
 //        APICallUtil u = new APICallUtil();
-//        // Users/ruirua/repos/greenlab-work/work/ruirua/TrepnLib/FirstApp
-//        File file = new File("/Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/tester.java");
-//        ClassInfo f =  u.getClassInfo(file.getAbsolutePath());
-//        System.out.println("nada");
-//
-//    }
+////        // Users/ruirua/repos/greenlab-work/work/ruirua/TrepnLib/FirstApp
+//       File file = new File("/Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/tester.java");
+//       try {
+//           ClassInfo f =  u.getClassInfo(file.getAbsolutePath());
+//       } catch (IOException e) {
+//           e.printStackTrace();
+//       } catch (ParseException e) {
+//           e.printStackTrace();
+//       }
+//       System.out.println("nada");
+////
+//   }
 
 
 

@@ -28,6 +28,17 @@ public class Variable implements Serializable{
         if (obj==null)
             return false;
         Variable ne = (Variable) obj;
-        return this.type.equals(ne.type) && this.varName.equals(ne.varName);
+       // return this.type.equals(ne.type) && this.varName.equals(ne.varName);
+        return this.varName.equals(ne.varName);
+    }
+
+    @Override
+    public String toString() {
+        return this.type + " " + this.varName;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.varName.hashCode();
     }
 }

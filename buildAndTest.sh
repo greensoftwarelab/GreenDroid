@@ -44,7 +44,7 @@ profileHardware="YES" # YES or ""
 flagStatus="on"
 SLEEPTIME=10
 
-DIR=$HOME/tests/actual/*
+DIR=$HOME/tests/critical/*
 #DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
 
 echo ""
@@ -61,8 +61,14 @@ else
 		e_echo "$TAG Could not determine the device's external storage. Check and try again..."
 		exit 1
 	fi
-	device=$( adb devices -l | grep -o "model.*" | cut -f2 -d: | cut -f1 -d\ )
-	i_echo "$TAG 📲  Attached device ($device) recognized "
+	( adb devices -l ) > device_info.txt
+	device_model=$(   cat device_info.txt | grep -o "model.*" | cut -f2 -d: | cut -f1 -d\ )
+	device_serial=$(  cat device_info.txt | tail -n 2 | grep "model" | cut -f1 -d\ )
+	device_brand=$( cat device_info.txt | grep -o "device:.*" | cut -f2 -d: )
+	echo "{\"device_serial_number\": \"$device_serial\", \"device_model\": \"$device_model\",\"device_brand\": \"$device_brand\"}" > device.json
+	cat device.json
+	#device=$( adb devices -l | grep -o "model.*" | cut -f2 -d: | cut -f1 -d\ )
+	i_echo "$TAG 📲  Attached device ($device_model) recognized "
 	#TODO include mode to choose the conected device and echo the device name
 	deviceDir="$deviceExternal/trepn"  #GreenDroid
 	#put Trepn preferences on device
@@ -149,11 +155,17 @@ else
 						$MKDIR_COMMAND -p $projLocalDir/oldRuns
 						$MKDIR_COMMAND -p $projLocalDir/all
 						
-
-						FOLDER=${f}${prefix} 				
+						#app_id = models.CharField(max_length=50,primary_key=True 
+						#app_location= models.FilePathField()app_description = models.CharField(max_length=100)
+					    #app_language = models.CharField(max_length=20)
+					    #app_build_tool = models.ForeignKey(AppBuildTool, related_name='has_type', on_delete=models.PROTECT)
+					    #app_version= models.FloatField()
+						#Create json with app info
+						FOLDER=${f}${prefix} 			
+							
 						oldInstrumentation=$(cat $FOLDER/$tName/instrumentationType.txt | grep "Test*")
 						allmethods=$(find $projLocalDir/all -maxdepth 1 -name "allMethods.txt")
-						if [ $oldInstrumentation != $trace ] || [ -z "$allmethods" ]; then
+						if [ "$oldInstrumentation" != "$trace" ] || [ -z "$allmethods" ]; then
 							w_echo "Different type of instrumentation. instrumenting again..."
 							rm -rf $FOLDER/$tName
 							java -jar $GD_INSTRUMENT "-gradle" $tName "X" $FOLDER $MANIF_S $MANIF_T $trace $monkey ##RR
@@ -163,6 +175,8 @@ else
 						else 
 							w_echo "Same instrumentation of last time. Skipping instrumentation phase"
 						fi
+						#cp $FOLDER/$tName/appPermissions.json $projLocalDir
+						(echo "{\"app_id\": \"$ID\", \"app_location\": \"$f\",\"app_build_tool\": \"gradle\", \"app_version\": \"1\", \"app_language\": \"Java\"}") > $FOLDER/$tName/application.json
 						xx=$(find  $projLocalDir/ -maxdepth 1 | $SED_COMMAND -n '1!p' |grep -v "oldRuns" | grep -v "all" )
 						echo "xx -> $xx"
 						$MV_COMMAND -f $xx $projLocalDir/oldRuns/
@@ -179,7 +193,7 @@ else
 						#GRADLE=$(find $FOLDER/$tName -maxdepth 1 -name "build.gradle")
 						GRADLE=($(find $FOLDER/$tName -name "*.gradle" -type f -print | grep -v "settings.gradle" | xargs grep -L "com.android.library" | xargs grep -l "buildscript" | cut -f1 -d:))
 						#echo "gradle script invocation -> ./buildGradle.sh $ID $FOLDER/$tName ${GRADLE[0]}"
-						if [ $oldInstrumentation != $trace ] || [ -z "$allmethods" ]; then
+						if [ "$oldInstrumentation" != "$trace" ] || [ -z "$allmethods" ]; then
 							w_echo "[APP BUILDER] Different instrumentation since last time. Building Again"
 							./buildGradle.sh $ID $FOLDER/$tName ${GRADLE[0]}
 						else 
@@ -210,7 +224,7 @@ else
 						fi
 						echo "$ID" >> $logDir/success.log
 						#run tests
-						./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir $folderPrefix # "-gradle" $FOLDER/$tName
+						./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir $folderPrefix $FOLDER/$tName # "-gradle" $FOLDER/$tName
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
 							echo "$ID" >> $logDir/errorRun.log
@@ -221,7 +235,7 @@ else
 							#adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
 							adb shell am startservice --user 0 com.quicinc.trepn/.TrepnService
 							sleep 5
-							./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir $folderPrefix # "-gradle" $FOLDER/$tName
+							./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir $folderPrefix $FOLDER/$tName# "-gradle" $FOLDER/$tName
 							RET=$(echo $?)
 							if [[ "$RET" != "0" ]]; then
 								echo "$ID" >> $logDir/errorRun.log
@@ -266,15 +280,16 @@ else
 						else
 							MANIF_S="${SOURCE}/AndroidManifest.xml"
 							MANIF_T="-"
-							java -jar $GD_INSTRUMENT "-gradle" $tName "X" $SOURCE $MANIF_S $MANIF_T $trace $monkey ##RR
+							java -jar $GD_INSTRUMENT "-sdk" $tName "X" $SOURCE $TESTS $trace $monkey ##RR
 						fi
-
+						cp $FOLDER/$tName/appPermissions.json $projLocalDir
 						#copy the test runner
 						$MKDIR_COMMAND -p $SOURCE/$tName/libs
 						$MKDIR_COMMAND -p $SOURCE/$tName/tests/libs
 						cp libsAdded/$trepnJar $SOURCE/$tName/libs
 						cp libsAdded/$trepnJar $SOURCE/$tName/tests/libs
-	
+						(echo "{\"app_id\": \"$ID\", \"app_location\": \"$f\",\"app_build_tool\": \"sdk\", \"app_version\": \"1\", \"app_language\": \"Java\"}") > $SOURCE/$tName/application.json
+						
 						#build
 						./buildSDK.sh $ID $PACKAGE $SOURCE/$tName $SOURCE/$tName/tests $deviceDir $localDir
 						(echo $trace) > $FOLDER/$tName/instrumentationType.txt
@@ -312,13 +327,13 @@ else
 						$MV_COMMAND -f $(find  $projLocalDir/ -maxdepth 1 | $SED_COMMAND -n '1!p' |grep -v "oldRuns") $projLocalDir/oldRuns/
 						$MKDIR_COMMAND -p $projLocalDir/all
 						cat ./allMethods.txt >> $projLocalDir/all/allMethods.txt
-						
+						cp 
 						##copy MethodMetric to support folder
 						#echo "copiar $FOLDER/$tName/classInfo.ser para $projLocalDir "
 						cp $FOLDER/$tName/AppInfo.ser $projLocalDir
 						
 						#run tests
-						./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir $folderPrefix 
+						./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir $folderPrefix $FOLDER/$tName
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
 							echo "$ID" >> $logDir/errorRun.log
@@ -326,7 +341,7 @@ else
 							#RETRY 
 							adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
 							sleep 3
-							./runTests $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir $folderPrefix # "-gradle" $FOLDER/$tName
+							./runTests $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir $folderPrefix $FOLDER/$tName # "-gradle" $FOLDER/$tName
 							RET=$(echo $?)
 							if [[ "$RET" != "0" ]]; then
 								echo "$ID" >> $logDir/errorRun.log
@@ -344,7 +359,7 @@ else
 						fi
 						#Run greendoid!
 						#java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv  ##RR
-						java -jar $GD_ANALYZER $trace $projLocalDir/ 
+						java -jar $GD_ANALYZER $trace $projLocalDir/ $monkey
 
 						
 						#break
@@ -364,3 +379,10 @@ else
 #	fi
 	./trepnFix.sh
 fi
+
+used_cpu=$(adb shell dumpsys cpuinfo | grep  "Load" | cut -f2 -d\ )
+free_mem=$(adb shell dumpsys meminfo | grep "Free RAM.*" | cut -f2 -d: | cut -f1 -d\( | tr -d ' ')
+nr_processes=$(adb shell top -n q | wc -l) #take the K/M and -4
+
+
+

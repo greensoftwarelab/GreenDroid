@@ -50,9 +50,9 @@ public class InstrumentHelper {
     public static Integer compiledSdkVersion=0;
     protected String tName;
     protected String workspace;
-    protected String project;
+    public String project;
     protected String tests;
-
+    public static String applicationID= "";
     protected String transFolder;
     protected String transTests;
     protected String aux;
@@ -112,6 +112,12 @@ public class InstrumentHelper {
             this.profiler = pfact.createMethodOrientedProfiler();
         }
     }
+
+
+    public String getManifest() {
+        return manifest;
+    }
+
 
 
     public InstrumentHelper(String tName, String work, String proj, String tests, boolean trace) {

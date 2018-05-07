@@ -8,6 +8,7 @@ import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.type.ReferenceType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CyclomaticCalculator  {
@@ -20,6 +21,7 @@ public class CyclomaticCalculator  {
         int counter = 0;
         if(n==null) return 0;
         if(n instanceof  MethodDeclaration ){
+
             if(((MethodDeclaration) n).getBody()==null)
                 return 1;
             if(((MethodDeclaration) n).getBody().getStmts()==null || ((MethodDeclaration) n).getBody().getStmts().size()==0)
@@ -88,19 +90,65 @@ public class CyclomaticCalculator  {
 
         } else if (n instanceof MethodCallExpr) {
                 // is  xx.toString or Integer.toString() or toString()
+
                 if(((MethodCallExpr) n).getScope()!=null){
-                    mi.addRespectiveAPI(((MethodCallExpr) n).getScope().toStringWithoutComments());
+
+                   List<String> scope = new ArrayList<>();
+                   Node x = n;
+                    try {
+                        while (x.getClass().getDeclaredMethod("getScope", null)!=null){
+                            if(x instanceof MethodCallExpr){
+                                if (((MethodCallExpr) x).getScope()!=null){
+                                    scope.add(((MethodCallExpr) x).getScope().toStringWithoutComments());
+                                    x = ((MethodCallExpr) x).getScope();
+                                }
+                                else
+                                    throw new NoSuchMethodException();
+                            }
+                            else {
+                                if (x instanceof FieldAccessExpr){
+                                    x = ((FieldAccessExpr) x).getScope();
+                                }
+                                if (x instanceof ObjectCreationExpr){
+                                    x = ((ObjectCreationExpr) x).getScope();
+                                }
+                                //methodReferenceExpr????
+                            }
+
+
+                        }
+                    } catch (NoSuchMethodException  | NullPointerException e) {
+                        for (String s : scope){
+                            MethodOfAPI mapi = new MethodOfAPI(x!=null? x.toStringWithoutComments(): scope.get(scope.size()-1), s);
+                            mi.addRespectiveAPI(mapi);
+                        }
+                    }
+
+
+                    if (((MethodCallExpr) n).getScope() instanceof FieldAccessExpr){
+                        //MethodOfAPI mapi = new MethodOfAPI(((FieldAccessExpr) ((MethodCallExpr) n).getScope()).getScope().toStringWithoutComments(), ((MethodCallExpr) n).getName());
+                       // mi.addRespectiveAPI(mapi);
+
+
+
+                    }
+                    else{
+                        MethodOfAPI mapi = new MethodOfAPI(((MethodCallExpr) n).getScope().toStringWithoutComments(), ((MethodCallExpr) n).getName());
+                        mi.addRespectiveAPI(mapi);
+
+                    }
                     counter += cyclomaticAndAPI(((MethodCallExpr) n).getScope(),mi);
 
                 }
                 else {
                     // WHO knows???
+
                 }
-                if(((MethodCallExpr) n).getArgs()!=null)
-                    for (Expression s :((MethodCallExpr) n).getArgs()){
-                        counter +=  cyclomaticAndAPI(s,mi);
-                    }
-                return 0;
+            if(((MethodCallExpr) n).getArgs()!=null)
+                for (Expression s :((MethodCallExpr) n).getArgs()){
+                    counter +=  cyclomaticAndAPI(s,mi);
+                }
+            return 0;
 
         } else if (n instanceof VariableDeclarationExpr) {
             boolean isArray = (((VariableDeclarationExpr) n).getType() instanceof ReferenceType) ? ((ReferenceType) ((VariableDeclarationExpr) n).getType()).getArrayCount()>0 : false;
@@ -108,14 +156,17 @@ public class CyclomaticCalculator  {
                 counter += cyclomaticAndAPI(v,mi);
                 mi.declaredVars.add(new Variable(v.getId().getName(),((VariableDeclarationExpr) n).getType().toStringWithoutComments(), isArray));
             }
-            mi.unknownApi.add(((VariableDeclarationExpr) n).getType().toStringWithoutComments());
+            mi.unknownApi.add(new MethodOfAPI (((VariableDeclarationExpr) n).getType().toStringWithoutComments()));
         } else if (n instanceof VariableDeclarator) {
             counter +=  cyclomaticAndAPI(((VariableDeclarator) n).getInit(),mi);
         } else if (n instanceof ObjectCreationExpr) {
-        } else if (n instanceof ObjectCreationExpr) {
-            mi.unknownApi.add(((ObjectCreationExpr) n).getType().getName());
+            mi.unknownApi.add(new MethodOfAPI(((ObjectCreationExpr) n).getType().getName()));
             if(((ObjectCreationExpr) n).getScope()!=null)
-                mi.unknownApi.add(((ObjectCreationExpr) n).getScope().toStringWithoutComments());
+                mi.unknownApi.add(new MethodOfAPI(((ObjectCreationExpr) n).getScope().toStringWithoutComments()));
+            if(((ObjectCreationExpr) n).getArgs()!=null){
+                for (Expression e : ((ObjectCreationExpr) n).getArgs())
+                    cyclomaticAndAPI(e,mi);
+            }
             return 0;
         } else if (n instanceof SynchronizedStmt) {
             counter += 1 + cyclomaticAndAPI(((SynchronizedStmt) n).getBlock(),mi);
@@ -134,9 +185,13 @@ public class CyclomaticCalculator  {
             counter += 1+ cyclomaticAndAPI(((IfStmt) n).getElseStmt(),mi) + cyclomaticAndAPI(((IfStmt) n).getThenStmt(),mi) + (((IfStmt) n).getElseStmt()==null ? 0 : 1);
         } else if (n instanceof ReturnStmt) {
             // Check if is the last return
+            cyclomaticAndAPI(((ReturnStmt) n).getExpr(),mi);
             if (((n.getParentNode() instanceof MethodDeclaration)) || (n.getParentNode() instanceof BlockStmt && n.getParentNode().getParentNode() instanceof MethodDeclaration))
                 return  0;
             else return 1;
+        }
+        else if (n instanceof CastExpr) {
+           counter+= cyclomaticAndAPI(((CastExpr) n).getType(),mi) + cyclomaticAndAPI(((CastExpr) n).getExpr(),mi);
         }
         else if (n instanceof ConditionalExpr) { // x == y ? z : t
             counter +=  2 + cyclomaticAndAPI(((ConditionalExpr) n).getCondition(),mi) + cyclomaticAndAPI(((ConditionalExpr) n).getThenExpr(),mi) + cyclomaticAndAPI(((ConditionalExpr) n).getElseExpr(),mi);
@@ -153,14 +208,14 @@ public class CyclomaticCalculator  {
             return  1;
 
         } else if (n instanceof TypeDeclarationStmt) {
-            mi.unknownApi.add(((TypeDeclarationStmt) n).getTypeDeclaration().getName());
+            mi.unknownApi.add(new MethodOfAPI(((TypeDeclarationStmt) n).getTypeDeclaration().getName()));
             return  0;
         } else if (n instanceof MethodReferenceExpr) {
             if(((MethodReferenceExpr) n).getScope()!=null)
-                mi.unknownApi.add(((MethodReferenceExpr) n).getScope().toString());
+                mi.unknownApi.add(new MethodOfAPI(((MethodReferenceExpr) n).getScope().toString()));
             return  0;
         } else if (n instanceof FieldAccessExpr) {
-            mi.unknownApi.add(((FieldAccessExpr) n).getScope().toString());
+            mi.unknownApi.add(new MethodOfAPI(((FieldAccessExpr) n).getScope().toString()));
             return  0;
         } else if (n instanceof BreakStmt) {
             if( !( n.getParentNode() instanceof  SwitchEntryStmt))
@@ -170,11 +225,11 @@ public class CyclomaticCalculator  {
             Expression s1 = ((ExpressionStmt) n).getExpression();
             counter += cyclomaticAndAPI(s1,mi);
         } else if (n instanceof SuperExpr) {
-            mi.unknownApi.add(mi.ci.extendedClass);
+            mi.unknownApi.add(new MethodOfAPI( mi.ci.extendedClass));
             return 0;
 
         } else if (n instanceof NameExpr) {
-            mi.addRespectiveAPI(((NameExpr) n).getName());
+            mi.addRespectiveAPI(new MethodOfAPI(((NameExpr) n).getName()));
             return 0;
         } else {
             return 0;

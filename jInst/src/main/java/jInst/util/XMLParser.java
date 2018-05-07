@@ -6,6 +6,7 @@ package jInst.util;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -15,7 +16,13 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import GDUtils.GDUtils;
+import GDUtils.GreenRepoRun;
 import jInst.transform.InstrumentHelper;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -35,7 +42,7 @@ public class XMLParser {
     private static String testProjName = "";
     
     private static ArrayList<String> editedProjects = new ArrayList<String>();
-    
+    public static List<String> permissions = new ArrayList<>();
     private static final String permExt = "android.permission.WRITE_EXTERNAL_STORAGE";
     private static final String permInt = "android.permission.INTERNET";
     private static final String permLoc = "android.permission.ACCESS_FINE_LOCATION";
@@ -69,7 +76,91 @@ public class XMLParser {
         }
         return res;
     }
+
+
+    public static void loadAndSendApplicationJSON(String projectJSonPath){
+        JSONParser parser = new JSONParser();
+        JSONObject ja = new JSONObject();
+        try {
+            Object obj = parser.parse(new FileReader(projectJSonPath));
+            ja = (JSONObject) obj;
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        GDUtils.sendJSONtoDB("http://localhost:8000/application/",ja.toJSONString());
+
+    }
+
+
+
+
+
+
+    public static boolean buildAppPermissionsJSON (String manif, String folderDest){
+
+        List<String> l = getPermissions(manif);
+        JSONArray ja = new JSONArray();
+        for (String permission : l){
+            JSONObject jo = new JSONObject();
+            jo.put("application",InstrumentHelper.applicationID);
+            jo.put("permission", permission.toLowerCase());
+            ja.add(jo);
+        }
+
+        if (!ja.isEmpty()){
+            System.out.println(ja.toJSONString());
+            try {
+                FileUtils.writeFile(new File(folderDest+"/appPermissions.json"), ja.toJSONString());
+            } catch (IOException e) {
+                System.out.println("!!!!!!!!!!! Error writing "+folderDest+"appPermissions.json" );
+                return false;
+            }
+
+            return true;
+        }
+        return false;
+    }
+
+    public static List<String> getPermissions(String manifFile){
+        List<String> l = new ArrayList<>();
+        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = null;
+        Document doc = null;
+        try {
+            docBuilder = docFactory.newDocumentBuilder();
+             doc = docBuilder.parse(manifFile);
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // Get the root element
+        Node manifest = doc.getElementsByTagName("manifest").item(0);
+        NodeList permissions = doc.getElementsByTagName("uses-permission");
+        if(manifest==null)
+            return l ;
+        for(int i = 0; i<permissions.getLength(); i++){
+            Node n = permissions.item(i);
+            if(n.getNodeType() == Node.ELEMENT_NODE) {
+                Element e = (Element) n;
+                l.add(e.getAttribute("android:name"));
+            }
+        }
+        return l;
+    }
     
+
+
+
     public static void parseManifest(String file) {
         buildPackage = "";
         devPackage = "";

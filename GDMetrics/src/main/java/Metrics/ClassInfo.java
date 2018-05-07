@@ -19,6 +19,7 @@ public class ClassInfo implements Serializable {
     public String className = "";
     public Map<String, Variable> classVariables = new HashMap<>();
     public String extendedClass = null;
+    public Map<String, String> interfacesImplemented = new HashMap<>(); // map interface name -> full package definition
 
     @Override
     public int hashCode() {
@@ -33,5 +34,6 @@ public class ClassInfo implements Serializable {
     public MethodInfo getMethod(String methodName){
         return classMethods.get(methodName);
     }
+
 
 }

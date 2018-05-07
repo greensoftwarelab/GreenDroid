@@ -64,14 +64,16 @@
             <artifactId>jaxen</artifactId>
             <version>1.2.0-atlassian-2</version>
         </dependency>
-        <!--dependency>
-            <groupId>ca.mcgill.sable</groupId>
-            <artifactId>soot</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
-        </dependency-->
-
-        <!-- Analyzer -->
-
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1</version>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>

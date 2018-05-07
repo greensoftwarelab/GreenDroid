@@ -6,6 +6,7 @@ testPack=$2
 deviceDir=$3
 localDir=$4
 folderPrefix=$5
+appFolder=$6
 #echo "ui ui olha o prefix  $folderPrefix"
 machine=''
 getSO machine
@@ -109,8 +110,9 @@ echo "$TAG Creating support folder..."
 $MKDIR_COMMAND -p $localDir
 $MKDIR_COMMAND -p $localDir/all
 #cat ./ethods.txt >> $localDir/all/allMethods.txt
-
-
+cp $appFolder/application.json $localDir
+cp device.json $localDir
+cp $appFolder/appPermissions.json $localDir
 
 adb shell ls "$deviceDir/Measures/" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/Measures/{} $localDir
 #adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 

@@ -1,5 +1,19 @@
 package Analyzer;
 
+import Metrics.APICallUtil;
+import Metrics.ClassInfo;
+import Metrics.MethodInfo;
+import Metrics.Variable;
+import com.univocity.parsers.csv.CsvParser;
+import com.univocity.parsers.csv.CsvParserSettings;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
+import org.json.simple.JSONObject;
 import org.omg.CORBA.INTERNAL;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -8,10 +22,15 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import static GDUtils.GDUtils.sendJSONtoDB;
 
 /**
  * Created by rrua on 03/07/17.
@@ -101,15 +120,15 @@ public class Utils {
                 issue.id = issueList.item(temp).getAttributes().getNamedItem("id").getNodeValue();
                 issue.message = issueList.item(temp).getAttributes().getNamedItem("message").getNodeValue();
                 issue.severity = issueList.item(temp).getAttributes().getNamedItem("severity").getNodeValue();
-                issue.priority = Integer.valueOf( issueList.item(temp).getAttributes().getNamedItem("priority").getNodeValue());
+                issue.priority = Integer.valueOf(issueList.item(temp).getAttributes().getNamedItem("priority").getNodeValue());
                 issue.summary = issueList.item(temp).getAttributes().getNamedItem("summary").getNodeValue();
                 for (int temp2 = 0; temp2 < issueList.item(temp).getChildNodes().getLength(); temp2++) {
-                    if (issueList.item(temp).getChildNodes().item(temp2).getAttributes() != null){
+                    if (issueList.item(temp).getChildNodes().item(temp2).getAttributes() != null) {
                         issue.file = issueList.item(temp).getChildNodes().item(temp2).getAttributes().getNamedItem("file").getNodeValue();
                         issue.line = Integer.valueOf(issueList.item(temp).getChildNodes().item(temp2).getAttributes().getNamedItem("line").getNodeValue());
                     }
                 }
-               list.add(issue);
+                list.add(issue);
             }
 
         } catch (Exception e) {
@@ -120,4 +139,278 @@ public class Utils {
 //            System.out.println(i.id +" " + i.line  +"  " + i.file);
         return list;
     }
+
+    public JSONArray parseAndroidApis() {
+        JSONArray ja = new JSONArray();
+        ClassLoader classLoader = getClass().getClassLoader();
+        File f = new File(classLoader.getResource("patterns_length1.csv").getFile());
+        //File f = new File("/Users/ruirua/Downloads/patterns_length1.csv");
+        CsvParserSettings settings = new CsvParserSettings();
+        settings.setMaxCharsPerColumn(25000);
+        settings.getFormat().setLineSeparator("\r");
+        settings.getFormat().setDelimiter(';');
+        CsvParser parser = new CsvParser(settings);
+        String[] row = null;
+        // 3rd, parses all rows of data in selected columns from the CSV file into a matrix
+        List<String[]> resolvedData = null;
+        try {
+            resolvedData = parser.parseAll(new FileReader(f.getAbsolutePath()));
+        } catch (FileNotFoundException e) {
+            System.out.println("[ANALYZER]: File Not Found: There is no  csv file in directory! to generate results");
+
+        }
+        for (int i = 1; i < resolvedData.size(); i++) {
+
+            row = resolvedData.get(i);
+            if (row.length > 1) {
+                JSONObject jo = new JSONObject();
+                jo.put("category", row[1]);
+                String s = row[0].replaceAll("\\(.*?\\)", "");
+                s = s.replaceAll("-", "");
+                String[] fullMethodDefinition = s.split("\\.");
+                String methodName = fullMethodDefinition[fullMethodDefinition.length > 0 ? fullMethodDefinition.length - 1 : 0];
+                jo.put("methodName", methodName);
+                jo.put("fullMethodDefinition", s);
+                ja.add(jo);
+
+
+            }
+        }
+        try (FileWriter file = new FileWriter("redAPIS.json")) {
+
+            file.write(ja.toJSONString());
+            file.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return ja;
+    }
+
+
+    public JSONArray decodeAndroidAPIS() {
+        JSONParser parser = new JSONParser();
+        JSONArray ja = new JSONArray();
+        try {
+            Object obj = parser.parse(new FileReader("redAPIS.json"));
+            JSONArray jsonObject = (JSONArray) obj;
+            JSONArray msg = (JSONArray) jsonObject;
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return ja;
+    }
+
+
+    public static void sendToDBResults(APICallUtil acu, String testName, String testFile, Double[] testResults, double energy, double time, double coverage) {
+
+        // sendApiCallUtil(acu);
+        // sendTestResults(testName,testFile,testResults,  energy, time,  coverage);
+    }
+
+    public static JSONObject getTest() {
+
+        JSONObject test = new JSONObject();
+        test.put("test_application", Analyzer.applicationID); //TODO
+        test.put("test_tool", Analyzer.monkey ? "monkey" : "unittests"); // TODO
+        test.put("test_orientation", Analyzer.isTestOriented ? "testoriented" : "methodoriented");
+        return test;
+    }
+
+    public static JSONArray getAppMethodsAndMetrics(APICallUtil acu) {
+        JSONArray ja = new JSONArray();
+        for (ClassInfo ci : acu.allJavaClasses) {
+            for (MethodInfo mi : ci.classMethods.values()) {
+                JSONObject jo = new JSONObject();
+                jo.put("method_class", ci.classPackage + "." + ci.className);
+                jo.put("method_name", mi.methodName);
+                // hashArgs
+                String args = "";
+                for (Variable v : mi.args) {
+                    args += v.isArray + v.type + v.varName;
+                }
+                String idMethod = mi.ci.classPackage + "." + mi.ci.className + "." + mi.methodName + "." + args.hashCode();
+                jo.put("method_id", idMethod);
+                jo.put("method_hash_args", args.hashCode());
+                ja.add(jo);
+                Analyzer.grr.methodMetrics.addAll(getMethodsMetrics(mi));
+            }
+        }
+        return ja;
+    }
+
+    public static JSONArray getMethodsMetrics(MethodInfo mi) {
+        JSONArray ja = new JSONArray();
+        String args = "";
+        for (Variable v : mi.args) {
+            args += v.isArray + v.type + v.varName;
+        }
+        String idMethod = mi.ci.classPackage + "." + mi.ci.className + "." + mi.methodName + "." + args.hashCode();
+        JSONObject o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "androidapis");
+        o.put("mm_value", mi.androidApi.size());
+        o.put("mm_coeficient", 1);
+        ja.add(o);
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "cc");
+        o.put("mm_value", mi.cyclomaticComplexity);
+        o.put("mm_coeficient", 1);
+        ja.add(o);
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "loc");
+        o.put("mm_value", mi.linesOfCode);
+        o.put("mm_coeficient", 1);
+        ja.add(o);
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "androidapis");
+        o.put("mm_value", mi.androidApi.size());
+        o.put("mm_coeficient", 1);
+        ja.add(o);
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "javaapis");
+        o.put("mm_value", mi.javaApi.size());
+        o.put("mm_coeficient", 1);
+        ja.add(o);
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "unknownapis");
+        o.put("mm_value", mi.externalApi.size() + mi.unknownApi.size());
+        o.put("mm_coeficient", 1);
+        ja.add(o);
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "nrargs");
+        o.put("mm_value", mi.args.size());
+        o.put("mm_coeficient", 1);
+        ja.add(o);
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "isstatic");
+        o.put("mm_value", mi.isStatic ? 1 : 0);
+        o.put("mm_coeficient", 1);
+        ja.add(o);
+        return ja;
+    }
+
+
+    public static JSONArray getMethodsInvoked(String testResultsID, List<String> methodID) {
+        JSONArray ja = new JSONArray();
+        for (String s : methodID) {
+            JSONObject test = new JSONObject();
+            test.put("test_results", testResultsID);
+            test.put("method", s);
+            ja.add(test);
+        }
+
+        return ja;
+    }
+
+    public static JSONObject getTestResult(String seed, String desc, String testiD, String profilerID, String deviceID, String deviceStartID, String deviceEndID) {
+        JSONObject tesResults = new JSONObject();
+        tesResults.put("test_results_seed", seed);
+        tesResults.put("test_results_description", desc);
+        tesResults.put("test_results_test", testiD);
+        tesResults.put("test_results_profiler", profilerID);
+        tesResults.put("test_results_device", deviceID);
+        tesResults.put("test_results_device_begin_state", deviceStartID);
+        tesResults.put("test_results_device_end_state", deviceEndID);
+        return tesResults;
+    }
+
+
+    public static JSONArray getTestMetrics(String testid, Double[] testResults, double energy, double time, double coverage) {
+        JSONArray ja = new JSONArray();
+        JSONObject testMetrics = new JSONObject();
+        testMetrics.put("test_results", testid);
+        testMetrics.put("metric", "wifistate");
+        testMetrics.put("value", testResults[0]);
+        testMetrics.put("coeficient", 1);
+        ja.add(testMetrics);
+        testMetrics = new JSONObject();
+        testMetrics.put("test_results", testid);
+        testMetrics.put("metric", "mobiledatastate");
+        testMetrics.put("value", testResults[1]);
+        testMetrics.put("coeficient", 1);
+        ja.add(testMetrics);
+        testMetrics = new JSONObject();
+        testMetrics.put("test_results", testid);
+        testMetrics.put("metric", "screenstate");
+        testMetrics.put("value", testResults[2]);
+        testMetrics.put("coeficient", 1);
+        ja.add(testMetrics);
+        testMetrics = new JSONObject();
+        testMetrics.put("test_results", testid);
+        testMetrics.put("metric", "batterystatus");
+        testMetrics.put("value", testResults[3]);
+        testMetrics.put("coeficient", 1);
+        ja.add(testMetrics);
+        testMetrics = new JSONObject();
+        testMetrics.put("test_results", testid);
+        testMetrics.put("metric", "wifirssilevel");
+        testMetrics.put("value", testResults[4]);
+        testMetrics.put("coeficient", 1);
+        ja.add(testMetrics);
+        testMetrics = new JSONObject();
+        testMetrics.put("test_results", testid);
+        testMetrics.put("metric", "memory");
+        testMetrics.put("value", testResults[5]);
+        testMetrics.put("coeficient", 1);
+        ja.add(testMetrics);
+        testMetrics = new JSONObject();
+        testMetrics.put("test_results", testid);
+        testMetrics.put("metric", "bluetoothstate");
+        testMetrics.put("value", testResults[6]);
+        testMetrics.put("coeficient", 1);
+        testMetrics = new JSONObject();
+        testMetrics.put("test_results", testid);
+        testMetrics.put("metric", "gpufrequency");
+        testMetrics.put("value", testResults[7]);
+        testMetrics.put("coeficient", 1);
+        ja.add(testMetrics);
+        testMetrics = new JSONObject();
+        testMetrics.put("test_results", testid);
+        testMetrics.put("metric", "cpuloadnormalized");
+        testMetrics.put("value", testResults[8]);
+        testMetrics.put("coeficient", 1);
+        ja.add(testMetrics);
+        testMetrics = new JSONObject();
+        testMetrics.put("test_results", testid);
+        testMetrics.put("metric", "gpsstate");
+        testMetrics.put("value", testResults[9]);
+        testMetrics.put("coeficient", 1);
+        ja.add(testMetrics);
+        testMetrics = new JSONObject();
+        testMetrics.put("test_results", testid);
+        testMetrics.put("metric", "energy");
+        testMetrics.put("value", energy);
+        testMetrics.put("coeficient", 1);
+        ja.add(testMetrics);
+        testMetrics = new JSONObject();
+        testMetrics.put("test_results", testid);
+        testMetrics.put("metric", "time");
+        testMetrics.put("value", time);
+        testMetrics.put("coeficient", 1);
+        ja.add(testMetrics);
+        testMetrics = new JSONObject();
+        testMetrics.put("test_results", testid);
+        testMetrics.put("metric", "coverage");
+        testMetrics.put("value", coverage);
+        testMetrics.put("coeficient", 1);
+        ja.add(testMetrics);
+
+        return ja;
+
+
+    }
+
 }

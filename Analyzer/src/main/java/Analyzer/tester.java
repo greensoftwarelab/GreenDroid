@@ -13,10 +13,13 @@ import java.io.Writer;
  */
 public class tester {
 
-//    public static void main(String[] args) {
-//        String file = "/Users/ruirua/tests/success/2bb46be6-f071-413d-9221-c090a8f0cb29/latest/_TRANSFORMED_/app/build/reports/lint-results.xml";
-//        Utils.parseLintResulsXML(file);
-//    }
+    public static void main(String[] args) {
+        //String file = "/Users/ruirua/tests/success/2bb46be6-f071-413d-9221-c090a8f0cb29/latest/_TRANSFORMED_/app/build/reports/lint-results.xml";
+        Utils.sendToDBResults(null,"","xx", new Double[10],0,0,0);
+        //Utils u = new Utils();
+        //u.parseAndroidApis();
+        //u.decodeAndroidAPIS();
+    }
 
 
 

@@ -10,6 +10,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.QualifiedNameExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.ReferenceType;
 
 import java.io.*;
@@ -50,6 +51,16 @@ public class APICallUtil implements Serializable {
                     for (ImportDeclaration id : cu.getImports()) {
                         NameExpression ne = new NameExpression(((QualifiedNameExpr) id.getName()).getQualifier().toString(),((QualifiedNameExpr) id.getName()).getName());
                         thisClass.classImports.add(ne);
+                    }
+                }
+
+                if (((ClassOrInterfaceDeclaration) n).getImplements()!=null){
+                    String ifaceDef = new String("");
+                    for (ClassOrInterfaceType cit : ((ClassOrInterfaceDeclaration) n).getImplements()){
+                        if (cit.getScope()!=null){
+                            ifaceDef = getCorrespondantImport(cit.getScope().toStringWithoutComments(),thisClass);
+                        }
+                        thisClass.interfacesImplemented.put(cit.getName(), ifaceDef +"." + cit.getName());
                     }
                 }
 
@@ -103,20 +114,53 @@ public class APICallUtil implements Serializable {
         }
 
         MethodClassifier(thisClass);
+        cleanAPI(thisClass);
         this.allJavaClasses.add(thisClass);
 
        return thisClass;
     }
 
 
+    private static void cleanAPI(ClassInfo ci){
+        for (MethodInfo m: ci.classMethods.values()) {
+            Iterator<MethodOfAPI> it = m.unknownApi.iterator();
+            while (it.hasNext()) {
+                MethodOfAPI ss = it.next();
+                if(m.ci.classVariables.containsKey(ss.method)|| m.isInDeclaredvars(ss.method)){
+                    ss.method=null;
+                }
+            }
+            it = m.androidApi.iterator();
+            while (it.hasNext()) {
+                MethodOfAPI ss = it.next();
+                if(m.ci.classVariables.containsKey(ss.method)|| m.isInDeclaredvars(ss.method)){
+                    ss.method=null;
+                }
+            }
+            it = m.javaApi.iterator();
+            while (it.hasNext()) {
+                MethodOfAPI ss = it.next();
+                if(m.ci.classVariables.containsKey(ss.method)|| m.isInDeclaredvars(ss.method)){
+                    ss.method=null;
+                }
+            }
+        }
+    }
+
 
     private static void MethodClassifier(ClassInfo thisClass) {
 
         if (thisClass.classMethods.size()>0){
             for (MethodInfo m: thisClass.classMethods.values()) {
-                Iterator<String> it = m.unknownApi.iterator();
+                Iterator<MethodOfAPI> it = m.unknownApi.iterator();
                 while (it.hasNext()){
-                    String s = it.next();
+                    MethodOfAPI ss = it.next();
+                    String s = ss.api;
+                    if(s==null||s.equals("")) {
+                        it.remove();
+                        continue;
+                    }
+
                     String [] x = s.split("<|,");
                     boolean added =false;
                     if(x.length>1) {
@@ -124,15 +168,18 @@ public class APICallUtil implements Serializable {
                             st = st.replaceAll(">", "").replace(" ", "");
                             if(!isPrimitiveType(st)) {
                                 if (isAndroidApi(st, thisClass)) {
-                                    m.androidApi.add(st);
+
+                                    m.androidApi.add( new MethodOfAPI (getCorrespondantImport(st,thisClass).equals("")? st : getCorrespondantImport(st,thisClass)  +"."+st,ss.method));
                                     added = true;
 
                                 } else if (isJavaApi(st, thisClass)) {
-                                    m.javaApi.add(st);
+
+                                    m.javaApi.add( new MethodOfAPI (getCorrespondantImport(st,thisClass).equals("")? st : getCorrespondantImport(st,thisClass)  +"."+st,ss.method));
                                     added = true;
 
                                 } else {
-                                    m.externalApi.add(st);
+
+                                    m.externalApi.add( new MethodOfAPI (getCorrespondantImport(st,thisClass).equals("")? st : getCorrespondantImport(st,thisClass)  +"."+st,ss.method));
                                     added = true;
 
                                 }
@@ -146,13 +193,16 @@ public class APICallUtil implements Serializable {
                     else{
                         if(!isPrimitiveType(s)) {
                             if (isAndroidApi(s, thisClass)) {
-                                m.androidApi.add(s);
+
+                                m.androidApi.add( new MethodOfAPI (getCorrespondantImport(s,thisClass).equals("")? s : getCorrespondantImport(s,thisClass)  +"."+s,ss.method));
                                 it.remove();
                             } else if (isJavaApi(s, thisClass)) {
-                                m.javaApi.add(s);
+
+                                m.javaApi.add( new MethodOfAPI (getCorrespondantImport(s,thisClass).equals("")? s : getCorrespondantImport(s,thisClass)  +"."+s,ss.method));
                                 it.remove();
                             } else {
-                                m.externalApi.add(s);
+
+                                m.externalApi.add( new MethodOfAPI (getCorrespondantImport(s,thisClass).equals("")? s : getCorrespondantImport(s,thisClass)  +"."+s,ss.method));
                                 it.remove();
                             }
                         }
@@ -167,7 +217,7 @@ public class APICallUtil implements Serializable {
 
 
     private static boolean isJavaApi(String s, ClassInfo thisClass) {
-         return getCorrespondantImport(s,thisClass).startsWith("java") ||s.equals("Integer") || s.equals("Double") || s.equals("Byte") || s.equals("Short") || s.equals("Long") || s.equals("Float") || s.equals("Character") || s.equals("Boolean") || s.equals("String") ;
+         return getCorrespondantImport(s,thisClass).startsWith("java") ||s.equals("Integer") || s.equals("Double") || s.equals("Byte") || s.equals("Short") || s.equals("Long") || s.equals("Float") || s.equals("Character") || s.equals("Boolean") || s.equals("String") || s.startsWith("System") ;
     }
 
     private static boolean isPrimitiveType(String s) {
@@ -175,7 +225,7 @@ public class APICallUtil implements Serializable {
     }
 
     private static boolean isAndroidApi(String s, ClassInfo ci) {
-        return getCorrespondantImport(s,ci).startsWith("android") || getCorrespondantImport(s,ci).startsWith("org.apache.http") || getCorrespondantImport(s,ci).startsWith("org.xml") || getCorrespondantImport(s,ci).startsWith("org.w3c.dom") ||
+        return getCorrespondantImport(s,ci).startsWith("android") || getCorrespondantImport(s,ci).startsWith("com.google.android")|| getCorrespondantImport(s,ci).startsWith("org.apache.http") || getCorrespondantImport(s,ci).startsWith("org.xml") || getCorrespondantImport(s,ci).startsWith("org.w3c.dom") ||
                 getCorrespondantImport(s,ci).startsWith("com.android.internal") || getCorrespondantImport(s,ci).startsWith("dalvik") ;
 
     }

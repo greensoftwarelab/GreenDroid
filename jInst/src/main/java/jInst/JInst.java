@@ -5,12 +5,21 @@
  */
 package jInst;
 
+import GDUtils.GDUtils;
 import Metrics.APICallUtil;
 import Metrics.ClassInfo;
 import Metrics.GDConventions;
 import jInst.transform.InstrumentGradleHelper;
 import jInst.transform.InstrumentHelper;
+import jInst.util.XMLParser;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,9 +28,17 @@ import java.util.logging.Logger;
  * @author marco
  */
 public class JInst {
-    /**
-     * @param args the command line arguments
-     */
+
+
+    public static String getApplication(String path){
+        String [] x = path.split("/");
+        return x.length>0? ( x[x.length-1].equals("latest")? x[x.length-2]:x[x.length-1]) :"unknown";
+
+    }
+
+
+
+
     public static void main(String[] args) {
         String classInfos = GDConventions.fileStreamName;
         String projType = args[0];
@@ -41,7 +58,9 @@ public class JInst {
                     try {
                         InstrumentHelper helper = new InstrumentHelper(tName, workspace, project, tests,testOriented);
                         helper.monkeyTest = monkeyTest;
+                        helper.applicationID=getApplication(project);
                         helper.generateTransformedProject();
+                        XMLParser.buildAppPermissionsJSON(helper.getManifest(),helper.getTransFolder());
                         helper.generateTransformedTests();
                         classInfos = helper.getTransFolder() + classInfos;
                         APICallUtil.serializeAPICallUtil(helper.getAcu(),classInfos );
@@ -54,7 +73,7 @@ public class JInst {
                 break;
             case "-gradle":
                 if(args.length != 8){
-                    System.err.println("[jInst] Error: Bad arguments length for Gradle project. Expected 7, got "+args.length+".");
+                    System.err.println("[jInst] Error: Bad arguments length for Gradle project. Expected 8, got "+args.length+".");
                     return;
                 }else{
                     String tName = args[1];
@@ -68,9 +87,12 @@ public class JInst {
                     try {
                         InstrumentGradleHelper helper = new InstrumentGradleHelper(tName, workspace, project, "", manifestSource, manifestTests, testOriented);
                         helper.monkeyTest = monkeyTest;
+                        helper.applicationID=getApplication(project);
                         helper.generateTransformedProject();
+                        XMLParser.buildAppPermissionsJSON(manifestSource,helper.getTransFolder());
                         classInfos = helper.getTransFolder() + classInfos;
                         APICallUtil.serializeAPICallUtil(helper.getAcu(),classInfos );
+                       // loadAndSendApplicationJSON(project+"/"+"application.json");
                     } catch (Exception ex) {
                         Logger.getLogger(JInst.class.getName()).log(Level.SEVERE, null, ex);
                     }
