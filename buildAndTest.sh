@@ -44,7 +44,7 @@ profileHardware="YES" # YES or ""
 flagStatus="on"
 SLEEPTIME=10
 
-DIR=$HOME/tests/critical/*
+DIR=$HOME/tests/actual/*
 #DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
 
 echo ""
@@ -163,7 +163,7 @@ else
 						#Create json with app info
 						FOLDER=${f}${prefix} 			
 							
-						oldInstrumentation=$(cat $FOLDER/$tName/instrumentationType.txt | grep "Test*")
+						oldInstrumentation=$(cat $FOLDER/$tName/instrumentationType.txt | grep  ".*Oriented" )
 						allmethods=$(find $projLocalDir/all -maxdepth 1 -name "allMethods.txt")
 						if [ "$oldInstrumentation" != "$trace" ] || [ -z "$allmethods" ]; then
 							w_echo "Different type of instrumentation. instrumenting again..."

@@ -18,6 +18,7 @@ adb shell am stopservice com.quicinc.trepn/.TrepnService
 #remove trash files
 w_echo "Removing Trash Files from last run"
 (adb shell rm -rf $deviceDir/*.db )> /dev/null  2>&1
+(adb shell rm -rf $deviceDir/*.csv )> /dev/null  2>&1
 (adb shell rm -rf $deviceDir/trepn_state )  > /dev/null  2>&1
 (adb shell rm -rf $deviceDir/Traces/* ) > /dev/null  2>&1
 (adb shell rm -rf $deviceDir/Measures/*  ) > /dev/null  2>&1

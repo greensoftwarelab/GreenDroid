@@ -52,8 +52,12 @@ else
 		e_echo "$TAG Could not determine the device's external storage. Check and try again..."
 		exit 1
 	fi
-	device=$( adb devices -l | grep -o "model.*" | cut -f2 -d: | cut -f1 -d\ )
-	i_echo "$TAG 📲  Attached device ($device) recognized "
+	( adb devices -l ) > device_info.txt
+	device_model=$(   cat device_info.txt | grep -o "model.*" | cut -f2 -d: | cut -f1 -d\ )
+	device_serial=$(  cat device_info.txt | tail -n 2 | grep "model" | cut -f1 -d\ )
+	device_brand=$( cat device_info.txt | grep -o "device:.*" | cut -f2 -d: )
+	
+	i_echo "$TAG 📲  Attached device ($device_model) recognized "
 	#TODO include mode to choose the conected device and echo the device name
 	deviceDir="$deviceExternal/trepn"  #GreenDroid
 	#put Trepn preferences on device
@@ -221,8 +225,12 @@ else
 						now=$(date +"%d_%m_%y_%H_%M_%S")
 						localDir=$localDir/$ID/$folderPrefix$now
 						echo "$TAG Creating support folder..."
+
 						mkdir -p $localDir
 						mkdir -p $localDir/all
+						(echo "{\"app_id\": \"$ID\", \"app_location\": \"$f\",\"app_build_tool\": \"gradle\", \"app_version\": \"1\", \"app_language\": \"Java\"}") > $localDir/application.json
+						(echo "{\"device_serial_number\": \"$device_serial\", \"device_model\": \"$device_model\",\"device_brand\": \"$device_brand\"}") > device.json
+							
 						#cat ./allMethods.txt >> $localDir/all/allMethods.txt
 						adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/{} $localDir
 						#adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
