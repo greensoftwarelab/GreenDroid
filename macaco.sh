@@ -40,7 +40,8 @@ number_monkey_events=1000
 min_coverage=60
 totaUsedTests=0
 
-DIR=$HOME/tests/actual/*
+DIR=/media/data/android_apps/23Apps/*
+#DIR=$HOME/tests/actual/*
 #DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
 
 
@@ -157,6 +158,15 @@ else
 						MANIF_S="${RESULT[0]}/AndroidManifest.xml"
 						MANIF_T="-"
 						
+
+
+#create results support folder
+						echo "$TAG Creating support folder..."
+						$MKDIR_COMMAND -p $projLocalDir
+						$MKDIR_COMMAND -p $projLocalDir/oldRuns
+						$MV_COMMAND -f $(find  $projLocalDir/ -maxdepth 1 | $SED_COMMAND -n '1!p' |grep -v "oldRuns") $projLocalDir/oldRuns/
+						$MKDIR_COMMAND -p $projLocalDir/all
+
 						FOLDER=${f}${prefix} #$f
 						#delete previously instrumented project, if any
 		
@@ -169,7 +179,7 @@ else
 							rm -rf $FOLDER/$tName
 							java -jar $GD_INSTRUMENT "-gradle" $tName "X" $FOLDER $MANIF_S $MANIF_T $trace $monkey ##RR
 							#create results support folder
-							rm -rf $projLocalDir/all/*
+							#rm -rf $projLocalDir/all/*
 							$MV_COMMAND ./allMethods.txt $projLocalDir/all/allMethods.txt
 							#$MV_COMMAND ./allMethods.txt $projLocalDir/all/allMethods.txt
 						else 
@@ -215,12 +225,7 @@ else
 							i_echo "BUILD SUCCESSFULL"
 						fi
 ## END BUILD PHASE					
-						#create results support folder
-						echo "$TAG Creating support folder..."
-						$MKDIR_COMMAND -p $projLocalDir
-						$MKDIR_COMMAND -p $projLocalDir/oldRuns
-						$MV_COMMAND -f $(find  $projLocalDir/ -maxdepth 1 | $SED_COMMAND -n '1!p' |grep -v "oldRuns") $projLocalDir/oldRuns/
-						$MKDIR_COMMAND -p $projLocalDir/all
+						
 						
 						
 						##copy MethodMetric to support folder
