@@ -2,12 +2,11 @@ package Analyzer;
 
 
 import GDUtils.GreenRepoRun;
-import Metrics.APICallUtil;
-import Metrics.GDConventions;
-import Metrics.MethodInfo;
-import Metrics.Variable;
+import Metrics.*;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -39,6 +38,8 @@ public class Analyzer {
     public static String applicationID = "unknown";
     public static List<String> actualTestMethods = new ArrayList<>();
     public static GreenRepoRun grr = new GreenRepoRun();
+    public static JSONArray energyGreadyAPIS = new JSONArray();
+    public static JSONArray methodsInvoked = new JSONArray();
 
     private static List<String> loadTests(String csvFile) throws Exception {
         alltests = new ArrayList<String>();
@@ -380,7 +381,7 @@ public class Analyzer {
             e.printStackTrace();
         }
         l.add("Class"); l.add("Method"); l.add("Times invoked");
-        l.add("CC");l.add("LoC"); l.add("AndroidAPIs"); l.add("N args");
+        l.add("CC");l.add("LoC"); l.add("AndroidAPIs"); l.add("N args"); //l.add("EnergyGreadyAPIS");
         for ( String s : allTracedMethods.keySet()){
             try {
                 write(fwApp,l);
@@ -392,7 +393,9 @@ public class Analyzer {
                // System.out.println(" metodo detetetado no tracedmethods " + s);
                // System.out.println("method "+ methodName + "  classname "+ s1  );
                 MethodInfo mi = acu!=null? acu.getMethodOfClass(methodName,s1) : new MethodInfo();
-                l.add(String.valueOf(mi.cyclomaticComplexity)); l.add(String.valueOf(mi.linesOfCode+(isTestOriented?1:0))); l.add(String.valueOf(mi.androidApi.size())); l.add(String.valueOf(mi.nr_args));
+                methodsInvoked.add(Utils.getMethodAPIS(mi));
+
+                l.add(String.valueOf(mi.cyclomaticComplexity)); l.add(String.valueOf(mi.linesOfCode+(isTestOriented?1:0))); l.add(String.valueOf(mi.androidApi.size())); l.add(String.valueOf(mi.nr_args)); //l.add(redapis);
 
             } catch (IOException  | NullPointerException e) {
                 e.printStackTrace();
@@ -425,26 +428,29 @@ public class Analyzer {
 //        }
         //Utils.sendApiCallUtil(acu);
 
-
+        Utils.writeJSONMethodAPIS(methodsInvoked, resultDirPath+"/" + "methodsInvoked.json" );
         //send results do DBASE
 
         // send testmetrics
-        System.out.println("sending " + grr.methodsInvoked.size() + " test metrics");
-        System.out.println(grr.testMetrics.toJSONString());
+   //     System.out.println("sending " + grr.methodsInvoked.size() + " test metrics");
+  //      System.out.println(grr.testMetrics.toJSONString());
         GreenRepoRun.sendTestsMetricsToDB(grr.testMetrics.toJSONString());
 //        //send methods
-        System.out.println("sending " + grr.methods.size() + " methods");
-        System.out.println(grr.methods.toJSONString());
+    //    System.out.println("sending " + grr.methods.size() + " methods");
+   //     System.out.println(grr.methods.toJSONString());
         GreenRepoRun.sendMethodsToDB(grr.methods.toJSONString());
 //        // send methods invoked
-        System.out.println("sending " + grr.methodsInvoked.size() + " methods invoked");
-        System.out.println(grr.methodsInvoked.toJSONString());
+    //    System.out.println("sending " + grr.methodsInvoked.size() + " methods invoked");
+     //   System.out.println(grr.methodsInvoked.toJSONString());
         GreenRepoRun.sendMethodsInvokedToDB(grr.methodsInvoked.toJSONString());
 //        // send methods metrics ??
-        System.out.println("sending " + grr.methodMetrics.size() + " method metrics");
-        System.out.println(grr.methodMetrics.toJSONString());
+     //   System.out.println("sending " + grr.methodMetrics.size() + " method metrics");
+     //   System.out.println(grr.methodMetrics.toJSONString());
         GreenRepoRun.sendMethodsMetricsToDB(grr.methodMetrics.toJSONString());
+
     }
+
+
 
     public static Consumption getDataFromRow( HashMap<String, Pair<Integer, Integer>> columns,String[] row) {
         double wifiState = Utils.getMatch(columns, Utils.wifiState)!=null? (row[Utils.getMatch(columns, Utils.wifiState).second]!=null ? (Integer.parseInt(row[Utils.getMatch(columns, Utils.wifiState).second])) : returnList[0]) : returnList[0];
@@ -474,7 +480,8 @@ public class Analyzer {
             for (Variable v : mi.args){
                 args+=v.isArray+v.type+v.varName;
             }
-            String metId= mi.ci.classPackage+"."+mi.ci.className+"."+ mi.methodName+"."+args.hashCode();
+
+            String metId= mi.ci!=null ? mi.ci.classPackage+"."+mi.ci.className+"."+ mi.methodName+"."+args.hashCode(): mi.methodName+"."+args.hashCode() ;
             l.add(metId);
         }
         return l;
@@ -757,7 +764,6 @@ public class Analyzer {
        grr.app=GreenRepoRun.sendApplicationToDB( GreenRepoRun.loadApplication(pathApp).toJSONString());
        GreenRepoRun.sendAppPermissionsToDB( GreenRepoRun.loadAppPermissions(pathPermissions).toJSONString());
        grr.device=GreenRepoRun.sendDeviceToDB( GreenRepoRun.loadDevice(pathDevice).toJSONString());
-
         return list;
     }
 
@@ -767,7 +773,9 @@ public class Analyzer {
     }
 
     public static void main(String[] args) {
-
+        Utils u = new Utils();
+        //energyGreadyAPIS = u.parseAndroidApis();
+        GreenRepoRun.operationalBackend = false;
         mergeOldRuns = false; // TODO
         if (args.length>2) {
             isTestOriented = args[0].equals("-TestOriented");
@@ -777,6 +785,7 @@ public class Analyzer {
             applicationID =getApplication(resultDirPath);
             stoppedState = args[2].equals("-Monkey")?2:0;
             monkey=stoppedState==2;
+            folderPrefix = monkey? "Monkey" + folderPrefix : folderPrefix;
            // boolean analyzeOldRuns=  args[2].equals("-oldRuns");
             allMethodsDir = resultDirPath + "/all/";
             allmethods = loadMethods(allMethodsDir);
@@ -787,9 +796,9 @@ public class Analyzer {
 
                     List<String> allcsvs = getAllCsvs(resultDirPath); // this send apppermissions.json
                     grr.test =  Utils.getTest();
-                    System.out.println(grr.test);
+                   // System.out.println(grr.test);
                     grr.test = GreenRepoRun.sendTestToDB(grr.test.toJSONString());
-                    System.out.println(grr.test.toJSONString());
+                    //System.out.println(grr.test.toJSONString());
                     try{
                         acu = APICallUtil.deserializeAPiCallUtil(resultDirPath + "/" + serializedFile);
                     }
@@ -806,16 +815,18 @@ public class Analyzer {
             } else {
                 List<String> allcsvs = getAllCsvs(resultDirPath);
                 try{
+                    grr.test =  Utils.getTest();
+                    // System.out.println(grr.test);
+                    grr.test = GreenRepoRun.sendTestToDB(grr.test.toJSONString());
                     acu = APICallUtil.deserializeAPiCallUtil(resultDirPath + "/" + serializedFile);
                 }
                 catch (Exception e){
                     e.printStackTrace();
                 }
-
+                grr.methods.addAll(Utils.getAppMethodsAndMetrics(acu));
                 methodOriented(allcsvs);
                 // methodOriented(Arrays.copyOfRange(args, 3, args.length));
             }
-
 
             //System.out.println(acu);
         }

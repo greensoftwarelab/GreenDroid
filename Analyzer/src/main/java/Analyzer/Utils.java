@@ -1,9 +1,7 @@
 package Analyzer;
 
-import Metrics.APICallUtil;
-import Metrics.ClassInfo;
-import Metrics.MethodInfo;
-import Metrics.Variable;
+import GDUtils.GreenRepoRun;
+import Metrics.*;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 import org.apache.http.HttpEntity;
@@ -140,7 +138,7 @@ public class Utils {
         return list;
     }
 
-    public JSONArray parseAndroidApis() {
+    public  JSONArray parseAndroidApis() {
         JSONArray ja = new JSONArray();
         ClassLoader classLoader = getClass().getClassLoader();
         File f = new File(classLoader.getResource("patterns_length1.csv").getFile());
@@ -208,11 +206,7 @@ public class Utils {
     }
 
 
-    public static void sendToDBResults(APICallUtil acu, String testName, String testFile, Double[] testResults, double energy, double time, double coverage) {
 
-        // sendApiCallUtil(acu);
-        // sendTestResults(testName,testFile,testResults,  energy, time,  coverage);
-    }
 
     public static JSONObject getTest() {
 
@@ -243,6 +237,63 @@ public class Utils {
             }
         }
         return ja;
+    }
+
+
+     public static JSONObject getMethodAPIS(MethodInfo mi ){
+         JSONObject jo = new JSONObject();
+         jo.put("methodName",mi.methodName);
+         JSONArray ja = new JSONArray();
+         for (MethodOfAPI moa : mi.androidApi){
+             JSONObject job = new JSONObject();
+             job.put("class", moa.api );
+             job.put("method", moa.method);
+             ja.add(job);
+         }
+         jo.put("androidAPIS",ja);
+         ja = new JSONArray();
+         for (MethodOfAPI moa : mi.javaApi){
+             JSONObject job = new JSONObject();
+             job.put("class", moa.api );
+             job.put("method", moa.method);
+             ja.add(job);
+         }
+         jo.put("javaAPIS",ja);
+         ja = new JSONArray();
+         for (MethodOfAPI moa : mi.unknownApi){
+             JSONObject job = new JSONObject();
+             job.put("class", moa.api );
+             job.put("method", moa.method);
+             ja.add(job);
+         }
+         jo.put("unknownAPIS",ja);
+         ja = new JSONArray();
+         for (MethodOfAPI moa : mi.externalApi){
+             JSONObject job = new JSONObject();
+             job.put("class", moa.api );
+             job.put("method", moa.method);
+             ja.add(job);
+         }
+         jo.put("externalAPI",ja);
+         return jo;
+     }
+
+
+    public static void writeJSONMethodAPIS (JSONArray ja, String file){
+
+        try {
+            writeFile(new File(file),ja.toJSONString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void writeFile(File file, String content) throws IOException{
+        FileWriter fw = new FileWriter(file.getAbsoluteFile());
+        BufferedWriter bw = new BufferedWriter(fw);
+        bw.write(content);
+        bw.flush();
+        bw.close();
     }
 
     public static JSONArray getMethodsMetrics(MethodInfo mi) {
@@ -303,6 +354,159 @@ public class Utils {
     }
 
 
+
+    public static JSONArray getMethodsMetricsMethodOriented(MethodInfo mi, String time, String energy, String methodInvoked, Double [] testResults) {
+        JSONArray ja = new JSONArray();
+        String idMethod = GreenRepoRun.generateMethodID(mi);
+        JSONObject o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "androidapis");
+        o.put("mm_value", mi.androidApi.size());
+        o.put("mm_coeficient", 1);
+        ja.add(o);
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "cc");
+        o.put("mm_value", mi.cyclomaticComplexity);
+        o.put("mm_coeficient", 1);
+        ja.add(o);
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "loc");
+        o.put("mm_value", mi.linesOfCode);
+        o.put("mm_coeficient", 1);
+        ja.add(o);
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "androidapis");
+        o.put("mm_value", mi.androidApi.size());
+        o.put("mm_coeficient", 1);
+        ja.add(o);
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "javaapis");
+        o.put("mm_value", mi.javaApi.size());
+        o.put("mm_coeficient", 1);
+        ja.add(o);
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "unknownapis");
+        o.put("mm_value", mi.externalApi.size() + mi.unknownApi.size());
+        o.put("mm_coeficient", 1);
+        ja.add(o);
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "nrargs");
+        o.put("mm_value", mi.args.size());
+        o.put("mm_coeficient", 1);
+        ja.add(o);
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "isstatic");
+        o.put("mm_value", mi.isStatic ? 1 : 0);
+        o.put("mm_coeficient", 1);
+        ja.add(o);
+
+
+         // dynamic metrics
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "wifistate");
+        o.put("mm_value", testResults[0]);
+        o.put("mm_coeficient", 1);
+        o.put("mm_invokation", methodInvoked);
+        ja.add(o);
+
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "mobiledatastate");
+        o.put("mm_value", testResults[1]);
+        o.put("mm_coeficient", 1);
+        o.put("mm_invokation", methodInvoked);
+        ja.add(o);
+
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "screenstate");
+        o.put("mm_value", testResults[2]);
+        o.put("mm_coeficient", 1);
+        o.put("mm_invokation", methodInvoked);
+        ja.add(o);
+
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "batterystatus");
+        o.put("mm_value", testResults[3]);
+        o.put("mm_coeficient", 1);
+        o.put("mm_invokation", methodInvoked);
+        ja.add(o);
+
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "wifirssilevel");
+        o.put("mm_value", testResults[4]);
+        o.put("mm_coeficient", 1);
+        o.put("mm_invokation", methodInvoked);
+        ja.add(o);
+
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "memory");
+        o.put("mm_value", testResults[5]);
+        o.put("mm_coeficient", 1);
+        o.put("mm_invokation", methodInvoked);
+        ja.add(o);
+
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "bluetoothstate");
+        o.put("mm_value", testResults[6]);
+        o.put("mm_coeficient", 1);
+        o.put("mm_invokation", methodInvoked);
+        ja.add(o);
+
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "gpufrequency");
+        o.put("mm_value", testResults[7]);
+        o.put("mm_coeficient", 1);
+        o.put("mm_invokation", methodInvoked);
+        ja.add(o);
+
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "cpuloadnormalized");
+        o.put("mm_value", testResults[8]);
+        o.put("mm_coeficient", 1);
+        o.put("mm_invokation", methodInvoked);
+        ja.add(o);
+
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "gpsstate");
+        o.put("mm_value", testResults[9]);
+        o.put("mm_coeficient", 1);
+        o.put("mm_invokation", methodInvoked);
+        ja.add(o);
+
+        //
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "energy");
+        o.put("mm_value", energy);
+        o.put("mm_coeficient", 1);
+        o.put("mm_invokation", methodInvoked);
+        ja.add(o);
+        o = new JSONObject();
+        o.put("mm_method", idMethod);
+        o.put("mm_metric", "time");
+        o.put("mm_value", time);
+        o.put("mm_coeficient", 1);
+        o.put("mm_invokation", methodInvoked);
+        ja.add(o);
+        return ja;
+    }
+
+
     public static JSONArray getMethodsInvoked(String testResultsID, List<String> methodID) {
         JSONArray ja = new JSONArray();
         for (String s : methodID) {
@@ -326,6 +530,16 @@ public class Utils {
         tesResults.put("test_results_device_end_state", deviceEndID);
         return tesResults;
     }
+
+    public static JSONObject getTestMetricsMethodOriented(String testid, double coverage) {
+        JSONObject testMetrics = new JSONObject();
+        testMetrics.put("test_results", testid);
+        testMetrics.put("metric", "coverage");
+        testMetrics.put("value", coverage);
+        testMetrics.put("coeficient", 1);
+        return testMetrics;
+    }
+
 
 
     public static JSONArray getTestMetrics(String testid, Double[] testResults, double energy, double time, double coverage) {

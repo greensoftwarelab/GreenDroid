@@ -22,8 +22,8 @@ prefix="latest" # "latest" or "" ; Remove if normal app
 deviceExternal=""
 logDir="logs"
 localDir="$HOME/GDResults"
-trace="-MethodOriented"   #trace=$2  ##RR
-#trace="-TestOriented"
+#trace="-MethodOriented"   #trace=$2  ##RR
+trace="-TestOriented"
 monkey="-Monkey"
 folderPrefix=""
 GD_ANALYZER="jars/Analyzer.jar"  # "analyzer/greenDroidAnalyzer.jar"
@@ -34,6 +34,11 @@ profileHardware="YES" # YES or ""
 flagStatus="on"
 SLEEPTIME=10
 
+min_monkey_runs=3
+threshold_monkey_runs=50
+number_monkey_events=1000
+min_coverage=60
+totaUsedTests=0
 
 DIR=$HOME/tests/actual/*
 #DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
@@ -56,7 +61,9 @@ else
 	device_model=$(   cat device_info.txt | grep -o "model.*" | cut -f2 -d: | cut -f1 -d\ )
 	device_serial=$(  cat device_info.txt | tail -n 2 | grep "model" | cut -f1 -d\ )
 	device_brand=$( cat device_info.txt | grep -o "device:.*" | cut -f2 -d: )
-	
+	echo "{\"device_serial_number\": \"$device_serial\", \"device_model\": \"$device_model\",\"device_brand\": \"$device_brand\"}" > device.json
+	cat device.json
+	#device=$( adb devices -l | grep -o "model.*" | cut -f2 -d: | cut -f1 -d\ )
 	i_echo "$TAG 📲  Attached device ($device_model) recognized "
 	#TODO include mode to choose the conected device and echo the device name
 	deviceDir="$deviceExternal/trepn"  #GreenDroid
@@ -84,6 +91,13 @@ else
 	./forceUninstall.sh
 	#for each Android Proj in $DIR folder...
 	w_echo "$TAG searching for Android Projects in -> $DIR"
+
+
+	# getting all seeds from file
+	seeds20=$(head -$min_monkey_runs monkey_seeds.txt)
+	last30=$(tail  -30 monkey_seeds.txt)
+
+
 	for f in $DIR/
 		do
 		#clean previous list of all methods and device results
@@ -95,7 +109,6 @@ else
 		adb shell rm -rf "$deviceDir/Measures/*"
 		adb shell rm -rf "$deviceDir/TracedTests/*"  ##RR
 
-
 		IFS='/' read -ra arr <<< "$f"
 		#ID=${arr[-1]} # MC
 		#IFS=$(echo -en "\n\b") #MC
@@ -105,13 +118,13 @@ else
 
 		if [ "$ID" != "success" ] && [ "$ID" != "failed" ] && [ "$ID" != "unknown" ]; then
 			projLocalDir=$localDir/$ID
-			rm -rf $projLocalDir/all/*
+			#rm -rf $projLocalDir/all/*
 			if [[ $trace == "-TestOriented" ]]; then
 				e_echo "	Test Oriented Profiling:      ✔"
-				folderPrefix="Test"
+				folderPrefix="MonkeyTest"
 			else 
 				e_echo "	Method Oriented profiling:    ✔"
-				folderPrefix="Method"
+				folderPrefix="MonkeyMethod"
 			fi 
 			if [[ $profileHardware == "YES" ]]; then
 				w_echo "	Profiling hardware:           ✔"
@@ -146,14 +159,29 @@ else
 						
 						FOLDER=${f}${prefix} #$f
 						#delete previously instrumented project, if any
-						rm -rf $FOLDER/$tName
+		
+#Instrumentation phase	
 
-						#instrument
-						#echo "folder of app to instrument ----> $FOLDER"
-						echo "$FOLDER/$tName" > lastTranformedApp.txt
-						#echo "java -jar jar -gradle _TRANSFORMED_ X $FOLDER $MANIF_S $MANIF_T $trace"
-						java -jar $GD_INSTRUMENT "-gradle" $tName "X" $FOLDER $MANIF_S $MANIF_T $trace $monkey ##RR
+						oldInstrumentation=$(cat $FOLDER/$tName/instrumentationType.txt | grep  ".*Oriented" )
+						allmethods=$(find $projLocalDir/all -maxdepth 1 -name "allMethods.txt")
+						if [ "$oldInstrumentation" != "$trace" ] || [ -z "$allmethods" ]; then
+							w_echo "Different type of instrumentation. instrumenting again..."
+							rm -rf $FOLDER/$tName
+							java -jar $GD_INSTRUMENT "-gradle" $tName "X" $FOLDER $MANIF_S $MANIF_T $trace $monkey ##RR
+							#create results support folder
+							rm -rf $projLocalDir/all/*
+							$MV_COMMAND ./allMethods.txt $projLocalDir/all/allMethods.txt
+							#$MV_COMMAND ./allMethods.txt $projLocalDir/all/allMethods.txt
+						else 
+							w_echo "Same instrumentation of last time. Skipping instrumentation phase"
+						fi
 						
+						(echo "{\"app_id\": \"$ID\", \"app_location\": \"$f\",\"app_build_tool\": \"gradle\", \"app_version\": \"1\", \"app_language\": \"Java\"}") > $FOLDER/$tName/application.json
+						xx=$(find  $projLocalDir/ -maxdepth 1 | $SED_COMMAND -n '1!p' |grep -v "oldRuns" | grep -v "all" )
+						##echo "xx -> $xx"
+						$MV_COMMAND -f $xx $projLocalDir/oldRuns/
+						echo "$FOLDER/$tName" > lastTranformedApp.txt
+
 						#copy the trace/measure lib
 						#folds=($(find $FOLDER/$tName/ -type d | egrep -v "\/res|\/gen|\/build|\/.git|\/src|\/.gradle"))
 						for D in `find $FOLDER/$tName/ -type d | egrep -v "\/res|\/gen|\/build|\/.git|\/src|\/.gradle"`; do  ##RR
@@ -163,11 +191,18 @@ else
 						    fi  ##RR
 						done  ##RR
 		
-						#build
-						#GRADLE=$(find $FOLDER/$tName -maxdepth 1 -name "build.gradle")
+
+## BUILD PHASE						
+
 						GRADLE=($(find $FOLDER/$tName -name "*.gradle" -type f -print | grep -v "settings.gradle" | xargs grep -L "com.android.library" | xargs grep -l "buildscript" | cut -f1 -d:))
 						#echo "gradle script invocation -> ./buildGradle.sh $ID $FOLDER/$tName ${GRADLE[0]}"
-						./buildGradle.sh $ID $FOLDER/$tName ${GRADLE[0]}
+						if [ "$oldInstrumentation" != "$trace" ] || [ -z "$allmethods" ]; then
+							w_echo "[APP BUILDER] Different instrumentation since last time. Building Again"
+							./buildGradle.sh $ID $FOLDER/$tName ${GRADLE[0]}
+						else 
+							w_echo "[APP BUILDER] No changes since last run. Not building again"
+						fi
+						(echo $trace) > $FOLDER/$tName/instrumentationType.txt
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
 							echo "$ID" >> $logDir/errorBuildGradle.log
@@ -179,18 +214,20 @@ else
 						else 
 							i_echo "BUILD SUCCESSFULL"
 						fi
-						
+## END BUILD PHASE					
 						#create results support folder
 						echo "$TAG Creating support folder..."
 						$MKDIR_COMMAND -p $projLocalDir
 						$MKDIR_COMMAND -p $projLocalDir/oldRuns
 						$MV_COMMAND -f $(find  $projLocalDir/ -maxdepth 1 | $SED_COMMAND -n '1!p' |grep -v "oldRuns") $projLocalDir/oldRuns/
 						$MKDIR_COMMAND -p $projLocalDir/all
-						cat ./allMethods.txt >> $projLocalDir/all/allMethods.txt
+						
 						
 						##copy MethodMetric to support folder
 						#echo "copiar $FOLDER/$tName/classInfo.ser para $projLocalDir "
 						cp $FOLDER/$tName/AppInfo.ser $projLocalDir
+						cp device.json $localDir
+						cp $FOLDER/$tName/appPermissions.json $localDir
 
 						#install on device
 						./install.sh $FOLDER/$tName "X" "GRADLE" $PACKAGE $projLocalDir  #COMMENT, EVENTUALLY...
@@ -200,71 +237,63 @@ else
 						#	continue
 						#fi
 						echo "$ID" >> $logDir/success.log
-						
-						adb shell am broadcast -a com.quicinc.trepn.start_profiling -e com.quicinc.trepn.database_file "myfile"
-						sleep 5
-						echo "updating.."
-						w_echo "running tests ......"
-						if [[ $trace == "-TestOriented" ]]; then
-							adb shell am broadcast -a com.quicinc.Trepn.UpdateAppState -e com.quicinc.Trepn.UpdateAppState.Value "1" -e com.quicinc.Trepn.UpdateAppState.Value.Desc "started"
-						fi 
-						adb shell monkey  -s 1523611838438 -p $PACKAGE -v 1500
-						if [[ $trace == "-TestOriented" ]]; then
-							adb shell am broadcast -a com.quicinc.Trepn.UpdateAppState -e com.quicinc.Trepn.UpdateAppState.Value "0" -e com.quicinc.Trepn.UpdateAppState.Value.Desc "stopped"
-						fi
-						sleep 3
-						echo "stopping.."
-						adb shell am broadcast -a com.quicinc.trepn.stop_profiling
-
-						sleep 5
-						#adb shell am broadcast -a com.quicinc.trepn.export_to_csv -e com.quicinc.trepn.export_db_input_file "tests" -e com.quicinc.trepn.export_csv_output_file “zzz ”
-						adb shell am broadcast -a  com.quicinc.trepn.export_to_csv -e com.quicinc.trepn.export_db_input_file "myfile" -e com.quicinc.trepn.export_csv_output_file "GreendroidResultTrace0"
-						#echo "exporting.."
-						sleep 4
-
+						total_methods=$( cat $projLocalDir/all/allMethods.txt | sort -u | wc -l | $SED_COMMAND 's/ //g')
 						now=$(date +"%d_%m_%y_%H_%M_%S")
 						localDir=$localDir/$ID/$folderPrefix$now
 						echo "$TAG Creating support folder..."
-
 						mkdir -p $localDir
 						mkdir -p $localDir/all
+						##########
+########## RUN TESTS 1 phase ############
+
+						for i in $seeds20; do
+							./runMonkeyTest.sh $i $number_monkey_events $trace $PACKAGE				
+							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/{} $localDir
+							#adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
+							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio "TracedMethods.txt" | xargs -I{} adb pull $deviceDir/{} $localDir
+							mv $localDir/TracedMethods.txt $localDir/TracedMethods$i.txt
+							mv $localDir/GreendroidResultTrace0.csv $localDir/GreendroidResultTrace$i.csv
+							totaUsedTests=$(($totaUsedTests + 1))
+						done
+
+########## RUN TESTS  THRESHOLD ############
+
+						##check if have enough coverage
+						nr_methods=$( cat $localDir/Traced*.txt | sort -u | wc -l | $SED_COMMAND 's/ //g')
+						actual_coverage=$(echo "${nr_methods}/${total_methods}" | bc -l)
+						e_echo "actual coverage -> $actual_coverage"
+						
+						for j in $last30; do
+							coverage_exceded=$( echo " ${actual_coverage}>= .${min_coverage}" | bc -l)
+							if [ "$coverage_exceded" -gt 0 ]; then
+								echo "$ID|$totaUsedTests" >> $logDir/above$min_coverage.log
+								break
+							fi
+							./runMonkeyTest.sh $j $number_monkey_events $trace $PACKAGE				
+							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/{} $localDir
+							#adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
+							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio "TracedMethods.txt" | xargs -I{} adb pull $deviceDir/{} $localDir
+							mv $localDir/TracedMethods.txt $localDir/TracedMethods$i.txt
+							mv $localDir/GreendroidResultTrace0.csv $localDir/GreendroidResultTrace$i.csv
+							nr_methods=$( cat $localDir/Traced*.txt | sort -u | wc -l | $SED_COMMAND 's/ //g')
+							actual_coverage=$(echo "${nr_methods}/${total_methods}" | bc -l)
+							w_echo "actual coverage -> $actual_coverage"
+
+						done
+
+						if [ "$coverage_exceded" -eq 0 ]; then
+							echo "$ID|$actual_coverage" >> $logDir/below$min_coverage.log
+						fi
+
+
 						(echo "{\"app_id\": \"$ID\", \"app_location\": \"$f\",\"app_build_tool\": \"gradle\", \"app_version\": \"1\", \"app_language\": \"Java\"}") > $localDir/application.json
 						(echo "{\"device_serial_number\": \"$device_serial\", \"device_model\": \"$device_model\",\"device_brand\": \"$device_brand\"}") > device.json
-							
-						#cat ./allMethods.txt >> $localDir/all/allMethods.txt
-						adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/{} $localDir
-						#adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
-						adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio "TracedMethods.txt" | xargs -I{} adb pull $deviceDir/{} $localDir
-						mv $localDir/TracedMethods.txt $localDir/TracedMethods0.txt
-						#run tests
-						#./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir # "-gradle" $FOLDER/$tName
-						#RET=$(echo $?)
-						#if [[ "$RET" != "0" ]]; then
-						#	echo "$ID" >> $logDir/errorRun.log
-						#	e_echo "[GD ERROR] There was an Error while running tests. Retrying... "
-						#	#RETRY 
-						#	./trepnFix
-						#	sleep 3
-						#	adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
-						#	./runTests.sh $PACKAGE $TESTPACKAGE $deviceDir $projLocalDir # "-gradle" $FOLDER/$tName
-						#	RET=$(echo $?)
-						#	if [[ "$RET" != "0" ]]; then
-						#		echo "$ID" >> $logDir/errorRun.log
-						#		e_echo "[GD ERROR] FATAL ERROR RUNNING TESTS. IGNORING APP "
-						#		./forceUninstall.sh
-						#		continue
-						#	fi
-						#fi
-						
-						#uninstall the app & tests
-						#./uninstall.sh $PACKAGE $TESTPACKAGE
 						./forceUninstall.sh 
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
 							echo "$ID" >> $logDir/errorUninstall.log
 							#continue
 						fi
-						
 						#Run greendoid!
 						#java -jar $GD_ANALYZER $ID $PACKAGE $TESTPACKAGE $FOLDER $FOLDER/tName $localDir
 						#(java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv) > $logDir/analyzer.log  ##RR

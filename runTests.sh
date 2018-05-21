@@ -98,10 +98,15 @@ Nmeasures=$(adb shell ls "$deviceDir/Measures/" | wc -l)
 Ntraces=$(adb shell ls "$deviceDir/Traces/" | wc -l)
 echo "Nº measures: $Nmeasures"
 echo "Nº traces:   $Ntraces"
-if [ $Nmeasures -le "0" ] || [ $Ntraces -le "0" ] || [ $Nmeasures -ne $Ntraces ] ; then 
-	e_echo "[GD ERROR] Something went wrong. try run trepnFix.sh and try again"
-	exit 2
 
+if [[ $folderPrefix == "Method" ]]; then
+	#statements
+	adb shell mv "$deviceDir/*.csv" "$deviceDir/Measures/"
+else 
+    if [ $Nmeasures -le "0" ] || [ $Ntraces -le "0" ] || [ $Nmeasures -ne $Ntraces ] ; then 
+		e_echo "[GD ERROR] Something went wrong. try run trepnFix.sh and try again"
+		exit 2
+	fi
 fi
 
 now=$(date +"%d_%m_%y_%H_%M_%S")
@@ -122,8 +127,8 @@ adb shell ls "$deviceDir/TracedTests/" | $SED_COMMAND -r 's/[\r]+//g' | egrep -E
 csvs=$(find $localDir -name "*.csv")
 for i in $csvs; do
 	tags=$(cat $i |  grep "stopped" | wc -l)
-	if [[ tags -lt "2" ]]; then
-		e_echo " $i contains an error "
+	if [ $tags -lt "2" ] && [ "$folderPrefix" == "Test" ] ; then
+		e_echo " $i might contain an error "
 		echo "$i" >> logs/csvErrors.log
 	fi
 done

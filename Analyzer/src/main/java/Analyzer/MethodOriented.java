@@ -1,9 +1,13 @@
 package Analyzer;
 
+import GDUtils.GDUtils;
+import GDUtils.GreenRepoRun;
 import Metrics.GDConventions;
 import Metrics.MethodInfo;
+import Metrics.Variable;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
+import org.json.simple.JSONObject;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -130,6 +134,7 @@ public class MethodOriented {
 
             Map<String,Double> consumos = new HashMap<>();
             for (List<PairMetodoInt> lista : states){
+                int totaltime = 0;
                 double potencia =0;
                 int tempofrente = 0;
                 String metodofrente ="";
@@ -149,15 +154,21 @@ public class MethodOriented {
                     potencia += ((double) deltat) * (watt);
                     tempo = tempofrente;
                     estadoantes = lista.get(i).state;
+                    totaltime += deltat;
+
                 }
                 if (!consumos.containsKey(met)){
                     consumos.put(met,potencia);
                     methodInfos.get(met)[12] =1.0;
+                    methodInfos.get(met)[11] = ((double) totaltime);
                 }
                 else {
                     consumos.put(met,consumos.get(met)+potencia);
                     methodInfos.get(met)[12] +=1.0;
+                    methodInfos.get(met)[11] = ((double) totaltime);
+
                 }
+                totaltime = 0;
             }
 
             FileWriter fw = null;
@@ -187,7 +198,7 @@ public class MethodOriented {
                 System.out.println("| Method  " + x +" Total Consumption (J) : " +  consumos.get(x) + " J|");
                // System.out.println("--Method :" + x +"   Total consumption : " + consumos.get(x) + " J --");
                 methodInfos.get(x)[10] = consumos.get(x);
-                methodInfos.get(x)[10] = consumos.get(x);
+               // methodInfos.get(x)[10] = consumos.get(x);
                 l.add(x); l.add((String.valueOf(consumos.get(x))));
                 try {
                     Analyzer.write(fw,l);
@@ -212,6 +223,12 @@ public class MethodOriented {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+
+            //Analyzer.grr.testResults = (Utils.getTestResult("0", "nada", Analyzer.grr.getActualTestID(), "greendroid", Analyzer.grr.getActualDeviceID(), "1", "1")); // TODO
+            Analyzer.grr.testResults = (Utils.getTestResult("0", "nada", Analyzer.grr.getActualTestID(), "greendroid", Analyzer.grr.getActualDeviceID(), "1", "1")); // TODO
+            Analyzer.grr.testResults = GreenRepoRun.sendTestResultToDB(Analyzer.grr.testResults.toJSONString());
+
             for ( String s : methodInfos.keySet()){
                 try {
                     Analyzer.write(fwApp,l);
@@ -222,7 +239,12 @@ public class MethodOriented {
                     String s1 = s.replaceAll("<.*?>", "");
                     MethodInfo mi = Analyzer.acu!=null? Analyzer.acu.getMethodOfClass(methodName,s1) : new MethodInfo();
                     l.add(String.valueOf(mi.cyclomaticComplexity)); l.add(String.valueOf(mi.linesOfCode+(Analyzer.isTestOriented?1:0))); l.add(String.valueOf(mi.androidApi.size())); l.add(String.valueOf(mi.nr_args));
+                    //Analyzer.grr.methodsInvoked.add(GreenRepoRun.getMethodInvoked(Analyzer.grr.getActualTestResultsID(), GreenRepoRun.generateMethodID(mi)) );
+                    JSONObject jo = GreenRepoRun.getMethodInvoked(Analyzer.grr.getActualTestResultsID(), GreenRepoRun.generateMethodID(mi));
+                    jo =  GreenRepoRun.sendMethodInvokedToDB(jo.toJSONString());
+                     Analyzer.grr.methodMetrics.addAll( Utils.getMethodsMetricsMethodOriented(mi, String.valueOf(methodInfos.get(s)[11]), String.valueOf(methodInfos.get(s)[10]), ((String) jo.get("id")),methodInfos.get(s) ));
 
+                     // Analyzer.grr.methodMetrics.addAll(G)
                 } catch (IOException  | NullPointerException exc) {
                     exc.printStackTrace();
                 }
@@ -245,10 +267,40 @@ public class MethodOriented {
             } catch (IOException exp) {
                 exp.printStackTrace();
             }
+            //Analyzer.grr.testResults = (Utils.getTestResult("0", "nada", Analyzer.grr.getActualTestID(), "greendroid", Analyzer.grr.getActualDeviceID(), "1", "1")); // TODO
+            Analyzer.grr.allTestResults.add(Analyzer.grr.testResults);
+            Analyzer.grr.testMetrics.add(Utils.getTestMetricsMethodOriented(Analyzer.grr.getActualTestResultsID(),(methodCoverage()*100)));
+          //  Analyzer.grr.testMetrics.addAll(Utils.getTestMetrics(Analyzer.grr.getActualTestResultsID(), returnList, joules, totaltime, totalcoverage));
+
+            // end of csv file processing [END]
+
         }
+
+        GreenRepoRun.sendTestsMetricsToDB(Analyzer.grr.testMetrics.toJSONString());
+//
+        GreenRepoRun.sendMethodsToDB(Analyzer.grr.methods.toJSONString());
+//
+        GreenRepoRun.sendMethodsInvokedToDB(Analyzer.grr.methodsInvoked.toJSONString());
+//
+        GreenRepoRun.sendMethodsMetricsToDB(Analyzer.grr.methodMetrics.toJSONString());
+
+
         nInvocaoes.clear();
     }
 
+
+    public static List<String> getMethodHashList( Set<String> actualTestMethods){
+        List<String> l = new ArrayList<>();
+        for(String s: actualTestMethods){
+            String [] xx = s.split("<");
+            String methodName = xx[xx.length-1].replace(">","");
+            String className = s.replaceAll("<.*?>", "");
+            MethodInfo mi = Analyzer.acu.getMethodOfClass(methodName,className);
+            String metId= GreenRepoRun.generateMethodID(mi);
+            l.add(metId);
+        }
+        return l;
+    }
     private static void addClosestConsumption(String methodName, Consumption c) {
 
         if(methodInfos.containsKey(methodName)){

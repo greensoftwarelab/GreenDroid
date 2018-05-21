@@ -187,7 +187,7 @@ class MethodMetricsView(APIView):
         data = JSONParser().parse(request)
         #print(data)
         serializer = MethodMetricSerializer(data=data,many=isinstance(data, list), partial=True)
-            if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid(raise_exception=True):
             if isinstance(data,list):
                 for item in data:
                     try:
