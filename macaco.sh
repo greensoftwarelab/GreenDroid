@@ -32,16 +32,16 @@ trepnLib="TrepnLibrary-release.aar"
 trepnJar="TrepnLibrary-release.jar"
 profileHardware="YES" # YES or ""
 flagStatus="on"
-SLEEPTIME=10
-
+#SLEEPTIME=180 # 3 minutes
+SLEEPTIME=1
 min_monkey_runs=3
 threshold_monkey_runs=50
 number_monkey_events=1000
-min_coverage=60
+min_coverage=10
 totaUsedTests=0
 
-DIR=/media/data/android_apps/23Apps/*
-#DIR=$HOME/tests/actual/*
+#DIR=/media/data/android_apps/23Apps/*
+DIR=$HOME/tests/actual/*
 #DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
 
 
@@ -252,6 +252,7 @@ else
 ########## RUN TESTS 1 phase ############
 
 						for i in $seeds20; do
+							w_echo "SEED Number : $totaUsedTests"
 							./runMonkeyTest.sh $i $number_monkey_events $trace $PACKAGE				
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/{} $localDir
 							#adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
@@ -274,6 +275,7 @@ else
 								echo "$ID|$totaUsedTests" >> $logDir/above$min_coverage.log
 								break
 							fi
+							w_echo "SEED Number : $totaUsedTests"
 							./runMonkeyTest.sh $j $number_monkey_events $trace $PACKAGE				
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/{} $localDir
 							#adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
@@ -283,7 +285,7 @@ else
 							nr_methods=$( cat $localDir/Traced*.txt | sort -u | wc -l | $SED_COMMAND 's/ //g')
 							actual_coverage=$(echo "${nr_methods}/${total_methods}" | bc -l)
 							w_echo "actual coverage -> $actual_coverage"
-
+							totaUsedTests=$(($totaUsedTests + 1))
 						done
 
 						if [ "$coverage_exceded" -eq 0 ]; then
@@ -311,10 +313,18 @@ else
 						w_echo "$TAG sleeping between profiling apps"
 						sleep $SLEEPTIME
 						w_echo "$TAG resuming Greendroid after nap"
+						totaUsedTests=0
+						sleep $SLEEPTIME
+						battery_level=$(adb shell dumpsys battery | grep -o "level.*" | cut -f2 -d: | $SED_COMMAND 's/ //g')
+						w_echo " Actual battery level : $battery_level"
+						if [ "$battery_level" -le 20 ]; then
+							w_echo "battery level below 20%. Sleeping again"
+							sleep $SLEEPTIME # sleep again to charge battery
+						fi
 					done
 				fi
 			else
-				#search for the manifests
+#SDK PROJ
 				MANIFESTS=($(find $f -name "AndroidManifest.xml" | egrep -v "/bin/|$tName"))
 				MP=($(python manifestParser.py ${MANIFESTS[*]}))
 				for R in ${MP[@]}; do
@@ -383,59 +393,84 @@ else
 						#echo "copiar $FOLDER/$tName/classInfo.ser para $projLocalDir "
 						cp $FOLDER/$tName/AppInfo.ser $projLocalDir
 						
-						######run tests
+########## RUN TESTS 1 phase ############
+
+						for i in $seeds20; do
+							w_echo "SEED Number : $totaUsedTests"
+							./runMonkeyTest.sh $i $number_monkey_events $trace $PACKAGE				
+							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/{} $localDir
+							#adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
+							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio "TracedMethods.txt" | xargs -I{} adb pull $deviceDir/{} $localDir
+							mv $localDir/TracedMethods.txt $localDir/TracedMethods$i.txt
+							mv $localDir/GreendroidResultTrace0.csv $localDir/GreendroidResultTrace$i.csv
+							totaUsedTests=$(($totaUsedTests + 1))
+						done
+
+########## RUN TESTS  THRESHOLD ############
+
+						##check if have enough coverage
+						nr_methods=$( cat $localDir/Traced*.txt | sort -u | wc -l | $SED_COMMAND 's/ //g')
+						actual_coverage=$(echo "${nr_methods}/${total_methods}" | bc -l)
+						e_echo "actual coverage -> $actual_coverage"
 						
-						adb shell am broadcast -a com.quicinc.trepn.start_profiling -e com.quicinc.trepn.database_file "myfile"
-						sleep 5
-						echo "updating.."
-						w_echo "running tests ......"
-						if [[ $trace == "-TestOriented" ]]; then
-							adb shell am broadcast -a com.quicinc.Trepn.UpdateAppState -e com.quicinc.Trepn.UpdateAppState.Value "1" -e com.quicinc.Trepn.UpdateAppState.Value.Desc "started"
-						fi 
-						adb shell monkey  -s 1523611838438 -p $PACKAGE -v 1500
-						if [[ $trace == "-TestOriented" ]]; then
-							adb shell am broadcast -a com.quicinc.Trepn.UpdateAppState -e com.quicinc.Trepn.UpdateAppState.Value "0" -e com.quicinc.Trepn.UpdateAppState.Value.Desc "stopped"
+						for j in $last30; do
+							coverage_exceded=$( echo " ${actual_coverage}>= .${min_coverage}" | bc -l)
+							if [ "$coverage_exceded" -gt 0 ]; then
+								echo "$ID|$totaUsedTests" >> $logDir/above$min_coverage.log
+								break
+							fi
+							w_echo "SEED Number : $totaUsedTests"
+							./runMonkeyTest.sh $j $number_monkey_events $trace $PACKAGE				
+							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/{} $localDir
+							#adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
+							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio "TracedMethods.txt" | xargs -I{} adb pull $deviceDir/{} $localDir
+							mv $localDir/TracedMethods.txt $localDir/TracedMethods$i.txt
+							mv $localDir/GreendroidResultTrace0.csv $localDir/GreendroidResultTrace$i.csv
+							nr_methods=$( cat $localDir/Traced*.txt | sort -u | wc -l | $SED_COMMAND 's/ //g')
+							actual_coverage=$(echo "${nr_methods}/${total_methods}" | bc -l)
+							w_echo "actual coverage -> $actual_coverage"
+							totaUsedTests=$(($totaUsedTests + 1))
+						done
+
+						if [ "$coverage_exceded" -eq 0 ]; then
+							echo "$ID|$actual_coverage" >> $logDir/below$min_coverage.log
 						fi
-						sleep 3
-						echo "stopping.."
-						adb shell am broadcast -a com.quicinc.trepn.stop_profiling
-						sleep 5
-						#adb shell am broadcast -a com.quicinc.trepn.export_to_csv -e com.quicinc.trepn.export_db_input_file "tests" -e com.quicinc.trepn.export_csv_output_file “zzz ”
-						adb shell am broadcast -a  com.quicinc.trepn.export_to_csv -e com.quicinc.trepn.export_db_input_file "myfile" -e com.quicinc.trepn.export_csv_output_file "GreendroidResultTrace0"
-						#echo "exporting.."
-						sleep 4
-						now=$(date +"%d_%m_%y_%H_%M_%S")
-						localDir=$localDir/$ID/$folderPrefix$now
-						echo "$TAG Creating support folder..."
-						mkdir -p $localDir
-						mkdir -p $localDir/all
-						#cat ./allMethods.txt >> $localDir/all/allMethods.txt
-						adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/{} $localDir
-						#adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
-						adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio "TracedMethods.txt" | xargs -I{} adb pull $deviceDir/{} $localDir
-						mv $localDir/TracedMethods.txt $localDir/TracedMethods0.txt
-						##############
-						
-						./forceUninstall.sh $PACKAGE $TESTPACKAGE
+
+
+						(echo "{\"app_id\": \"$ID\", \"app_location\": \"$f\",\"app_build_tool\": \"gradle\", \"app_version\": \"1\", \"app_language\": \"Java\"}") > $localDir/application.json
+						(echo "{\"device_serial_number\": \"$device_serial\", \"device_model\": \"$device_model\",\"device_brand\": \"$device_brand\"}") > device.json
+						./forceUninstall.sh 
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
 							echo "$ID" >> $logDir/errorUninstall.log
 							#continue
 						fi
 						#Run greendoid!
-						#java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv  ##RR
+						#java -jar $GD_ANALYZER $ID $PACKAGE $TESTPACKAGE $FOLDER $FOLDER/tName $localDir
+						#(java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv) > $logDir/analyzer.log  ##RR
+						w_echo "Analyzing results .."
 						java -jar $GD_ANALYZER $trace $projLocalDir/ $monkey
-
-						
+						#cat $logDir/analyzer.log
+						errorAnalyzer=$(cat $logDir/analyzer.log)
+						#TODO se der erro imprimir a vermelho e aconselhar usar o trepFix.sh
 						#break
+						w_echo "$TAG sleeping between profiling apps"
+						sleep $SLEEPTIME
+						w_echo "$TAG resuming Greendroid after nap"
+						totaUsedTests=0
+						sleep $SLEEPTIME
+						battery_level=$(adb shell dumpsys battery | grep -o "level.*" | cut -f2 -d: | $SED_COMMAND 's/ //g')
+						w_echo " Actual battery level : $battery_level"
+						if [ "$battery_level" -le 20 ]; then
+							w_echo "battery level below 20%. Sleeping again"
+							sleep $SLEEPTIME # sleep again to charge battery
+						fi
 					else
 						e_echo "$TAG ERROR!"
 					fi
 				done
 			fi
-	    	
 	    fi
-
 	done
 	IFS=$OLDIFS
 #	testRes=$(find $projLocalDir -name "Testresults.csv")

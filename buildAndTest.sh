@@ -380,9 +380,9 @@ else
 	./trepnFix.sh
 fi
 
-used_cpu=$(adb shell dumpsys cpuinfo | grep  "Load" | cut -f2 -d\ )
-free_mem=$(adb shell dumpsys meminfo | grep "Free RAM.*" | cut -f2 -d: | cut -f1 -d\( | tr -d ' ')
-nr_processes=$(adb shell top -n q | wc -l) #take the K/M and -4
-
+#used_cpu=$(adb shell dumpsys cpuinfo | grep  "Load" | cut -f2 -d\ )
+#free_mem=$(adb shell dumpsys meminfo | grep "Free RAM.*" | cut -f2 -d: | cut -f1 -d\( | tr -d ' ')
+#nprocesses=$(adb shell top -n 1 | grep -v ".*root" | grep -v "system" | wc -l) #take the K/M and -4
+#nr_procceses=$(($nprocesses -4))
 
 

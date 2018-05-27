@@ -6,6 +6,10 @@ monkey_seed=$1
 monkey_nr_events=$2
 trace=$3
 package=$4
+cpu=''
+mem=''
+nr_processes=''
+
 
 machine=''
 getSO machine
@@ -20,6 +24,8 @@ else
 fi
 
 e_echo "actual seed -> $monkey_seed"
+getAndroidState cpu mem nr_processes
+e_echo "begin state: CPU: $cpu % , $MEM: $mem  , Nºprocesses running: $nr_processes"
 adb shell am broadcast -a com.quicinc.trepn.start_profiling -e com.quicinc.trepn.database_file "myfile"
 sleep 5
 echo "updating.."
@@ -34,8 +40,10 @@ fi
 sleep 3
 echo "stopping.."
 adb shell am broadcast -a com.quicinc.trepn.stop_profiling
-
-sleep 5
+sleep 6
+getAndroidState cpu mem nr_processes
+sleep 1
+e_echo "end state: CPU: $cpu % , $MEM: $mem  , Nºprocesses running: $nr_processes"
 #adb shell am broadcast -a com.quicinc.trepn.export_to_csv -e com.quicinc.trepn.export_db_input_file "tests" -e com.quicinc.trepn.export_csv_output_file “zzz ”
 adb shell am broadcast -a  com.quicinc.trepn.export_to_csv -e com.quicinc.trepn.export_db_input_file "myfile" -e com.quicinc.trepn.export_csv_output_file "GreendroidResultTrace0"
 #echo "exporting.."
