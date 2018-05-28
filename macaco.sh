@@ -32,9 +32,9 @@ trepnLib="TrepnLibrary-release.aar"
 trepnJar="TrepnLibrary-release.jar"
 profileHardware="YES" # YES or ""
 flagStatus="on"
-#SLEEPTIME=180 # 3 minutes
-SLEEPTIME=1
-min_monkey_runs=3
+SLEEPTIME=180 # 3 minutes
+#SLEEPTIME=1
+min_monkey_runs=20
 threshold_monkey_runs=50
 number_monkey_events=1000
 min_coverage=10
@@ -226,7 +226,10 @@ else
 						fi
 ## END BUILD PHASE					
 						
-						
+						localDir=$projLocalDir/$folderPrefix$now
+						echo "$TAG Creating support folder..."
+						mkdir -p $localDir
+						mkdir -p $localDir/all
 						
 						##copy MethodMetric to support folder
 						#echo "copiar $FOLDER/$tName/classInfo.ser para $projLocalDir "
@@ -243,17 +246,14 @@ else
 						#fi
 						echo "$ID" >> $logDir/success.log
 						total_methods=$( cat $projLocalDir/all/allMethods.txt | sort -u | wc -l | $SED_COMMAND 's/ //g')
-						now=$(date +"%d_%m_%y_%H_%M_%S")
-						localDir=$localDir/$ID/$folderPrefix$now
-						echo "$TAG Creating support folder..."
-						mkdir -p $localDir
-						mkdir -p $localDir/all
+						#now=$(date +"%d_%m_%y_%H_%M_%S")
+						
 						##########
 ########## RUN TESTS 1 phase ############
 
 						for i in $seeds20; do
 							w_echo "SEED Number : $totaUsedTests"
-							./runMonkeyTest.sh $i $number_monkey_events $trace $PACKAGE				
+							./runMonkeyTest.sh $i $number_monkey_events $trace $PACKAGE	$localDir		
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/{} $localDir
 							#adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio "TracedMethods.txt" | xargs -I{} adb pull $deviceDir/{} $localDir
@@ -276,7 +276,7 @@ else
 								break
 							fi
 							w_echo "SEED Number : $totaUsedTests"
-							./runMonkeyTest.sh $j $number_monkey_events $trace $PACKAGE				
+							./runMonkeyTest.sh $j $number_monkey_events $trace $PACKAGE	$localDir			
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/{} $localDir
 							#adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio "TracedMethods.txt" | xargs -I{} adb pull $deviceDir/{} $localDir
@@ -392,12 +392,19 @@ else
 						##copy MethodMetric to support folder
 						#echo "copiar $FOLDER/$tName/classInfo.ser para $projLocalDir "
 						cp $FOLDER/$tName/AppInfo.ser $projLocalDir
+						echo "$ID" >> $logDir/success.log
+						total_methods=$( cat $projLocalDir/all/allMethods.txt | sort -u | wc -l | $SED_COMMAND 's/ //g')
+						now=$(date +"%d_%m_%y_%H_%M_%S")
+						localDir=$localDir/$folderPrefix$now
+						echo "$TAG Creating support folder..."
+						mkdir -p $localDir
+						mkdir -p $localDir/all
 						
 ########## RUN TESTS 1 phase ############
 
 						for i in $seeds20; do
 							w_echo "SEED Number : $totaUsedTests"
-							./runMonkeyTest.sh $i $number_monkey_events $trace $PACKAGE				
+							./runMonkeyTest.sh $i $number_monkey_events $trace $PACKAGE	$localDir			
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/{} $localDir
 							#adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio "TracedMethods.txt" | xargs -I{} adb pull $deviceDir/{} $localDir
@@ -420,7 +427,7 @@ else
 								break
 							fi
 							w_echo "SEED Number : $totaUsedTests"
-							./runMonkeyTest.sh $j $number_monkey_events $trace $PACKAGE				
+							./runMonkeyTest.sh $j $number_monkey_events $trace $PACKAGE	$localDir		
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/{} $localDir
 							#adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio "TracedMethods.txt" | xargs -I{} adb pull $deviceDir/{} $localDir
@@ -445,9 +452,6 @@ else
 							echo "$ID" >> $logDir/errorUninstall.log
 							#continue
 						fi
-						#Run greendoid!
-						#java -jar $GD_ANALYZER $ID $PACKAGE $TESTPACKAGE $FOLDER $FOLDER/tName $localDir
-						#(java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv) > $logDir/analyzer.log  ##RR
 						w_echo "Analyzing results .."
 						java -jar $GD_ANALYZER $trace $projLocalDir/ $monkey
 						#cat $logDir/analyzer.log
