@@ -12,7 +12,7 @@ mem=''
 nr_processes=''
 sdk_level=''
 api_level=''
-
+TIMEOUT=300 # 5 minutes
 
 machine=''
 getSO machine
@@ -20,10 +20,13 @@ if [ "$machine" == "Mac" ]; then
 	SED_COMMAND="gsed" #mac
 	MKDIR_COMMAND="gmkdir"
 	MV_COMMAND="gmv"
+	TIMEOUT_COMMAND="gmtimeout"
+
 else 
 	SED_COMMAND="sed" #linux
 	MKDIR_COMMAND="mkdir"
-	MV_COMMAND="mv"	
+	MV_COMMAND="mv"
+	TIMEOUT_COMMAND="timeout"
 fi
 
 e_echo "actual seed -> $monkey_seed"
@@ -37,7 +40,9 @@ w_echo "running tests ......"
 if [[ $trace == "-TestOriented" ]]; then
 	adb shell am broadcast -a com.quicinc.Trepn.UpdateAppState -e com.quicinc.Trepn.UpdateAppState.Value "1" -e com.quicinc.Trepn.UpdateAppState.Value.Desc "started"
 fi 
-(adb shell monkey  -s $monkey_seed -p $package -v $monkey_nr_events --pct-syskeys 0) > /dev/null
+
+($TIMEOUT_COMMAND -s 9 $TIMEOUT adb shell monkey  -s $monkey_seed -p $package -v $monkey_nr_events --pct-syskeys 0) > logs/monkey.log
+w_echo "stopped tests. "
 if [[ $trace == "-TestOriented" ]]; then
 	adb shell am broadcast -a com.quicinc.Trepn.UpdateAppState -e com.quicinc.Trepn.UpdateAppState.Value "0" -e com.quicinc.Trepn.UpdateAppState.Value.Desc "stopped"
 fi
