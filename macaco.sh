@@ -36,12 +36,12 @@ SLEEPTIME=180 # 3 minutes
 #SLEEPTIME=1
 min_monkey_runs=20
 threshold_monkey_runs=50
-number_monkey_events=1000
-min_coverage=10
+number_monkey_events=500
+min_coverage=60
 totaUsedTests=0
 
 #DIR=/media/data/android_apps/23Apps/*
-DIR=$HOME/tests/actual/*
+DIR=$HOME/tests/success/*
 #DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
 
 
@@ -98,7 +98,6 @@ else
 	seeds20=$(head -$min_monkey_runs monkey_seeds.txt)
 	last30=$(tail  -30 monkey_seeds.txt)
 
-
 	for f in $DIR/
 		do
 		#clean previous list of all methods and device results
@@ -134,7 +133,8 @@ else
 			else 
 				(adb shell am broadcast -a com.quicinc.trepn.load_preferences -e com.quicinc.trepn.load_preferences_file "$deviceDir/saved_preferences/trepnPreferences/Pref1.pref") > /dev/null 2>&1
 			fi
-		
+			
+			echo "ei"
 			#first, check if this is a gradle or a maven project
 			#GRADLE=$(find ${f}/latest -maxdepth 1 -name "build.gradle")
 			GRADLE=($(find ${f}/${prefix} -name "*.gradle" -type f -print | grep -v "settings.gradle" | xargs -I{} grep "buildscript" {} /dev/null | cut -f1 -d:))
@@ -253,7 +253,7 @@ else
 
 						for i in $seeds20; do
 							w_echo "SEED Number : $totaUsedTests"
-							./runMonkeyTest.sh $i $number_monkey_events $trace $PACKAGE	$localDir		
+							./runMonkeyTest.sh $i $number_monkey_events $trace $PACKAGE	$localDir $deviceDir		
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/{} $localDir
 							#adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio "TracedMethods.txt" | xargs -I{} adb pull $deviceDir/{} $localDir
@@ -276,7 +276,7 @@ else
 								break
 							fi
 							w_echo "SEED Number : $totaUsedTests"
-							./runMonkeyTest.sh $j $number_monkey_events $trace $PACKAGE	$localDir			
+							./runMonkeyTest.sh $j $number_monkey_events $trace $PACKAGE	$localDir $deviceDir
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/{} $localDir
 							#adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio "TracedMethods.txt" | xargs -I{} adb pull $deviceDir/{} $localDir
@@ -404,7 +404,7 @@ else
 
 						for i in $seeds20; do
 							w_echo "SEED Number : $totaUsedTests"
-							./runMonkeyTest.sh $i $number_monkey_events $trace $PACKAGE	$localDir			
+							./runMonkeyTest.sh $i $number_monkey_events $trace $PACKAGE	$localDir $deviceDir		
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/{} $localDir
 							#adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio "TracedMethods.txt" | xargs -I{} adb pull $deviceDir/{} $localDir
@@ -421,13 +421,15 @@ else
 						e_echo "actual coverage -> $actual_coverage"
 						
 						for j in $last30; do
+							e_echo "jasus manel tou aqui"
 							coverage_exceded=$( echo " ${actual_coverage}>= .${min_coverage}" | bc -l)
 							if [ "$coverage_exceded" -gt 0 ]; then
+								w_echo "above average. Run completed"
 								echo "$ID|$totaUsedTests" >> $logDir/above$min_coverage.log
 								break
 							fi
 							w_echo "SEED Number : $totaUsedTests"
-							./runMonkeyTest.sh $j $number_monkey_events $trace $PACKAGE	$localDir		
+							./runMonkeyTest.sh $j $number_monkey_events $trace $PACKAGE	$localDir $deviceDir
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/{} $localDir
 							#adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio "TracedMethods.txt" | xargs -I{} adb pull $deviceDir/{} $localDir
