@@ -32,18 +32,34 @@ trepnLib="TrepnLibrary-release.aar"
 trepnJar="TrepnLibrary-release.jar"
 profileHardware="YES" # YES or ""
 flagStatus="on"
-SLEEPTIME=180 # 3 minutes
+SLEEPTIME=120 # 2 minutes
 #SLEEPTIME=1
 min_monkey_runs=20
 threshold_monkey_runs=50
-number_monkey_events=500
+number_monkey_events=1000
 min_coverage=60
 totaUsedTests=0
 
 #DIR=/media/data/android_apps/23Apps/*
-DIR=$HOME/tests/success/*
+#DIR=$HOME/tests/success/*
+DIR=$HOME/tests/actual/*
 #DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
 
+# trap - INT
+# trap 'quit' INT
+
+quit(){
+	w_echo "Aborting.."
+	e_echo "signal QUIT received. Gracefully aborting..."
+	w_echo "killing running app..."
+	adb shell am force-stop $1
+	w_echo "uninstalling actual app $1"
+	./uninstall.sh $1 $2
+	w_echo "GOODBYE"
+	exit -1
+}
+
+#### Monkey process
 
 echo   "################################"
 i_echo "### GRENDROID PROFILING TOOL ###     "
@@ -88,6 +104,7 @@ else
 		($MKDIR_COMMAND debugBuild ) > /dev/null  2>&1 #new
 
 	fi
+
 	w_echo "removing old instrumentations "
 	./forceUninstall.sh
 	#for each Android Proj in $DIR folder...
@@ -200,8 +217,6 @@ else
 						     	cp libsAdded/$treprefix$trepnLib ${D}/libs  ##RR
 						    fi  ##RR
 						done  ##RR
-		
-
 ## BUILD PHASE						
 
 						GRADLE=($(find $FOLDER/$tName -name "*.gradle" -type f -print | grep -v "settings.gradle" | xargs grep -L "com.android.library" | xargs grep -l "buildscript" | cut -f1 -d:))
@@ -238,7 +253,7 @@ else
 						cp $FOLDER/$tName/appPermissions.json $localDir
 
 						#install on device
-						./install.sh $FOLDER/$tName "X" "GRADLE" $PACKAGE $projLocalDir  #COMMENT, EVENTUALLY...
+						./install.sh $FOLDER/$tName "X" "GRADLE" $PACKAGE $projLocalDir $monkey #COMMENT, EVENTUALLY...
 						RET=$(echo $?)
 						#if [[ "$RET" != "0" ]]; then
 						#	echo "$ID" >> errorInstall.log
@@ -250,16 +265,16 @@ else
 						
 						##########
 ########## RUN TESTS 1 phase ############
-
+						trap 'quit $PACKAGE $TESTPACKAGE' INT
 						for i in $seeds20; do
 							w_echo "SEED Number : $totaUsedTests"
-							./runMonkeyTest.sh $i $number_monkey_events $trace $PACKAGE	$localDir $deviceDir		
+							./correMacaco.sh $i $number_monkey_events $trace $PACKAGE	$localDir $deviceDir		
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/{} $localDir
-							#adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
-							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio "TracedMethods.txt" | xargs -I{} adb pull $deviceDir/{} $localDir
+							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' |  egrep -Eio "TracedMethods.txt" |xargs -I{} adb pull $deviceDir/{} $localDir
 							mv $localDir/TracedMethods.txt $localDir/TracedMethods$i.txt
 							mv $localDir/GreendroidResultTrace0.csv $localDir/GreendroidResultTrace$i.csv
 							totaUsedTests=$(($totaUsedTests + 1))
+							adb shell am force-stop $PACKAGE
 						done
 
 ########## RUN TESTS  THRESHOLD ############
@@ -286,7 +301,10 @@ else
 							actual_coverage=$(echo "${nr_methods}/${total_methods}" | bc -l)
 							w_echo "actual coverage -> $actual_coverage"
 							totaUsedTests=$(($totaUsedTests + 1))
+							adb shell am force-stop $PACKAGE
 						done
+
+						trap - INT
 
 						if [ "$coverage_exceded" -eq 0 ]; then
 							echo "$ID|$actual_coverage" >> $logDir/below$min_coverage.log
@@ -295,7 +313,7 @@ else
 
 						(echo "{\"app_id\": \"$ID\", \"app_location\": \"$f\",\"app_build_tool\": \"gradle\", \"app_version\": \"1\", \"app_language\": \"Java\"}") > $localDir/application.json
 						(echo "{\"device_serial_number\": \"$device_serial\", \"device_model\": \"$device_model\",\"device_brand\": \"$device_brand\"}") > device.json
-						./forceUninstall.sh 
+						./uninstall.sh $PACKAGE $TESTPACKAGE
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
 							echo "$ID" >> $logDir/errorUninstall.log
@@ -341,8 +359,7 @@ else
 						if [[ "$SOURCE" != "$TESTS" ]]; then
 							java -jar $GD_INSTRUMENT "-sdk" $tName "X" $SOURCE $TESTS $trace $monkey
 						else
-							MANIF_S="${SOURCE}/AndroidManifest.xml"
-							MANIF_T="-"
+
 							java -jar $GD_INSTRUMENT "-gradle" $tName "X" $SOURCE $MANIF_S $MANIF_T $trace ##RR
 						fi
 
@@ -373,7 +390,7 @@ else
 						fi
 						
 						#install on device
-						./install.sh $SOURCE/$tName $SOURCE/$tName/tests "SDK" $PACKAGE $localDir
+						./install.sh $SOURCE/$tName $SOURCE/$tName/tests "SDK" $PACKAGE $localDir $monkey
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
 							echo "$ID" >> $logDir/errorInstall.log
@@ -401,7 +418,7 @@ else
 						mkdir -p $localDir/all
 						
 ########## RUN TESTS 1 phase ############
-
+						trap 'quit $PACKAGE $TESTPACKAGE' INT
 						for i in $seeds20; do
 							w_echo "SEED Number : $totaUsedTests"
 							./runMonkeyTest.sh $i $number_monkey_events $trace $PACKAGE	$localDir $deviceDir		
@@ -411,6 +428,7 @@ else
 							mv $localDir/TracedMethods.txt $localDir/TracedMethods$i.txt
 							mv $localDir/GreendroidResultTrace0.csv $localDir/GreendroidResultTrace$i.csv
 							totaUsedTests=$(($totaUsedTests + 1))
+							adb shell am force-stop $PACKAGE
 						done
 
 ########## RUN TESTS  THRESHOLD ############
@@ -421,7 +439,6 @@ else
 						e_echo "actual coverage -> $actual_coverage"
 						
 						for j in $last30; do
-							e_echo "jasus manel tou aqui"
 							coverage_exceded=$( echo " ${actual_coverage}>= .${min_coverage}" | bc -l)
 							if [ "$coverage_exceded" -gt 0 ]; then
 								w_echo "above average. Run completed"
@@ -439,8 +456,9 @@ else
 							actual_coverage=$(echo "${nr_methods}/${total_methods}" | bc -l)
 							w_echo "actual coverage -> $actual_coverage"
 							totaUsedTests=$(($totaUsedTests + 1))
+							adb shell am force-stop $PACKAGE
 						done
-
+						trap - INT
 						if [ "$coverage_exceded" -eq 0 ]; then
 							echo "$ID|$actual_coverage" >> $logDir/below$min_coverage.log
 						fi
@@ -448,7 +466,7 @@ else
 
 						(echo "{\"app_id\": \"$ID\", \"app_location\": \"$f\",\"app_build_tool\": \"gradle\", \"app_version\": \"1\", \"app_language\": \"Java\"}") > $localDir/application.json
 						(echo "{\"device_serial_number\": \"$device_serial\", \"device_model\": \"$device_model\",\"device_brand\": \"$device_brand\"}") > device.json
-						./forceUninstall.sh 
+						./uninstall.sh $PACKAGE $TESTPACKAGE
 						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
 							echo "$ID" >> $logDir/errorUninstall.log

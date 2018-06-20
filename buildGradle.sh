@@ -144,12 +144,12 @@ for x in ${BUILDS[@]}; do
 
 	##dummy way to add lint checks
 	ANDROID_LINE=($(egrep -n "android( ?){" $x | cut -f1 -d:))
-	if [ -n "${ANDROID_LINE[0]}" ]; then
+	#if [ -n "${ANDROID_LINE[0]}" ]; then
 		#$SED_COMMAND  -i -e "\$a android\ { lintOptions\ {\ $LINT_ISSUES \n }}" $x
-	fi
+	#fi
 
 	### dummy way to add mavenCentral and jcenter
-		$SED_COMMAND  -i -e "\$a\ buildscript\ {repositories\ {jcenter()\ \n\ mavenCentral()}}" $x
+	$SED_COMMAND  -i -e "\$a\ buildscript\ {repositories\ {jcenter()\ \n\ mavenCentral()}}" $x
 	###
 	#Add a line that includes the trepn library folder in build.gradle
 	$SED_COMMAND  -i -e "\$a\ allprojects\ {repositories\ {flatDir\ {\ dirs\ 'libs'}}}" $x

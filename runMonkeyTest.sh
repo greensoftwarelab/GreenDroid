@@ -61,19 +61,23 @@ sleep 3
 echo "stopping..."
 adb shell am broadcast -a com.quicinc.trepn.stop_profiling
 sleep 6
-
-getAndroidState cpu mem nr_processes sdk_level api_level
+adb shell am broadcast -a  com.quicinc.trepn.export_to_csv -e com.quicinc.trepn.export_db_input_file "myfile" -e com.quicinc.trepn.export_csv_output_file "GreendroidResultTrace0"
 sleep 1
+getAndroidState cpu mem nr_processes sdk_level api_level
+w_echo "cleaning app cache"
+adb shell pm clear $package
+w_echo "stopping running app"
+adb shell am force-stop $package
 e_echo "end state: CPU: $cpu % , $MEM: $mem  , Nºprocesses running: $nr_processes sdk level: $sdk_level API:$api_level"
 echo "{\"device_state_mem\": \"$mem\", \"device_state_cpu_free\": \"$cpu\",\"device_state_nr_processes_running\": \"$nr_processes\",\"device_state_api_level\": \"$api_level\",\"device_state_android_version\": \"$sdk_level\" }" > $localDir/end_state.json
 #adb shell am broadcast -a com.quicinc.trepn.export_to_csv -e com.quicinc.trepn.export_db_input_file "tests" -e com.quicinc.trepn.export_csv_output_file “zzz ”
-adb shell am broadcast -a  com.quicinc.trepn.export_to_csv -e com.quicinc.trepn.export_db_input_file "myfile" -e com.quicinc.trepn.export_csv_output_file "GreendroidResultTrace0"
 #echo "exporting.."
-sleep 4
-
-#### AFTER EXPORTING, RUN AGAIN ( TRACING METHODS)
 adb shell "echo -1 > $deviceDir/GDflag"
+adb shell pm grant $package android.permission.READ_EXTERNAL_STORAGE
+adb shell pm grant $package android.permission.WRITE_EXTERNAL_STORAGE
+#### AFTER EXPORTING, RUN AGAIN  ( TRACING METHODS)
 w_echo "[Tracing] Running monkey tests..."
+w_echo "monkey command -> $TIMEOUT_COMMAND -s 9 $TIMEOUT adb shell monkey  -s $monkey_seed -p $package -v --pct-syskeys 0  --ignore-crashes $monkey_nr_events"
 ($TIMEOUT_COMMAND -s 9 $TIMEOUT adb shell monkey  -s $monkey_seed -p $package -v --pct-syskeys 0  --ignore-crashes $monkey_nr_events) > logs/monkey.log
 RET=$(echo $?)
 if [[ "$RET" != "0" ]]; then
