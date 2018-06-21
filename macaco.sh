@@ -176,6 +176,8 @@ else
 			elif [ -n "${GRADLE[0]}" ]; then
 				MANIFESTS=($(find $f -name "AndroidManifest.xml" | egrep -v "/build/|$tName"))
 				if [[ "${#MANIFESTS[@]}" > 0 ]]; then
+					#Instrument all manifestFiles
+					(find $FOLDER/$tName -name "AndroidManifest.xml" | xargs ./manifestInstr.py )
 					MP=($(python manifestParser.py ${MANIFESTS[*]}))
 					for R in ${MP[@]}; do
 						RESULT=($(echo "$R" | tr ':' '\n'))
@@ -214,8 +216,7 @@ else
 							$MV_COMMAND ./allMethods.txt $projLocalDir/all/allMethods.txt
 							#$MV_COMMAND ./allMethods.txt $projLocalDir/all/allMethods.txt
 
-							#Instrument all manifestFiles
-							(find $FOLDER/$tName -name "AndroidManifest.xml" | xargs ./manifestInstr.py )
+							
 
 						else 
 							w_echo "Same instrumentation of last time. Skipping instrumentation phase"
@@ -372,6 +373,8 @@ else
 			else
 #SDK PROJ
 				MANIFESTS=($(find $f -name "AndroidManifest.xml" | egrep -v "/bin/|$tName"))
+				#Instrument all manifestFiles
+				(find $FOLDER/$tName -name "AndroidManifest.xml" | xargs ./manifestInstr.py )					
 				MP=($(python manifestParser.py ${MANIFESTS[*]}))
 				for R in ${MP[@]}; do
 					RESULT=($(echo "$R" | tr ':' '\n'))
