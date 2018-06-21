@@ -22,6 +22,7 @@ prefix="latest" # "latest" or "" ; Remove if normal app
 deviceExternal=""
 logDir="logs"
 localDir="$HOME/GDResults"
+localDirOriginal="$HOME/GDResults"
 #trace="-MethodOriented"   #trace=$2  ##RR
 trace="-TestOriented"
 monkey="-Monkey"
@@ -36,7 +37,7 @@ SLEEPTIME=120 # 2 minutes
 #SLEEPTIME=1
 min_monkey_runs=20
 threshold_monkey_runs=50
-number_monkey_events=1000
+number_monkey_events=500
 min_coverage=60
 totaUsedTests=0
 
@@ -47,6 +48,18 @@ DIR=$HOME/tests/actual/*
 
 # trap - INT
 # trap 'quit' INT
+
+
+errorHandler(){
+	if [[ $1 == "-1" ]]; then
+		#exception occured during tests
+		w_echo "killing running app..."
+		adb shell am force-stop $1
+		w_echo "uninstalling actual app $1"
+		./uninstall.sh $1 $2
+	fi
+}
+
 
 quit(){
 	w_echo "Aborting.."
@@ -117,6 +130,7 @@ else
 
 	for f in $DIR/
 		do
+		localDir=$localDirOriginal
 		#clean previous list of all methods and device results
 		rm -rf ./allMethods.txt
 
@@ -199,6 +213,10 @@ else
 							#rm -rf $projLocalDir/all/*
 							$MV_COMMAND ./allMethods.txt $projLocalDir/all/allMethods.txt
 							#$MV_COMMAND ./allMethods.txt $projLocalDir/all/allMethods.txt
+
+							#Instrument all manifestFiles
+							(find $FOLDER/$tName -name "AndroidManifest.xml" | xargs ./manifestInstr.py )
+
 						else 
 							w_echo "Same instrumentation of last time. Skipping instrumentation phase"
 						fi
@@ -263,12 +281,20 @@ else
 						total_methods=$( cat $projLocalDir/all/allMethods.txt | sort -u | wc -l | $SED_COMMAND 's/ //g')
 						#now=$(date +"%d_%m_%y_%H_%M_%S")
 						
+						IGNORE_RUN=""
 						##########
 ########## RUN TESTS 1 phase ############
 						trap 'quit $PACKAGE $TESTPACKAGE' INT
 						for i in $seeds20; do
 							w_echo "SEED Number : $totaUsedTests"
-							./correMacaco.sh $i $number_monkey_events $trace $PACKAGE	$localDir $deviceDir		
+							./runMonkeyTest.sh $i $number_monkey_events $trace $PACKAGE	$localDir $deviceDir		
+							RET=$(echo $?)
+							if [[ $RET -ne 0 ]]; then
+								errorHandler $RET
+								IGNORE_RUN="YES"
+								break
+								
+							fi
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/{} $localDir
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' |  egrep -Eio "TracedMethods.txt" |xargs -I{} adb pull $deviceDir/{} $localDir
 							mv $localDir/TracedMethods.txt $localDir/TracedMethods$i.txt
@@ -278,7 +304,9 @@ else
 						done
 
 ########## RUN TESTS  THRESHOLD ############
-
+						if [[ "$IGNORE_RUN" != "" ]]; then
+							continue
+						fi
 						##check if have enough coverage
 						nr_methods=$( cat $localDir/Traced*.txt | sort -u | wc -l | $SED_COMMAND 's/ //g')
 						actual_coverage=$(echo "${nr_methods}/${total_methods}" | bc -l)
