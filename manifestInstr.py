@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import xml.etree.ElementTree as ET
+from lxml import etree
 import sys
 
 def insertReadWritePerms(file):
@@ -8,9 +9,9 @@ def insertReadWritePerms(file):
 	root = tree.getroot()
 	#root == manifest
 	read = ET.SubElement(root, 'uses-permission')
-	read.set('android:name', 'android.permission.READ_EXTERNAL_STORAGE')
+	read.set('ns0:name', 'android.permission.READ_EXTERNAL_STORAGE')
 	write = ET.SubElement(root, 'uses-permission')
-	write.set('android:name', 'android.permission.WRITE_EXTERNAL_STORAGE')
+	write.set('ns0:name', 'android.permission.WRITE_EXTERNAL_STORAGE')
 	tree.write(file)
 
 
