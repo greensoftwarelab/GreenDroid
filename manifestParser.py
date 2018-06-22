@@ -40,7 +40,7 @@ def main(argv):
       # create an XMLReader
       parser = xml.sax.make_parser()
       # turn off namepsaces
-      parser.setFeature(xml.sax.handler.feature_namespaces, 0)
+      #parser.setFeature(xml.sax.handler.feature_namespaces, 0)
 
       # override the default ContextHandler
       handler = ManifestHandler(path)
