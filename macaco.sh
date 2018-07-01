@@ -43,7 +43,7 @@ totaUsedTests=0
 
 #DIR=/media/data/android_apps/23Apps/*
 #DIR=$HOME/tests/success/*
-DIR=$HOME/tests/actual/*
+DIR=$HOME/tests/seedError/*
 #DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
 
 # trap - INT
@@ -71,6 +71,16 @@ quit(){
 	w_echo "GOODBYE"
 	exit -1
 }
+
+getBattery(){
+	battery_level=$(adb shell dumpsys battery | grep -o "level.*" | cut -f2 -d: | sed 's/ //g')
+	w_echo " Actual battery level : $battery_level"
+	if [ "$battery_level" -le 20 ]; then
+		w_echo "battery level below 20%. Sleeping again"
+		sleep 600 # sleep 10 min to charge battery
+	fi
+}
+
 
 #### Monkey process
 
@@ -109,31 +119,24 @@ else
 	(adb shell mkdir $deviceDir/Traces) > /dev/null  2>&1
 	(adb shell mkdir $deviceDir/Measures) > /dev/null  2>&1
 	(adb shell mkdir $deviceDir/TracedTests) > /dev/null  2>&1
-	adb shell rm -rf $deviceDir/Measures/*  ##RR
-	adb shell rm -rf $deviceDir/Traces/*  ##RR
-	adb shell rm -rf $deviceDir/TracedTests/*  ##RR
 
 	if [[ -n "$flagStatus" ]]; then
 		($MKDIR_COMMAND debugBuild ) > /dev/null  2>&1 #new
 
 	fi
-
 	w_echo "removing old instrumentations "
 	./forceUninstall.sh
 	#for each Android Proj in $DIR folder...
 	w_echo "$TAG searching for Android Projects in -> $DIR"
-
-
 	# getting all seeds from file
 	seeds20=$(head -$min_monkey_runs monkey_seeds.txt)
 	last30=$(tail  -30 monkey_seeds.txt)
-
 	for f in $DIR/
 		do
 		localDir=$localDirOriginal
+		
 		#clean previous list of all methods and device results
 		rm -rf ./allMethods.txt
-
 		adb shell rm -rf "$deviceDir/allMethods.txt"
 		adb shell rm -rf "$deviceDir/TracedMethods.txt"
 		adb shell rm -rf "$deviceDir/Traces/*"
@@ -141,13 +144,12 @@ else
 		adb shell rm -rf "$deviceDir/TracedTests/*"  ##RR
 
 		IFS='/' read -ra arr <<< "$f"
-		#ID=${arr[-1]} # MC
-		#IFS=$(echo -en "\n\b") #MC
 		ID=${arr[*]: -1}
 		IFS=$(echo -en "\n\b")
 		now=$(date +"%d_%m_%y_%H_%M_%S")
 
 		if [ "$ID" != "success" ] && [ "$ID" != "failed" ] && [ "$ID" != "unknown" ]; then
+			
 			projLocalDir=$localDir/$ID
 			#rm -rf $projLocalDir/all/*
 			if [[ $trace == "-TestOriented" ]]; then
@@ -159,20 +161,18 @@ else
 			fi 
 			if [[ $profileHardware == "YES" ]]; then
 				w_echo "	Profiling hardware:           ✔"
-				#(adb shell am broadcast -a com.quicinc.trepn.load_preferences –e com.quicinc.trepn.load_preferences_file "$deviceDir/saved_preferences/trepnPreferences/All.pref") > /dev/null 2>&1
 				(adb shell am broadcast -a com.quicinc.trepn.load_preferences -e com.quicinc.trepn.load_preferences_file "$deviceDir/saved_preferences/trepnPreferences/All.pref") > /dev/null 2>&1
 			else 
 				(adb shell am broadcast -a com.quicinc.trepn.load_preferences -e com.quicinc.trepn.load_preferences_file "$deviceDir/saved_preferences/trepnPreferences/Pref1.pref") > /dev/null 2>&1
-			fi
-			
-			echo "ei"
+			fi	
 			#first, check if this is a gradle or a maven project
 			#GRADLE=$(find ${f}/latest -maxdepth 1 -name "build.gradle")
 			GRADLE=($(find ${f}/${prefix} -name "*.gradle" -type f -print | grep -v "settings.gradle" | xargs -I{} grep "buildscript" {} /dev/null | cut -f1 -d:))
 			POM=$(find ${f}/${prefix} -maxdepth 1 -name "pom.xml")
 			if [ -n "$POM" ]; then
 				POM=${POM// /\\ }
-				# Maven porjects are not considered yet...
+				# Maven projects are not considered yet...
+### Gradle proj			
 			elif [ -n "${GRADLE[0]}" ]; then
 				MANIFESTS=($(find $f -name "AndroidManifest.xml" | egrep -v "/build/|$tName"))
 				if [[ "${#MANIFESTS[@]}" > 0 ]]; then
@@ -199,10 +199,7 @@ else
 						$MKDIR_COMMAND -p $projLocalDir/all
 
 						FOLDER=${f}${prefix} #$f
-						#delete previously instrumented project, if any
-		
 #Instrumentation phase	
-
 						oldInstrumentation=$(cat $FOLDER/$tName/instrumentationType.txt | grep  ".*Oriented" )
 						allmethods=$(find $projLocalDir/all -maxdepth 1 -name "allMethods.txt")
 						if [ "$oldInstrumentation" != "$trace" ] || [ -z "$allmethods" ]; then
@@ -212,10 +209,8 @@ else
 							#create results support folder
 							#rm -rf $projLocalDir/all/*
 							$MV_COMMAND ./allMethods.txt $projLocalDir/all/allMethods.txt
-							#$MV_COMMAND ./allMethods.txt $projLocalDir/all/allMethods.txt
-
 							#Instrument all manifestFiles
-							(find $FOLDER/$tName -name "AndroidManifest.xml" | xargs ./manifestInstr.py )
+							(find $FOLDER/$tName -name "AndroidManifest.xml" | egrep -v "/build/" | xargs ./manifestInstr.py )
 
 						else 
 							w_echo "Same instrumentation of last time. Skipping instrumentation phase"
@@ -242,11 +237,12 @@ else
 						if [ "$oldInstrumentation" != "$trace" ] || [ -z "$allmethods" ]; then
 							w_echo "[APP BUILDER] Different instrumentation since last time. Building Again"
 							./buildGradle.sh $ID $FOLDER/$tName ${GRADLE[0]}
+							RET=$(echo $?)
 						else 
 							w_echo "[APP BUILDER] No changes since last run. Not building again"
+							RET=0
 						fi
 						(echo $trace) > $FOLDER/$tName/instrumentationType.txt
-						RET=$(echo $?)
 						if [[ "$RET" != "0" ]]; then
 							echo "$ID" >> $logDir/errorBuildGradle.log
 							cp $logDir/buildStatus.log $f/buildStatus.log
@@ -301,6 +297,9 @@ else
 							mv $localDir/GreendroidResultTrace0.csv $localDir/GreendroidResultTrace$i.csv
 							totaUsedTests=$(($totaUsedTests + 1))
 							adb shell am force-stop $PACKAGE
+							if [ "$totaUsedTests" -eq 10 ]; then
+								getBattery
+							fi
 						done
 
 ########## RUN TESTS  THRESHOLD ############
@@ -330,6 +329,9 @@ else
 							w_echo "actual coverage -> $actual_coverage"
 							totaUsedTests=$(($totaUsedTests + 1))
 							adb shell am force-stop $PACKAGE
+							if [ "$totaUsedTests" -eq 30 ]; then
+								getBattery
+							fi
 						done
 
 						trap - INT
@@ -360,13 +362,7 @@ else
 						sleep $SLEEPTIME
 						w_echo "$TAG resuming Greendroid after nap"
 						totaUsedTests=0
-						sleep $SLEEPTIME
-						battery_level=$(adb shell dumpsys battery | grep -o "level.*" | cut -f2 -d: | $SED_COMMAND 's/ //g')
-						w_echo " Actual battery level : $battery_level"
-						if [ "$battery_level" -le 20 ]; then
-							w_echo "battery level below 20%. Sleeping again"
-							sleep $SLEEPTIME # sleep again to charge battery
-						fi
+						getBattery
 					done
 				fi
 			else
@@ -450,6 +446,13 @@ else
 						for i in $seeds20; do
 							w_echo "SEED Number : $totaUsedTests"
 							./runMonkeyTest.sh $i $number_monkey_events $trace $PACKAGE	$localDir $deviceDir		
+							RET=$(echo $?)
+							if [[ $RET -ne 0 ]]; then
+								errorHandler $RET
+								IGNORE_RUN="YES"
+								break
+								
+							fi
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/{} $localDir
 							#adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio "TracedMethods.txt" | xargs -I{} adb pull $deviceDir/{} $localDir
@@ -510,13 +513,7 @@ else
 						sleep $SLEEPTIME
 						w_echo "$TAG resuming Greendroid after nap"
 						totaUsedTests=0
-						sleep $SLEEPTIME
-						battery_level=$(adb shell dumpsys battery | grep -o "level.*" | cut -f2 -d: | $SED_COMMAND 's/ //g')
-						w_echo " Actual battery level : $battery_level"
-						if [ "$battery_level" -le 20 ]; then
-							w_echo "battery level below 20%. Sleeping again"
-							sleep $SLEEPTIME # sleep again to charge battery
-						fi
+						getBattery
 					else
 						e_echo "$TAG ERROR!"
 					fi
