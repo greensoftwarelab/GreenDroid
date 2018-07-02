@@ -1,9 +1,8 @@
 #!/bin/bash
-
 source settings.sh
 
 iTAG="[GD CLEANER]"
-deviceDir="/sdcard/trepn"
+deviceDir=$1
 
 #deviceDir=$(cat deviceDir.txt) # TODO improve later (receive as parameter from other script??)
 

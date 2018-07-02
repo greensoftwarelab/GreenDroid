@@ -300,6 +300,7 @@ else
 							if [ "$totaUsedTests" -eq 10 ]; then
 								getBattery
 							fi
+							./trenFix.sh $localDir
 						done
 
 ########## RUN TESTS  THRESHOLD ############
@@ -332,6 +333,7 @@ else
 							if [ "$totaUsedTests" -eq 30 ]; then
 								getBattery
 							fi
+							./trenFix.sh $localDir
 						done
 
 						trap - INT
@@ -434,7 +436,7 @@ else
 						#echo "copiar $FOLDER/$tName/classInfo.ser para $projLocalDir "
 						cp $FOLDER/$tName/AppInfo.ser $projLocalDir
 						echo "$ID" >> $logDir/success.log
-						total_methods=$( cat $projLocalDir/all/allMethods.txt | sort -u | wc -l | $SED_COMMAND 's/ //g')
+						total_methods=$( cat $projLocalDir/all/allMethods.txt | sort -u | wc -l | sed 's/ //g')
 						now=$(date +"%d_%m_%y_%H_%M_%S")
 						localDir=$localDir/$folderPrefix$now
 						echo "$TAG Creating support folder..."
@@ -460,6 +462,10 @@ else
 							mv $localDir/GreendroidResultTrace0.csv $localDir/GreendroidResultTrace$i.csv
 							totaUsedTests=$(($totaUsedTests + 1))
 							adb shell am force-stop $PACKAGE
+							if [ "$totaUsedTests" -eq 30 ]; then
+								getBattery
+							fi
+							./trenFix.sh $localDir
 						done
 
 ########## RUN TESTS  THRESHOLD ############
@@ -488,6 +494,10 @@ else
 							w_echo "actual coverage -> $actual_coverage"
 							totaUsedTests=$(($totaUsedTests + 1))
 							adb shell am force-stop $PACKAGE
+							if [ "$totaUsedTests" -eq 30 ]; then
+								getBattery
+							fi
+							./trenFix.sh $localDir
 						done
 						trap - INT
 						if [ "$coverage_exceded" -eq 0 ]; then
