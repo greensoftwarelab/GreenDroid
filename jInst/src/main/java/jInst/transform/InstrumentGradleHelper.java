@@ -19,6 +19,8 @@ import java.nio.file.Paths;
 import java.nio.charset.Charset;
 import java.util.List;
 
+import static jInst.util.XMLParser.insertReadWriteExternalPermissions;
+
 /**
  *
  * @author user
@@ -36,7 +38,7 @@ public class InstrumentGradleHelper extends InstrumentHelper{
     public InstrumentGradleHelper(String tName, String work, String proj, String tests, String manifSource, String manifTests, boolean trace) {
         super(tName, work, proj, tests,trace);
         this.originalManifest = manifSource;
-        this.manifest = super.transFolder+manifSource.replace(super.project, "");
+        this.manifest = super.transFolder+manifSource.replace("//","/").replace(super.project.replace("//","/"), "");
         this.manifestTest = manifTests.equals("-") ? "" : super.transTests+manifTests.replace(super.tests, "");
 //        setApplicationClass(manifSource);
     }
@@ -46,9 +48,6 @@ public class InstrumentGradleHelper extends InstrumentHelper{
         File fProject = new File(project);
         File fTransf = new File(transFolder); fTransf.mkdir();
         File[] listOfFiles = fProject.listFiles();
-
-
-
 
         //Copy all the files to the new project folder
         for(File f : listOfFiles){
@@ -74,7 +73,6 @@ public class InstrumentGradleHelper extends InstrumentHelper{
         packages.clear() ;
         MethodChangerVisitor.restartPackages();
 
-        this.addPermission();
         this.changeRunner();
       //  this.findLauncher();
     }
@@ -85,10 +83,12 @@ public class InstrumentGradleHelper extends InstrumentHelper{
 
 
     @Override
-    protected void addPermission(){
+    public void addPermission(){
         File ax = new File(manifest);
+        System.out.println("[JInst] Main Manifest :" +manifest);
         if(!manifest.equals("") && ax.exists()){
             XMLParser.editManifest(manifest);
+            //XMLParser.insertReadWriteExternalPermissions(manifest);
         }
     }
 
@@ -98,6 +98,7 @@ public class InstrumentGradleHelper extends InstrumentHelper{
         if(!manifestTest.equals("-") && ax.exists()){
             XMLParser.editRunner(manifestTest);
         }
+        //insertReadWriteExternalPermissions(manifest);
         //String proj = XMLParser.getTestProjName()+".launch";
         //This line was only necessary if we were to run the tests via IDE
         //XMLParser.editRunConfiguration(workspace+".metadata/.plugins/org.eclipse.debug.core/.launches/"+proj, runnerClass);

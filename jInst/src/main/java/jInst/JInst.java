@@ -89,6 +89,7 @@ public class JInst {
                         helper.monkeyTest = monkeyTest;
                         helper.applicationID=getApplication(project);
                         helper.generateTransformedProject();
+                        helper.addPermission();
                         XMLParser.buildAppPermissionsJSON(manifestSource,helper.getTransFolder());
                         classInfos = helper.getTransFolder() + classInfos;
                         APICallUtil.serializeAPICallUtil(helper.getAcu(),classInfos );

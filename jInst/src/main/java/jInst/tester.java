@@ -5,6 +5,7 @@ import Metrics.ClassInfo;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import jInst.util.XMLParser;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,20 +18,12 @@ public class tester {
 
     public static MethodCallExpr me = new MethodCallExpr();
 
-//   public static void main(String[] args){
-//        APICallUtil u = new APICallUtil();
-////        // Users/ruirua/repos/greenlab-work/work/ruirua/TrepnLib/FirstApp
-//       File file = new File("/Users/ruirua/repos/GreenDroid/jInst/src/main/java/jInst/tester.java");
-//       try {
-//           ClassInfo f =  u.getClassInfo(file.getAbsolutePath());
-//       } catch (IOException e) {
-//           e.printStackTrace();
-//       } catch (ParseException e) {
-//           e.printStackTrace();
-//       }
-//       System.out.println("nada");
-////
-//   }
+   public static void main(String[] args){
+
+       String file = "/Users/ruirua/repos/GreenDroid/tricky.xml";
+       XMLParser.editManifest(file);
+
+   }
 
 
 

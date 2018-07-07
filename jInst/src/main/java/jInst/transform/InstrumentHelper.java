@@ -36,6 +36,8 @@ import jInst.visitors.MethodChangerVisitor;
 import jInst.visitors.MethodVisitor;
 import jInst.visitors.TestChangerVisitor;
 
+import static jInst.util.XMLParser.insertReadWriteExternalPermissions;
+
 /**
  *
  * @author User
@@ -332,8 +334,9 @@ public class InstrumentHelper {
         //XMLParser.editRunConfiguration(workspace+".metadata/.plugins/org.eclipse.debug.core/.launches/"+proj, runnerClass);
     }
 
-    protected void addPermission(){
+    public void addPermission(){
         XMLParser.editManifest(manifest);
+        //insertReadWriteExternalPermissions(manifest);
     }
 
     protected void editProjectDesc(){
@@ -935,7 +938,7 @@ public class InstrumentHelper {
                 } 
             }
         }
-        return cu.toString();
+         return cu.toString();
     }
 
 

@@ -41,9 +41,9 @@ number_monkey_events=500
 min_coverage=60
 totaUsedTests=0
 
-#DIR=/media/data/android_apps/23Apps/*
+DIR=/media/data/android_apps/success/*
 #DIR=$HOME/tests/success/*
-DIR=$HOME/tests/seedError/*
+#DIR=$HOME/tests/seedError/*
 #DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
 
 # trap - INT
@@ -147,6 +147,15 @@ else
 		ID=${arr[*]: -1}
 		IFS=$(echo -en "\n\b")
 		now=$(date +"%d_%m_%y_%H_%M_%S")
+
+		# check if was already processed
+		suc=$(cat $logDir/success.log | sort -u | uniq | grep $ID )
+		if [[ -n $suc  ]]; then
+			## it was already processed
+			w_echo "Aplicattion $ID already processed. Skipping.."
+			continue
+		fi
+
 
 		if [ "$ID" != "success" ] && [ "$ID" != "failed" ] && [ "$ID" != "unknown" ]; then
 			
@@ -497,7 +506,7 @@ else
 							if [ "$totaUsedTests" -eq 30 ]; then
 								getBattery
 							fi
-							./trenFix.sh $localDir
+							./trepnFix.sh $localDir
 						done
 						trap - INT
 						if [ "$coverage_exceded" -eq 0 ]; then

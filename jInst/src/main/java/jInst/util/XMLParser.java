@@ -11,13 +11,13 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import GDUtils.GDUtils;
-import GDUtils.GreenRepoRun;
 import jInst.transform.InstrumentHelper;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -43,7 +43,8 @@ public class XMLParser {
     
     private static ArrayList<String> editedProjects = new ArrayList<String>();
     public static List<String> permissions = new ArrayList<>();
-    private static final String permExt = "android.permission.WRITE_EXTERNAL_STORAGE";
+    private static final String permExtWrite = "android.permission.WRITE_EXTERNAL_STORAGE";
+    private static final String permExtRead = "android.permission.READ_EXTERNAL_STORAGE";
     private static final String permInt = "android.permission.INTERNET";
     private static final String permLoc = "android.permission.ACCESS_FINE_LOCATION";
     private static final String permWifi = "android.permission.ACCESS_WIFI_STATE";
@@ -228,18 +229,80 @@ public class XMLParser {
         }
  
    }
+
+
+   public static void insertReadWriteExternalPermissions( String manifestFile) {
+       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+       DocumentBuilder docBuilder = null;
+       boolean hasExtWrite = false, hasExtRead= false;
+       String pName = "";
+       try {
+           docBuilder = docFactory.newDocumentBuilder();
+           Document doc = docBuilder.parse(manifestFile);
+           // Get the root element
+           Node manifest = doc.getElementsByTagName("manifest").item(0);
+           NodeList permissions = doc.getElementsByTagName("uses-permission");
+           if(permissions == null){
+
+           }else {
+               for (int i = 0; i < permissions.getLength(); i++) {
+                   Node n = permissions.item(i);
+                   if (n.getNodeType() == Node.ELEMENT_NODE) {
+                       Element e = (Element) n;
+                       pName = e.hasAttribute("android:name") ? e.getAttribute("android:name") : "";
+                       if (pName.equals(permExtWrite)) {
+                           hasExtWrite = true;
+                       }
+                       if (pName.equals(permExtRead)) {
+                           hasExtRead = true;
+                       }
+                   }
+               }
+           }
+           if(!hasExtWrite){
+               Element nPerm = doc.createElement("uses-permission");
+               nPerm.setAttribute("android:name", permExtWrite);
+               manifest.appendChild(nPerm);
+           }
+           if(!hasExtRead){
+               Element nPerm = doc.createElement("uses-permission");
+               nPerm.setAttribute("android:name", permExtRead);
+               manifest.appendChild(nPerm);
+           }
+
+           // write the content into xml file
+           TransformerFactory transformerFactory = TransformerFactory.newInstance();
+           Transformer transformer = transformerFactory.newTransformer();
+           DOMSource source = new DOMSource(doc);
+           StreamResult result = new StreamResult(new File(manifestFile));
+           transformer.transform(source, result);
+       } catch (ParserConfigurationException e) {
+           e.printStackTrace();
+       } catch (SAXException e) {
+           e.printStackTrace();
+       } catch (IOException e) {
+           e.printStackTrace();
+       } catch (TransformerConfigurationException e) {
+           e.printStackTrace();
+       } catch (TransformerException e) {
+           e.printStackTrace();
+       }
+
+
+   }
     
     public static void editManifest(String file){
         try {
                 String pName = "";
-                boolean hasExt = false, hasInt = false, hasLoc = false, hasWifi  = false, hasPhone = false, hasNet = false, hasBoot  = false;
+                boolean hasExt = false, hasExtRead=false ,hasInt = false, hasLoc = false, hasWifi  = false, hasPhone = false, hasNet = false, hasBoot  = false;
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 		Document doc = docBuilder.parse(file);
  
 		// Get the root element
 		Node manifest = doc.getElementsByTagName("manifest").item(0);
-                
+
+
 		NodeList permissions = doc.getElementsByTagName("uses-permission");
                 if(permissions == null){
                     
@@ -249,8 +312,11 @@ public class XMLParser {
                         if(n.getNodeType() == Node.ELEMENT_NODE){
                             Element e = (Element)n;
                             pName = e.hasAttribute("android:name") ? e.getAttribute("android:name") : "";
-                            if(pName.equals(permExt)){
+                            if(pName.equals(permExtWrite)) {
                                 hasExt = true;
+                            }
+                            if(pName.equals(permExtRead)){
+                                hasExtRead = true;
                             }if(pName.equals(permBoot)){
                                 hasBoot = true;
                             }if(pName.equals(permInt)){
@@ -269,7 +335,12 @@ public class XMLParser {
                 }
                 if(!hasExt){
                     Element nPerm = doc.createElement("uses-permission");
-                    nPerm.setAttribute("android:name", permExt);
+                    nPerm.setAttribute("android:name", permExtWrite);
+                    manifest.appendChild(nPerm);
+                }
+                if(!hasExtRead){
+                    Element nPerm = doc.createElement("uses-permission");
+                    nPerm.setAttribute("android:name", permExtRead);
                     manifest.appendChild(nPerm);
                 }if(!hasBoot){
                     Element nPerm = doc.createElement("uses-permission");
