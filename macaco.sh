@@ -309,7 +309,7 @@ else
 							if [ "$totaUsedTests" -eq 10 ]; then
 								getBattery
 							fi
-							./trenFix.sh $localDir
+							./trepnFix.sh $deviceDir
 						done
 
 ########## RUN TESTS  THRESHOLD ############
@@ -342,7 +342,7 @@ else
 							if [ "$totaUsedTests" -eq 30 ]; then
 								getBattery
 							fi
-							./trenFix.sh $localDir
+							./trepnFix.sh $deviceDir
 						done
 
 						trap - INT
@@ -474,7 +474,7 @@ else
 							if [ "$totaUsedTests" -eq 30 ]; then
 								getBattery
 							fi
-							./trenFix.sh $localDir
+							./trepnFix.sh $deviceDir
 						done
 
 ########## RUN TESTS  THRESHOLD ############
@@ -506,7 +506,7 @@ else
 							if [ "$totaUsedTests" -eq 30 ]; then
 								getBattery
 							fi
-							./trepnFix.sh $localDir
+							./trepnFix.sh $deviceDir
 						done
 						trap - INT
 						if [ "$coverage_exceded" -eq 0 ]; then
