@@ -51,13 +51,24 @@ DIR=$HOME/tests/success/*
 # trap 'quit' INT
 
 
+analyzeCSV(){
+	tags=$(cat $1 |  grep "stopped" | wc -l)
+	if [ $tags -lt "2" ] && [ "$folderPrefix" == "MonkeyTest" ] ; then
+		e_echo " $1 might contain an error "
+		echo "$1" >> logs/csvErrors.log
+	fi
+}
+	
+
+
+
 errorHandler(){
-	if [[ $1 == "-1" ]]; then
+	if [[ "$1" == "1" ]]; then
 		#exception occured during tests
 		w_echo "killing running app..."
 		adb shell am force-stop $1
-		w_echo "uninstalling actual app $1"
-		./uninstall.sh $1 $2
+		w_echo "uninstalling actual app $2"
+		./uninstall.sh $1
 	fi
 }
 
@@ -70,6 +81,7 @@ quit(){
 	w_echo "uninstalling actual app $1"
 	./uninstall.sh $1 $2
 	w_echo "GOODBYE"
+	(adb shell am stopservice com.quicinc.trepn/.TrepnService) >/dev/null 2>&1
 	exit -1
 }
 
@@ -284,7 +296,7 @@ else
 						#	continue
 						#fi
 						echo "$ID" >> $logDir/success.log
-						total_methods=$( cat $projLocalDir/all/allMethods.txt | sort -u | wc -l | $SED_COMMAND 's/ //g')
+						total_methods=$( cat $projLocalDir/all/allMethods.txt | sort -u| uniq | wc -l | $SED_COMMAND 's/ //g')
 						#now=$(date +"%d_%m_%y_%H_%M_%S")
 						
 						IGNORE_RUN=""
@@ -292,19 +304,22 @@ else
 ########## RUN TESTS 1 phase ############
 						trap 'quit $PACKAGE $TESTPACKAGE' INT
 						for i in $seeds20; do
-							w_echo "SEED Number : $totaUsedTests"
+							w_echo "APP: $ID | SEED Number : $totaUsedTests"
 							./runMonkeyTest.sh $i $number_monkey_events $trace $PACKAGE	$localDir $deviceDir		
 							RET=$(echo $?)
 							if [[ $RET -ne 0 ]]; then
-								errorHandler $RET
+								echo "retas $RET"
+								errorHandler $RET $PACKAGE
 								IGNORE_RUN="YES"
-								break
-								
+								./trepnFix.sh $deviceDir
+								totaUsedTests=0
+								break				
 							fi
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/{} $localDir
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' |  egrep -Eio "TracedMethods.txt" |xargs -I{} adb pull $deviceDir/{} $localDir
 							mv $localDir/TracedMethods.txt $localDir/TracedMethods$i.txt
 							mv $localDir/GreendroidResultTrace0.csv $localDir/GreendroidResultTrace$i.csv
+							analyzeCSV $localDir/GreendroidResultTrace$i.csv
 							totaUsedTests=$(($totaUsedTests + 1))
 							adb shell am force-stop $PACKAGE
 							if [ "$totaUsedTests" -eq 10 ]; then
@@ -318,7 +333,7 @@ else
 							continue
 						fi
 						##check if have enough coverage
-						nr_methods=$( cat $localDir/Traced*.txt | sort -u | wc -l | $SED_COMMAND 's/ //g')
+						nr_methods=$( cat $localDir/Traced*.txt | sort -u | uniq | wc -l | $SED_COMMAND 's/ //g')
 						actual_coverage=$(echo "${nr_methods}/${total_methods}" | bc -l)
 						e_echo "actual coverage -> $actual_coverage"
 						
@@ -328,14 +343,14 @@ else
 								echo "$ID|$totaUsedTests" >> $logDir/above$min_coverage.log
 								break
 							fi
-							w_echo "SEED Number : $totaUsedTests"
+							w_echo "APP: $ID | SEED Number : $totaUsedTests"
 							./runMonkeyTest.sh $j $number_monkey_events $trace $PACKAGE	$localDir $deviceDir
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio ".*.csv" |  xargs -I{} adb pull $deviceDir/{} $localDir
 							#adb shell ls "$deviceDir/TracedMethods.txt" | tr '\r' ' ' | xargs -n1 adb pull 
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio "TracedMethods.txt" | xargs -I{} adb pull $deviceDir/{} $localDir
 							mv $localDir/TracedMethods.txt $localDir/TracedMethods$i.txt
 							mv $localDir/GreendroidResultTrace0.csv $localDir/GreendroidResultTrace$i.csv
-							nr_methods=$( cat $localDir/Traced*.txt | sort -u | wc -l | $SED_COMMAND 's/ //g')
+							nr_methods=$( cat $localDir/Traced*.txt | sort -u | uniq | wc -l | $SED_COMMAND 's/ //g')
 							actual_coverage=$(echo "${nr_methods}/${total_methods}" | bc -l)
 							w_echo "actual coverage -> $actual_coverage"
 							totaUsedTests=$(($totaUsedTests + 1))
@@ -460,7 +475,7 @@ else
 							./runMonkeyTest.sh $i $number_monkey_events $trace $PACKAGE	$localDir $deviceDir		
 							RET=$(echo $?)
 							if [[ $RET -ne 0 ]]; then
-								errorHandler $RET
+								errorHandler $RET $PACKAGE
 								IGNORE_RUN="YES"
 								break
 								
@@ -481,7 +496,7 @@ else
 ########## RUN TESTS  THRESHOLD ############
 
 						##check if have enough coverage
-						nr_methods=$( cat $localDir/Traced*.txt | sort -u | wc -l | $SED_COMMAND 's/ //g')
+						nr_methods=$( cat $localDir/Traced*.txt | sort -u | uniq | wc -l | $SED_COMMAND 's/ //g')
 						actual_coverage=$(echo "${nr_methods}/${total_methods}" | bc -l)
 						e_echo "actual coverage -> $actual_coverage"
 						
@@ -499,7 +514,7 @@ else
 							adb shell ls "$deviceDir" | $SED_COMMAND -r 's/[\r]+//g' | egrep -Eio "TracedMethods.txt" | xargs -I{} adb pull $deviceDir/{} $localDir
 							mv $localDir/TracedMethods.txt $localDir/TracedMethods$i.txt
 							mv $localDir/GreendroidResultTrace0.csv $localDir/GreendroidResultTrace$i.csv
-							nr_methods=$( cat $localDir/Traced*.txt | sort -u | wc -l | $SED_COMMAND 's/ //g')
+							nr_methods=$( cat $localDir/Traced*.txt | sort -u | uniq | wc -l | $SED_COMMAND 's/ //g')
 							actual_coverage=$(echo "${nr_methods}/${total_methods}" | bc -l)
 							w_echo "actual coverage -> $actual_coverage"
 							totaUsedTests=$(($totaUsedTests + 1))
