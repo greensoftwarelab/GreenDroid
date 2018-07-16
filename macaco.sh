@@ -41,7 +41,8 @@ number_monkey_events=500
 min_coverage=60
 totaUsedTests=0
 
-DIR=/media/data/android_apps/success/*
+DIR=$HOME/tests/success/*
+#DIR=/media/data/android_apps/success/*
 #DIR=$HOME/tests/success/*
 #DIR=$HOME/tests/seedError/*
 #DIR=/Users/ruirua/repos/greenlab-work/work/ruirua/proj/*
