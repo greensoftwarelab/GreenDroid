@@ -40,8 +40,8 @@ threshold_monkey_runs=50
 number_monkey_events=500
 min_coverage=60
 totaUsedTests=0
-
-DIR=$HOME/tests/success/*
+DIR=/Users/ruirua/repos/GreenDroid/tese/media/data/android_apps/teseSample/*
+#DIR=$HOME/tests/success/*
 #DIR=/media/data/android_apps/success/*
 #DIR=$HOME/tests/success/*
 #DIR=$HOME/tests/seedError/*
@@ -321,7 +321,9 @@ else
 							mv $localDir/GreendroidResultTrace0.csv $localDir/GreendroidResultTrace$i.csv
 							analyzeCSV $localDir/GreendroidResultTrace$i.csv
 							totaUsedTests=$(($totaUsedTests + 1))
-							adb shell am force-stop $PACKAGE
+							adb shell am force-stop $PACKAGE						
+							echo "methods invoked : $(cat $localDir/TracedMethods$i.txt | wc -l)"
+							echo "total dif. methods invoked : $(cat $localDir/TracedMethods$i.txt | sort -u | uniq | wc -l )"
 							if [ "$totaUsedTests" -eq 10 ]; then
 								getBattery
 							fi
