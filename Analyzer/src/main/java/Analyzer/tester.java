@@ -1,5 +1,6 @@
 package Analyzer;
 
+import GreenSourceBridge.GreenSourceAPI;
 import org.json.simple.JSONArray;
 
 import java.io.FileWriter;
@@ -15,13 +16,17 @@ import java.io.Writer;
  */
 public class tester {
 
-    public static void main(String[] args) {
-        //String file = "/Users/ruirua/tests/success/2bb46be6-f071-413d-9221-c090a8f0cb29/latest/_TRANSFORMED_/app/build/reports/lint-results.xml";
-        Utils u = new Utils();
-        JSONArray ja = u.parseAndroidApis();
-
-        //u.decodeAndroidAPIS();
-    }
+//    public static void main(String[] args) {
+//        //String file = "/Users/ruirua/tests/success/2bb46be6-f071-413d-9221-c090a8f0cb29/latest/_TRANSFORMED_/app/build/reports/lint-results.xml";
+//
+//
+//        String file =  "/Users/ruirua/GDResults/003f67dd-c926-4f96-bb1b-5a2dd4bf344f/MonkeyTest24_08_18_00_25_18/appPermissions.json";
+//
+//        JSONArray jas = GreenSourceAPI.loadAppPermissions(file);
+//        System.out.println(jas.toJSONString());
+//        GreenSourceAPI.sendAppPermissionsToDB(jas.toJSONString());
+//        //u.decodeAndroidAPIS();
+//    }
 
 
 

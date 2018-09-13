@@ -58,7 +58,7 @@ utc = pytz.utc
 def get_fixed_timezone(offset):
     """Return a tzinfo instance with a fixed offset from UTC."""
     if isinstance(offset, timedelta):
-        offset = offset.seconds // 60
+        offset = offset.total_seconds() // 60
     sign = '-' if offset < 0 else '+'
     hhmm = '%02d%02d' % divmod(abs(offset), 60)
     name = sign + hhmm
@@ -98,12 +98,7 @@ def get_current_timezone_name():
 
 def _get_timezone_name(timezone):
     """Return the name of ``timezone``."""
-    try:
-        # for pytz timezones
-        return timezone.zone
-    except AttributeError:
-        # for regular tzinfo objects
-        return timezone.tzname(None)
+    return timezone.tzname(None)
 
 # Timezone selection functions.
 

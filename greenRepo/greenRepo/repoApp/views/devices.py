@@ -15,32 +15,33 @@ class DevicesListView(APIView):
     def get(self, request):
         query=parse_qs(request.META['QUERY_STRING'])
         results = Device.objects.all()
-        if 'serial_number' in query:
+        if 'device_serial_number' in query:
             print((query['serial_number'])[0])
-            results=results.filter(device_serial_number=query['serial_number'][0])
-        if 'brand' in query:
+            results=results.filter(device_serial_number=query['device_serial_number'][0])
+        if 'device_brand' in query:
             print(query['brand'][0])
-            results=results.filter(device_brand=query['brand'][0])
-        if 'model' in query:
-            results=results.filter(device_model=query['model'][0])
+            results=results.filter(device_brand=query['device_brand'][0])
+        if 'device_model' in query:
+            results=results.filter(device_model=query['device_model'][0])
         #results = Test.objects.filter(reduce(and_, q))
         serialize = DeviceSerializer(results, many=True)
         return Response(serialize.data, HTTP_200_OK)
 
 
     def post(self, request):
-        data = JSONParser().parse(request)
-        try: 
-            serializer = DeviceSerializer(data=data, partial=True)
-            if serializer.is_valid(raise_exception=True):
-    
-                instance = serializer.create(serializer.validated_data)
-                instance.save()
-                serialize = DeviceSerializer(instance, many=False)
-                return Response(serialize.data, HTTP_200_OK)
-            else:
-                return Response("Invalid data", HTTP_400_BAD_REQUEST)
-        except Exception as ex:
-            return Response(serializer.data, HTTP_200_OK)
+        data = JSONParser().parse(request) 
+        if isinstance(data,list):
+            for item in data:
+                try:
+                    instance = DeviceSerializer(data=item, many=False, partial=True)
+                    if instance.is_valid(raise_exception=True):
+                        instance.save()
+                except Exception as e:
+                    continue
+            return Response(data, HTTP_200_OK)
         else:
-            return Response('Internal error or malformed JSON ', HTTP_400_BAD_REQUEST)
+            instance = DeviceSerializer(data=data, many=False, partial=True)
+            if instance.is_valid(raise_exception=True):
+                instance.save()
+                Response(instance.data, HTTP_200_OK)
+            return Response(instance.data, HTTP_400_BAD_REQUEST)

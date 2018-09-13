@@ -1,10 +1,8 @@
 package Analyzer;
 
-import GDUtils.GDUtils;
-import GDUtils.GreenRepoRun;
-import Metrics.GDConventions;
-import Metrics.MethodInfo;
-import Metrics.Variable;
+import Analyzer.Results.TestResults;
+import Metrics.AndroidProjectRepresentation.*;
+import GreenSourceBridge.*;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 import org.json.simple.JSONObject;
@@ -20,6 +18,10 @@ import java.util.stream.Stream;
 /**
  * Created by rrua on 22/06/17.
  */
+
+
+/*
+
 public class MethodOriented {
 
     //public List<List<Consumption>> states = new ArrayList<>(); // lista para guardar cada uma das execucoes
@@ -27,7 +29,6 @@ public class MethodOriented {
     public static PairMetodoInt ultimo = new PairMetodoInt("",0);
     public static Map<String, Double []> methodInfos = new HashMap<>();
     public static final String methodFilename = GDConventions.MethodOutputName;
-
 
 
 
@@ -63,10 +64,11 @@ public class MethodOriented {
                 // se ha amostra de consumo de energia
                 if(row[Utils.getMatch(columns,Utils.batteryPower).first]!=null){
                     Consumption com =  Analyzer.getDataFromRow(columns, row);
-                    com.setTimeBatteryPowerRaw(Integer.parseInt(row[Utils.getMatch(columns,Utils.batteryPower).first]));
-                    com.setBatteryPowerRaw(Integer.parseInt(row[Utils.getMatch(columns,Utils.batteryPower).second]));
+                    com.batteryPowerRaw = new Pair<Integer, Double>(,)
+                    Integer x1 =  Integer.parseInt(row[Utils.getMatch(columns,Utils.batteryPower).first]);
+                    Double = (Double.parseDouble(row[Utils.getMatch(columns,Utils.batteryPower).second]));
                     consumptions.add(com);
-                    /*int timeTrepn = Integer.parseInt(row[Utils.getMatch(columns,Utils.batteryRemaing).first]);
+                    int timeTrepn = Integer.parseInt(row[Utils.getMatch(columns,Utils.batteryRemaing).first]);
                     int timeBatttery = Integer.parseInt(row[Utils.getMatch(columns,Utils.batteryPower).first]);
                     double watts = Double.parseDouble(row[Utils.getMatch(columns,Utils.batteryPower).second]);
                     // int delta = Integer.parseInt(row[8]);
@@ -75,7 +77,7 @@ public class MethodOriented {
                     String method = row[ Utils.getMatch(columns,Utils.stateDescription).second] !=null ? new String(row[Utils.getMatch(columns,Utils.stateDescription).second]) : "";
                     int b = row[Utils.getMatch(columns,Utils.stateInt).second] !=null ? Integer.parseInt(row[Utils.getMatch(columns,Utils.stateInt).first]) : 0;
                     Consumption c = new Consumption(watts, b, method, timeTrepn, timeBatttery, delta, timeState, i-4);
-                    consumptions.add(c);*/
+                    consumptions.add(c);
                 }
                 if(row[Utils.getMatch(columns,Utils.stateInt).first] != null && row[Utils.getMatch(columns,Utils.stateDescription).second] != null){
                     //add to invocation list
@@ -289,6 +291,98 @@ public class MethodOriented {
     }
 
 
+
+    public static Consumption getDataFromRow( HashMap<String, Pair<Integer, Integer>> columns,String[] row) {
+
+        Consumption c = new Consumption();
+
+        Pair<Integer, Integer> wifiState = null, mobileData = null  , screenState = null , batteryStatus =null, wifiRSSI = null,
+                memUsage = null, bluetooth = null, gpuLoad = null, cpuLoadNormalized = null, gps=null, power = null, state = null;
+
+        if (Analyzer.isValidMetric(columns,Utils.stateInt,row) && Analyzer.isValidMetric(columns,Utils.stateDescription,row)){
+            state = new Pair<Integer, Integer> (Integer.parseInt(row[Utils.getMatch(columns, Utils.stateInt).first]),Integer.parseInt (row[Utils.getMatch(columns, Utils.stateInt).second]));
+            if (!(actualResult).hasStartTime()&& row[Utils.getMatch(columns, Utils.stateDescription).second].equals(startTag)){
+                ( actualResult).startTime = state.first;
+            }
+            if (!actualResult.hasEndTime()&&row[Utils.getMatch(columns, Utils.stateDescription).second].equals(stopTag)){
+                (actualResult).stopTime = state.first;
+            }
+
+            actualResult.timeSamples.put(state.first,  (state.second));
+            c.applicationState = new Pair<Integer, Integer>(state.first,(state.second));
+        }
+
+
+        if (Analyzer.isValidMetric(columns,Utils.batteryPower,row)){
+            power = new Pair<Integer, Integer> (Integer.parseInt(row[Utils.getMatch(columns, Utils.batteryPower).first]),Integer.parseInt (row[Utils.getMatch(columns, Utils.batteryPower).second]));
+            actualResult.powerSamples.put(power.first,  new Double(power.second));
+            c.batteryPowerRaw = new Pair<Integer, Double>(power.first, new Double(power.second));
+        }
+
+
+        if (Analyzer.isValidMetric(columns,Utils.wifiState,row)){
+            wifiState = new Pair<Integer, Integer> (Integer.parseInt(row[Utils.getMatch(columns, Utils.wifiState).first]),Integer.parseInt (row[Utils.getMatch(columns, Utils.wifiState).second]));
+            actualResult.wifiStateSamples.put(wifiState.first, wifiState.second);
+            c.wifiState = new Pair<Integer, Integer>(wifiState.first, wifiState.second);
+        }
+
+        if (Analyzer.isValidMetric(columns,Utils.mobileData,row)){
+            mobileData = new Pair<Integer, Integer> (Integer.parseInt(row[Utils.getMatch(columns, Utils.mobileData).first]),Integer.parseInt (row[Utils.getMatch(columns, Utils.mobileData).second]));
+            actualResult.mobileDataStateSamples.put(mobileData.first, mobileData.second);
+            c.mobileDataState = new Pair<Integer, Integer>(mobileData.first, mobileData.second);
+        }
+
+        if (Analyzer.isValidMetric(columns,Utils.screenState,row)){
+            screenState = new Pair<Integer, Integer> (Integer.parseInt(row[Utils.getMatch(columns, Utils.screenState).first]),Integer.parseInt (row[Utils.getMatch(columns, Utils.screenState).second]));
+            actualResult.screenStateSamples.put(screenState.first, screenState.second);
+            c.screenState = new Pair<Integer, Integer>(screenState.first, screenState.second);
+        }
+
+        if (Analyzer.isValidMetric(columns,Utils.batteryStatus,row)){
+            batteryStatus = new Pair<Integer, Integer> (Integer.parseInt(row[Utils.getMatch(columns, Utils.batteryStatus).first]),Integer.parseInt (row[Utils.getMatch(columns, Utils.batteryStatus).second]));
+            actualResult.batteryStatusSamples.put(batteryStatus.first, batteryStatus.second);
+            c.batteryStatus = new Pair<Integer, Integer>(batteryStatus.first, batteryStatus.second);
+        }
+
+        if (Analyzer.isValidMetric(columns,Utils.wifiRSSILevel,row)){
+            wifiRSSI = new Pair<Integer, Integer> (Integer.parseInt(row[Utils.getMatch(columns, Utils.wifiRSSILevel).first]),Integer.parseInt (row[Utils.getMatch(columns, Utils.wifiRSSILevel).second]));
+            actualResult.rSSILevelSamples.put(wifiRSSI.first, wifiRSSI.second);
+            c.rssiLevel = new Pair<Integer, Integer>(wifiRSSI.first, wifiRSSI.second);
+        }
+
+        if (Analyzer.isValidMetric(columns,Utils.memory,row)){
+            memUsage = new Pair<Integer, Integer> (Integer.parseInt(row[Utils.getMatch(columns, Utils.memory).first]),Integer.parseInt (row[Utils.getMatch(columns, Utils.memory).second]));
+            actualResult.memorySamples.put(memUsage.first, memUsage.second);
+            c.memUsage = new Pair<Integer, Integer>(memUsage.first, memUsage.second);
+        }
+
+        if (Analyzer.isValidMetric(columns,Utils.bluetoothState,row)){
+            bluetooth = new Pair<Integer, Integer> (Integer.parseInt(row[Utils.getMatch(columns, Utils.bluetoothState).first]),Integer.parseInt (row[Utils.getMatch(columns, Utils.bluetoothState).second]));
+            actualResult.bluetoothStateSamples.put(bluetooth.first, bluetooth.second);
+            c.bluetoothState = new Pair<Integer, Integer>(bluetooth.first, bluetooth.second);
+        }
+        if (Analyzer.isValidMetric(columns,Utils.gpuLoad,row)){
+            gpuLoad = new Pair<Integer, Integer> (Integer.parseInt(row[Utils.getMatch(columns, Utils.gpuLoad).first]),Integer.parseInt (row[Utils.getMatch(columns, Utils.gpuLoad).second]));
+            actualResult.gpuLoadSamples.put(gpuLoad.first, gpuLoad.second);
+            c.gpuLoad = new Pair<Integer, Integer>(gpuLoad.first, gpuLoad.second);
+        }
+
+        if (Analyzer.isValidMetric(columns,Utils.cpuLoadNormalized,row)){
+            cpuLoadNormalized = new Pair<Integer, Integer> (Integer.parseInt(row[Utils.getMatch(columns, Utils.cpuLoadNormalized).first]),Integer.parseInt (row[Utils.getMatch(columns, Utils.cpuLoadNormalized).second]));
+            actualResult.addCpuLoadSample(0, cpuLoadNormalized.first, cpuLoadNormalized.second);
+            c.cpuLoads.put(0,  new Pair<Integer, Integer>(cpuLoadNormalized.first, cpuLoadNormalized.second));
+        }
+
+        if (Analyzer.isValidMetric(columns,Utils.gpsState,row)){
+            gps = new Pair<Integer, Integer> (Integer.parseInt(row[Utils.getMatch(columns, Utils.gpsState).first]),Integer.parseInt (row[Utils.getMatch(columns, Utils.gpsState).second]));
+            actualResult.gPSStateSamples.put(gps.first, gps.second);
+            c.gpsState = new Pair<Integer, Integer>(gps.first, gps.second);
+        }
+
+        //Consumption c = new  Consumption(((int) memUsage), ((int) mobileData), ((int) wifiState), ((int) wifiRSSI), ((int) screenState), 0, 0, ((int) batteryStatus), ((int) bluetooth), ((int) gpuLoad), ((int) gps), ((int) cpuLoadNormalized));
+        return c;
+    }
+
     public static List<String> getMethodHashList( Set<String> actualTestMethods){
         List<String> l = new ArrayList<>();
         for(String s: actualTestMethods){
@@ -406,3 +500,5 @@ public class MethodOriented {
 
 
 }
+*/
+

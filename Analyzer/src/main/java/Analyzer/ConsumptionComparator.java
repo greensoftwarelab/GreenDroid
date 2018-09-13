@@ -10,7 +10,7 @@ public class ConsumptionComparator implements Comparator<Consumption> {
     @Override
     public int compare(Consumption consumption, Consumption t1) {
 
-        return Integer.compare(consumption.getTimeBatttery(),t1.getTimeBatttery());
+        return Integer.compare(consumption.applicationState.first,t1.applicationState.first);
     }
 
 }

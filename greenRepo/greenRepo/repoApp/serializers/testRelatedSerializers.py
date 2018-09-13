@@ -23,6 +23,31 @@ class TestResultsListSerializer(serializers.ListSerializer):
         return TestResults.objects.bulk_create(tm)
 
 
+class TestResultsWithMetricsSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        super(TestResultsWithMetricsSerializer, self).__init__(*args, **kwargs)
+        
+        self.fields['test_metrics'] = serializers.SerializerMethodField()
+        self.fields['test_state_init'] = serializers.SerializerMethodField()
+        self.fields['test_state_end'] = serializers.SerializerMethodField()
+     
+    def get_test_metrics(self, test):
+        met = TestMetric.objects.filter(test_results=test.test_results_id)
+        return TestMetricSerializer(instance=met,  many=True).data  
+
+    def get_test_state_init(self, test):
+        met = DeviceState.objects.get(device_state_id=test.test_results_device_begin_state.device_state_id)
+        return DeviceStateSerializer(instance=met,  many=False).data  
+
+    def get_test_state_end(self, test):
+        met = DeviceState.objects.get(device_state_id=test.test_results_device_end_state.device_state_id)
+        return DeviceStateSerializer(instance=met,  many=False).data  
+
+    class Meta:
+        model = TestResults
+        fields = ('test_results_id', 'test_results_timestamp', 'test_results_seed', 'test_results_description', 'test_results_test', 'test_results_profiler','test_results_device')
+        validators = []
+
 
 class TestResultsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -37,7 +62,7 @@ class TestResultsFullSerializer(serializers.ModelSerializer):
         self.fields['test_metrics'] = serializers.SerializerMethodField()
      
     def get_test_metrics(self, test):
-        met = TestMetric.objects.filter(test_results__in=test.test_results)
+        met = TestMetric.objects.filter(test_results=test.test_results_id)
         return TestMetricSerializer(instance=met,  many=True).data  
     class Meta:
         model = TestResults

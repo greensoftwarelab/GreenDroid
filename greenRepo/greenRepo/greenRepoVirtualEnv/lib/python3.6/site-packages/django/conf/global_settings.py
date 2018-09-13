@@ -21,11 +21,6 @@ DEBUG = False
 # on a live site.
 DEBUG_PROPAGATE_EXCEPTIONS = False
 
-# Whether to use the "ETag" header. This saves bandwidth but slows down performance.
-# Deprecated (RemovedInDjango21Warning) in favor of ConditionalGetMiddleware
-# which sets the ETag regardless of this setting.
-USE_ETAGS = False
-
 # People who get code error notifications.
 # In the format [('Full Name', 'email@example.com'), ('Full Name', 'anotheremail@example.com')]
 ADMINS = []
@@ -466,6 +461,9 @@ SESSION_COOKIE_SECURE = False
 SESSION_COOKIE_PATH = '/'
 # Whether to use the non-RFC standard httpOnly flag (IE, FF3+, others)
 SESSION_COOKIE_HTTPONLY = True
+# Whether to set the flag restricting cookie leaks on cross-site requests.
+# This can be 'Lax', 'Strict', or None to disable the flag.
+SESSION_COOKIE_SAMESITE = 'Lax'
 # Whether to save the session data on every request.
 SESSION_SAVE_EVERY_REQUEST = False
 # Whether a user's session cookie expires when the Web browser is closed.
@@ -517,7 +515,6 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
     'django.contrib.auth.hashers.Argon2PasswordHasher',
     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
-    'django.contrib.auth.hashers.BCryptPasswordHasher',
 ]
 
 AUTH_PASSWORD_VALIDATORS = []
@@ -543,6 +540,7 @@ CSRF_COOKIE_DOMAIN = None
 CSRF_COOKIE_PATH = '/'
 CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'
 CSRF_TRUSTED_ORIGINS = []
 CSRF_USE_SESSIONS = False

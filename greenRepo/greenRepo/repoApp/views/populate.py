@@ -4,13 +4,186 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.status import *
 
-from repoApp.models.appRelated import Method , AppPermission, AppBuildTool
-from repoApp.models.metricsRelated import Metric
-from repoApp.models.testRelated import TestOrientation , Tool, Profiler,Device, DeviceState
+from repoApp.models.appRelated import *
+from repoApp.models.metricsRelated import *
+from repoApp.models.testRelated import *
+
+
+
+class PopulateDummyTest(APIView):
+    permission_classes = [AllowAny]
+    def post(self, request):
+        try:
+            a = AndroidProject()
+            a.project_id="xxxx-dummy-xxxx-project-test"
+            a.project_desc="dumb"
+            a.project_build_tool="gradle"
+            a.save()
+        except Exception as e:
+            print(e)
+        try:
+            a = Application()
+            a.app_id="dummy_app"
+            a.app_location="/Users/dummyUser/apps/dummyApp"
+            a.app_description="dumb"
+            a.app_language="java"
+            a.app_version=1.1
+            a.app_flavor="demo"
+            a.app_project=AndroidProject.objects.get(project_id="xxxx-dummy-xxxx-project-test")
+            a.save()
+        except Exception as e:
+            print(e)
+        try:
+            a = Application()
+            a.app_id="dummy_app2"
+            a.app_location="/Users/dummyUser/apps/dummyApp2"
+            a.app_description="dumb"
+            a.app_language="java"
+            a.app_version=1.1
+            a.app_flavor="demo"
+            a.app_project=AndroidProject.objects.get(project_id="xxxx-dummy-xxxx-project-test")
+            a.save()
+        except Exception as e:
+            print(e)
+        try:
+            a = Class()
+            a.class_id="com.dummy.dummyapp.DummyActivity"
+            a.class_name="DummyActivity"
+            a.class_package="com.dummy.dummyapp"
+            a.class_non_acc_mod=""
+            a.class_app=Application.objects.get(app_id="dummy_app")
+            a.class_acc_modifier="public"
+            a.class_superclass="Activity"
+            a.save()
+        except Exception as e:
+            print(e)
+        try:
+            a = ImportClass()
+            a.import_name="java.util.TreeMap"
+            a.import_class=Class.objects.get(class_id="com.dummy.dummyapp.DummyActivity")
+            a.save()
+        except Exception as e:
+            print(e)
+        try:
+            a = Method()
+            a.method_id="com.dummy.dummyapp.DummyActivity.dummyMethod"
+            a.method_name="dummyMethod"
+            a.method_non_acc_mod="static"
+            a.method_class=Class.objects.get(class_id="com.dummy.dummyapp.DummyActivity")
+            a.method_acc_modifier="public"
+            a.method_args="int#String[]"
+            a.save()
+        except Exception as e:
+            print(e)
+        try:
+            a = Method()
+            a.method_id="com.dummy.dummyapp.DummyActivity.dummyMethod"
+            a.method_name="dummyMethod"
+            a.method_non_acc_mod="static"
+            a.method_class=Class.objects.get(class_id="com.dummy.dummyapp.DummyActivity")
+            a.method_acc_modifier="public"
+            a.method_args="int#String[]"
+            a.save()
+        except Exception as e:
+            print(e)
+        try:
+            a = Method()
+            a.method_id="com.dummy.dummyapp.DummyActivity.dummyMethod2"
+            a.method_name="dummyMethod2"
+            a.method_non_acc_mod=""
+            a.method_class=Class.objects.get(class_id="com.dummy.dummyapp.DummyActivity")
+            a.method_acc_modifier="private"
+            a.method_args="int#double"
+            a.save()
+        except Exception as e:
+            print(e)
+        try:
+            a = Test()
+            a.test_application=Application.objects.get(app_id="dummy_app")
+            a.test_tool= Tool.objects.get(tool_name="monkey")
+            a.test_orientation=TestOrientation.objects.get(test_orientation_designation="testoriented")
+            a.save()
+        except Exception as e:
+            print(e)
+        try:
+            a = TestResults()
+            a.test_results_seed="1893"
+            a.test_results_description="dd"
+            a.test_results_test=Test.objects.get(id=1)
+            a.test_results_profiler=Profiler.objects.get(profiler_name="trepn")
+            a.test_results_device=Device.objects.get(device_serial_number="X2222")
+            a.test_results_device_begin_state=DeviceState.objects.get(device_state_id=1)
+            a.test_results_device_end_state=DeviceState.objects.get(device_state_id=2)
+            a.save()
+        except Exception as e:
+            print(e)
+        try:
+            a = TestMetric()
+            a.test_results=TestResults.objects.get(test_results_id=1)
+            a.metric=Metric.objects.get(metric_name="wifistate")
+            a.value=1
+            a.value_text="used"
+            a.save()
+        except Exception as e:
+            print(e)
+        try:
+            a = ClassMetric()
+            a.cm_class=Class.objects.get(class_id="com.dummy.dummyapp.DummyActivity")
+            a.cm_metric=Metric.objects.get(metric_name="totalenergy")
+            a.cm_value=13
+            a.cm_value_text="totalmethods"
+            a.save()
+        except Exception as e:
+            print(e)
+        try:
+            a = MethodMetric()
+            a.mm_method=Method.objects.get(method_id="com.dummy.dummyapp.DummyActivity.dummyMethod")
+            a.mm_metric=Metric.objects.get(metric_name="totalenergy")
+            a.mm_value=13
+            a.mm_value_text=""
+            a.save()
+        except Exception as e:
+            print(e)
+        try:
+            a = AppMetric()
+            a.am_app= Application.objects.get(app_id="dummy_app")
+            a.am_metric=Metric.objects.get(metric_name="totalenergy")
+            a.am_value=131
+            a.am_value_text=""
+            a.save()
+        except Exception as e:
+            print(e)
+
+        return Response("DB Populated with dummy examples", HTTP_200_OK)
+
 
 class PopulateView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
+        try:
+            a = Metric()
+            a.metric_name="externalAPI"
+            a.metric_type='s'
+            a.metric_category='a'
+            a.save()
+        except Exception as e:
+            print(e)
+        try:
+            a = Metric()
+            a.metric_name="androidAPI"
+            a.metric_type='s'
+            a.metric_category='a'
+            a.save()
+        except Exception as e:
+            print(e)
+        try:
+            a = Metric()
+            a.metric_name="javaAPI"
+            a.metric_type='s'
+            a.metric_category='a'
+            a.save()
+        except Exception as e:
+            print(e)
         try:
             a = Metric()
             a.metric_name="WifiState"
@@ -969,21 +1142,10 @@ class PopulateView(APIView):
         except Exception as e:
             print(e)
 
-        ######## APP AppBuildTool
-        try:
-            a = AppBuildTool()
-            a.build_id="Gradle"
-            a.save()
-        except Exception as e:
-            print(e)
-        try:
-            a = AppBuildTool()
-            a.build_id="SDK"
-            a.save()
-        except Exception as e:
-            print(e)
         return Response("nice", HTTP_200_OK)
        
+
+
 
 
 

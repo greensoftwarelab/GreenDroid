@@ -5,21 +5,17 @@
  */
 package jInst;
 
-import GDUtils.GDUtils;
 import Metrics.APICallUtil;
-import Metrics.ClassInfo;
+import Metrics.AndroidProjectRepresentation.ProjectInfo;
+import Metrics.AndroidProjectRepresentation.AppInfo;
 import Metrics.GDConventions;
+
 import jInst.transform.InstrumentGradleHelper;
 import jInst.transform.InstrumentHelper;
+import jInst.util.FileUtils;
 import jInst.util.XMLParser;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,7 +26,7 @@ import java.util.logging.Logger;
 public class JInst {
 
 
-    public static String getApplication(String path){
+    public static String getProjectID(String path){
         String [] x = path.split("/");
         return x.length>0? ( x[x.length-1].equals("latest")? x[x.length-2]:x[x.length-1]) :"unknown";
 
@@ -40,11 +36,10 @@ public class JInst {
 
 
     public static void main(String[] args) {
-        String classInfos = GDConventions.fileStreamName;
         String projType = args[0];
         switch (projType){
             case "-sdk":
-                if(args.length != 7){
+                if(args.length != 8){
                     System.err.println("[jInst] Error: Bad arguments length for SDK project. Expected 6, got "+args.length+".");
                     return;
                 }else{
@@ -54,16 +49,17 @@ public class JInst {
                     String tests = args[4];
                     boolean testOriented = args[5].equals("-TestOriented");
                     boolean monkeyTest = args[6].length()>6 ? args[6].equals("-Monkey") : false;
+                    String appID = args[7];
 
                     try {
-                        InstrumentHelper helper = new InstrumentHelper(tName, workspace, project, tests,testOriented);
+                        APICallUtil apu = ((APICallUtil) (new APICallUtil().fromJSONObject(new APICallUtil().fromJSONFile(project+"/"+ tName +"/"+appID+".json"))));
+                        InstrumentHelper helper = new InstrumentHelper(apu,tName, workspace, project, tests,testOriented);
                         helper.monkeyTest = monkeyTest;
-                        helper.applicationID=getApplication(project);
+                        helper.projectID = getProjectID(project);
                         helper.generateTransformedProject();
                         XMLParser.buildAppPermissionsJSON(helper.getManifest(),helper.getTransFolder());
                         helper.generateTransformedTests();
-                        classInfos = helper.getTransFolder() + classInfos;
-                        APICallUtil.serializeAPICallUtil(helper.getAcu(),classInfos );
+                        FileUtils.writeFile(new File( helper.getTransFolder()+"/appInfo.json"), helper.getAcu().toJSONObject(apu.proj.projectID).toJSONString());
 
                     } catch (Exception ex) {
                         Logger.getLogger(JInst.class.getName()).log(Level.SEVERE, null, ex);
@@ -72,10 +68,11 @@ public class JInst {
 
                 break;
             case "-gradle":
-                if(args.length != 8){
+                if(args.length != 9){
                     System.err.println("[jInst] Error: Bad arguments length for Gradle project. Expected 8, got "+args.length+".");
                     return;
                 }else{
+                    String appID = args[8];
                     String tName = args[1];
                     String workspace = args[2];
                     String project = args[3];
@@ -85,15 +82,22 @@ public class JInst {
                     boolean monkeyTest = args.length>7 ? args[7].equals("-Monkey") : false;
 
                     try {
-                        InstrumentGradleHelper helper = new InstrumentGradleHelper(tName, workspace, project, "", manifestSource, manifestTests, testOriented);
+                        //String projID = getProjectID(project);
+                        APICallUtil apu = ((APICallUtil) (new APICallUtil().fromJSONObject(new APICallUtil().fromJSONFile(project+"/"+ tName +"/"+appID+".json"))));
+                        //ProjectInfo pi = new ProjectInfo(,"gradle","");
+                        InstrumentGradleHelper helper = new InstrumentGradleHelper(apu,tName, workspace, project, "", manifestSource, manifestTests, testOriented);
                         helper.monkeyTest = monkeyTest;
-                        helper.applicationID=getApplication(project);
+                        helper.projectID = apu.proj.projectID;
+                        //Appinfo app = new Metrics.AndroidProjectRepresentation.AppInfo(helper.projectID, project, "", "Java", "Gradle", 0.0, "unknown", "unknown");
                         helper.generateTransformedProject();
                         helper.addPermission();
                         XMLParser.buildAppPermissionsJSON(manifestSource,helper.getTransFolder());
-                        classInfos = helper.getTransFolder() + classInfos;
-                        APICallUtil.serializeAPICallUtil(helper.getAcu(),classInfos );
-                       // loadAndSendApplicationJSON(project+"/"+"application.json");
+                        //classInfos = helper.getTransFolder() + classInfos;
+                        //APICallUtil.serializeAPICallUtil(helper.getAcu(),classInfos );
+
+                        FileUtils.writeFile(new File( helper.getTransFolder()+"/appInfo.json"), helper.getAcu().toJSONObject(apu.proj.projectID).toJSONString());
+
+                        // loadAndSendApplicationJSON(project+"/"+"application.json");
                     } catch (Exception ex) {
                         Logger.getLogger(JInst.class.getName()).log(Level.SEVERE, null, ex);
                     }

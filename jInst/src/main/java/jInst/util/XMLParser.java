@@ -17,7 +17,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import GDUtils.GDUtils;
+
+import GreenSourceBridge.GSUtils;
+
 import jInst.transform.InstrumentHelper;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -95,7 +97,7 @@ public class XMLParser {
         }
 
 
-        GDUtils.sendJSONtoDB("http://localhost:8000/application/",ja.toJSONString());
+        GSUtils.sendJSONtoDB("http://localhost:8000/application/",ja.toJSONString());
 
     }
 
@@ -110,8 +112,8 @@ public class XMLParser {
         JSONArray ja = new JSONArray();
         for (String permission : l){
             JSONObject jo = new JSONObject();
-            jo.put("application",InstrumentHelper.applicationID);
-            jo.put("permission", permission.toLowerCase());
+            jo.put("application",InstrumentHelper.projectID);
+            jo.put("permission", permission.toLowerCase().replace("android.permission.", ""));
             ja.add(jo);
         }
 

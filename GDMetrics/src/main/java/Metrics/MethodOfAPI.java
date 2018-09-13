@@ -1,5 +1,7 @@
 package Metrics;
 
+import Metrics.AndroidProjectRepresentation.Variable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,9 @@ public class MethodOfAPI implements Serializable {
         MethodOfAPI ne = (MethodOfAPI) obj;
         return this.api.equals(ne.api) && ( (this.method!=null&& ((MethodOfAPI) obj).method!= null) ? this.method.equals(ne.method) : true);
     }
+
+
+
 
     @Override
     public int hashCode() {

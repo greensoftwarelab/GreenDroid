@@ -6,6 +6,8 @@ package jInst.transform;
 
 //import greendroid.tools.Util;
 import Metrics.APICallUtil;
+import Metrics.AndroidProjectRepresentation.ProjectInfo;
+import Metrics.AndroidProjectRepresentation.AppInfo;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ASTHelper;
 import com.github.javaparser.JavaParser;
@@ -24,6 +26,7 @@ import com.github.javaparser.ast.type.VoidType;
 import java.io.*;
 import java.util.*;
 
+import jInst.JInst;
 import jInst.profiler.Profiler;
 import jInst.profiler.ProfilerAbstractFactory;
 import jInst.profiler.trepn.TrepnProfilerFactory;
@@ -54,7 +57,7 @@ public class InstrumentHelper {
     protected String workspace;
     public String project;
     protected String tests;
-    public static String applicationID= "";
+    public static String projectID = "";
     protected String transFolder;
     protected String transTests;
     protected String aux;
@@ -72,6 +75,45 @@ public class InstrumentHelper {
     private static ClassDefs appPackage = new ClassDefs();
     private static Profiler profiler;
     private APICallUtil acu = new APICallUtil();
+
+    public InstrumentHelper(APICallUtil apu ,String tName, String work, String proj, String tests, boolean trace) {
+        this.acu =apu;
+        //acu.app = new AppInfo(projectID, proj, "", "Java", "Gradle", 0.0, "unknown", "unknown");
+        this.tName = tName;
+        this.workspace = work;
+        this.project = proj;
+        this.tests = tests;
+        this.transFolder = project+"/"+tName+"/";
+        this.transTests = transFolder+"tests"+"/";
+        this.manifest = transFolder+"AndroidManifest.xml";
+        this.manifestTest = transTests+"AndroidManifest.xml";
+        this.projectDesc = project+".project";
+        this.aux = transFolder+"_aux_/";
+        this.devPackage = "";
+        this.packages = new ArrayList<>();
+        this.testOriented = trace;
+
+        instrumented.add("ActivityUnitTestCase");
+        instrumented.add("ActivityIntrumentationTestCase2");
+        instrumented.add("ActivityTestCase");
+        instrumented.add("ProviderTestCase");
+        instrumented.add("SingleLaunchActivityTestCase");
+        instrumented.add("SyncBaseInstrumentation");
+        instrumented.add("ActivityInstrumentationTestCase");
+        instrumented.add("ActivityInstrumentationTestCase2");
+        //instrumented.add("WizardPageActivityTestBase");
+
+        testCase.add("AndroidTestCase");
+        testCase.add("ApplicationTestCase");
+        testCase.add("LoaderTestCase");
+        testCase.add("ProviderTestCase2");
+        testCase.add("ServiceTestCase");
+        //testCase.add("TestCase");
+        //testCase.add()
+
+        setProfiler(trace);
+
+    }
 
     public String getTransFolder() {
         return transFolder;
@@ -101,8 +143,6 @@ public class InstrumentHelper {
     }
 
 
-
-
     public void setProfiler(boolean traceMethods){
 
         ProfilerAbstractFactory pfact = new TrepnProfilerFactory();
@@ -124,6 +164,7 @@ public class InstrumentHelper {
 
     public InstrumentHelper(String tName, String work, String proj, String tests, boolean trace) {
         this.acu = new APICallUtil();
+       //acu.app = new AppInfo(projectID, proj, "", "Java", "Gradle", 0.0, "unknown", "unknown");
         this.tName = tName;
         this.workspace = work;
         this.project = proj;
@@ -236,7 +277,8 @@ public class InstrumentHelper {
 
     public void generateTransformedTests() throws Exception{
         File fProject = new File(tests);
-        File fTransf = new File(transTests); fTransf.mkdir();
+        File fTransf = new File(transTests);
+        fTransf.mkdir();
         File[] listOfFiles = fProject.listFiles();
 
         //Copy all the files to the new project folder
@@ -273,7 +315,8 @@ public class InstrumentHelper {
 
     public void generateTransformedProject() throws Exception{
         File fProject = new File(project);
-        File fTransf = new File(transFolder); fTransf.mkdir();
+        File fTransf = new File(transFolder);
+        fTransf.mkdir();
         File[] listOfFiles = fProject.listFiles();
 
 
@@ -368,8 +411,6 @@ public class InstrumentHelper {
         else{
             //if file, then transform it
             if(src.getAbsolutePath().endsWith(".java")){
-
-
                 String res = "";
                 //if(src.getAbsolutePath().contains(this.tests) || src.getAbsolutePath().replace('\\', '/').contains(this.tests) || this.testType.containsKey(src)){
                 if(this.isTestCase(src)){

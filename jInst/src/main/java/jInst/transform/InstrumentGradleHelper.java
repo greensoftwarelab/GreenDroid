@@ -5,6 +5,7 @@
  */
 package jInst.transform;
 
+import Metrics.APICallUtil;
 import jInst.util.FileUtils;
 import jInst.util.PackageM;
 import jInst.util.XMLParser;
@@ -37,6 +38,14 @@ public class InstrumentGradleHelper extends InstrumentHelper{
 
     public InstrumentGradleHelper(String tName, String work, String proj, String tests, String manifSource, String manifTests, boolean trace) {
         super(tName, work, proj, tests,trace);
+        this.originalManifest = manifSource;
+        this.manifest = super.transFolder+manifSource.replace("//","/").replace(super.project.replace("//","/"), "");
+        this.manifestTest = manifTests.equals("-") ? "" : super.transTests+manifTests.replace(super.tests, "");
+//        setApplicationClass(manifSource);
+    }
+
+    public InstrumentGradleHelper(APICallUtil apu , String tName, String work, String proj, String tests, String manifSource, String manifTests, boolean trace) {
+        super(apu, tName, work, proj, tests,trace);
         this.originalManifest = manifSource;
         this.manifest = super.transFolder+manifSource.replace("//","/").replace(super.project.replace("//","/"), "");
         this.manifestTest = manifTests.equals("-") ? "" : super.transTests+manifTests.replace(super.tests, "");

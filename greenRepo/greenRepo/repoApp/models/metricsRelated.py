@@ -1,7 +1,7 @@
 from django.db import models
 from enumfields import EnumField, Enum  # Uses Ethan Furman's "enum34" backport
 from django.utils.timezone import now
-from repoApp.models.appRelated import Application , Method
+from repoApp.models.appRelated import Application , Method, Class
 from repoApp.models.testRelated import TestResults , MethodInvoked
 
 class Study(models.Model):
@@ -43,6 +43,7 @@ class TestMetric(models.Model):
     test_results = models.ForeignKey(TestResults, related_name='res', on_delete=models.CASCADE)
     metric = models.ForeignKey(Metric, related_name='metric', on_delete=models.CASCADE)
     value = models.FloatField()
+    value_text = models.CharField(max_length=32, default="")
     coeficient = models.IntegerField(default=1)
     timestamp = models.DateTimeField(default=now)
 
@@ -53,8 +54,19 @@ class AppMetric(models.Model):
     am_app = models.ForeignKey(Application, related_name='aapp', on_delete=models.CASCADE)
     am_metric = models.ForeignKey(Metric, related_name='ahasMetric', on_delete=models.CASCADE)
     am_value = models.FloatField()
+    am_value_text = models.CharField(max_length=32, default="")
     am_coeficient = models.IntegerField(default=1)
     am_timestamp = models.DateTimeField(default=now)
+
+class ClassMetric(models.Model):
+    class Meta:
+        unique_together = (('cm_class','cm_timestamp'),)
+    cm_class = models.ForeignKey(Class, related_name='classmetric', on_delete=models.CASCADE)
+    cm_metric = models.ForeignKey(Metric, related_name='chasMetric', on_delete=models.CASCADE)
+    cm_value = models.FloatField()
+    cm_value_text = models.CharField(max_length=32,default="")
+    cm_coeficient = models.IntegerField(default=1)
+    cm_timestamp = models.DateTimeField(default=now)
 
 class MethodMetric(models.Model):
     class Meta:
@@ -62,6 +74,7 @@ class MethodMetric(models.Model):
     mm_method = models.ForeignKey(Method, related_name='mmmethod', on_delete=models.CASCADE)
     mm_metric = models.ForeignKey(Metric, related_name='mmmethodHasMetric', on_delete=models.CASCADE)
     mm_value = models.FloatField()
+    mm_value_text = models.CharField(max_length=32, default="")
     mm_coeficient = models.IntegerField(default=1)
     mm_timestamp = models.DateTimeField(default=now)
     mm_method_invoked = models.ForeignKey(MethodInvoked, related_name='mmmethodHasMetric', on_delete=models.CASCADE,default=None,null=True)

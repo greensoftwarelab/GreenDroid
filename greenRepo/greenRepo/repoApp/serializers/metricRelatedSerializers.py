@@ -19,7 +19,7 @@ class TestMetricSerializer(serializers.ModelSerializer):
     class Meta:
         model = TestMetric
         list_serializer_class = TestMetricListSerializer
-        fields = ('test_results', 'metric', 'value', 'coeficient')
+        fields = ('test_results', 'metric', 'value', 'value_text', 'coeficient')
 
 class StudySerializer(serializers.ModelSerializer):
     class Meta:
@@ -27,15 +27,17 @@ class StudySerializer(serializers.ModelSerializer):
         fields = ('study_authors', 'study_publisher','study_year', 'study_isbn','study_organization')
 
 
-
-
 class AppMetricSerializer(serializers.ModelSerializer):
     class Meta:
         model = AppMetric
-        fields = ('am_app', 'am_metric','am_value', 'am_unit')
+        fields = ('am_app', 'am_metric','am_value','am_value_text','am_coeficient','am_timestamp')
 
 
 
+class ClassMetricSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClassMetric
+        fields = ('cm_class','cm_timestamp', 'cm_metric','cm_value','cm_coeficient','cm_value_text')
 
 
 

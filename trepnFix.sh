@@ -8,8 +8,8 @@ deviceDir=$1
 
 w_echo "Stopping Trepn Profiler"
 #shutdown trepn
-adb shell am broadcast –a com.quicinc.trepn.stop_profiling
-adb shell am stopservice com.quicinc.trepn/.TrepnService
+adb shell am broadcast –a com.quicinc.trepn.stop_profiling  >/dev/null 2>&1
+adb shell am stopservice com.quicinc.trepn/.TrepnService  >/dev/null 2>&1
 
 #adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
 

@@ -1,5 +1,7 @@
 package Metrics;
 
+import Metrics.AndroidProjectRepresentation.MethodInfo;
+import Metrics.AndroidProjectRepresentation.Variable;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -236,18 +238,6 @@ public class CyclomaticCalculator  {
         }
         return counter;
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
