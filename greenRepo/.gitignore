@@ -1,0 +1,4 @@
+#excluded files
+
+greenRepo/greenRepoVirtualEnv/*
+greenRepo/greenRepo/settings.py
