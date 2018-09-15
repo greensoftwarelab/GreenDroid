@@ -16,3 +16,4 @@ GDMetrics/target/*
 failedLogs/*
 gd_analysis/__pycache__/*
 runStatus.log
+greenRepo/greenRepo/greenRepoVirtualEnv/lib/*
