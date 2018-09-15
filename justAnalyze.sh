@@ -14,11 +14,13 @@ else
 fi
 
 OLDIFS=$IFS
-DIR="$HOME/GDResults/*"
+DIR="/Users/ruirua/Documents/Tese/resultados/GDResults/relevant40/*"
 
 for f in $DIR/
     do
-    rm -rf $f/Testresults.csv
+    rm -rf $f/TestResults.csv
+    rm -rf $f/AppResults.csv
     #files=$(find $f -not \( -path $f/oldRuns -prune \) -name "Green*.csv")
-    java -jar $analyzerJar $trace $f "-Monkey"  ##RR  ##RR
+    #$GD_ANALYZER $trace $projLocalDir/ $monkey
+    java -Xmx5g -jar $analyzerJar $trace $f "-Monkey"  ##RR  ##RR
 done
