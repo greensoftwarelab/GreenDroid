@@ -260,8 +260,8 @@ public class Utils {
                 for (Variable v : mi.args) {
                     args += v.isArray + v.type + v.varName;
                 }
-                String idMethod = mi.ci.classPackage + "." + mi.ci.className + "." + mi.methodName + "." + args.hashCode();
-                jo.put("method_id", idMethod);
+
+                jo.put("method_id", mi.getMethodID());
                 jo.put("method_hash_args", args.hashCode());
                 ja.add(jo);
                 Analyzer.grr.methodMetrics.addAll(getMethodsMetrics(mi));
@@ -333,7 +333,7 @@ public class Utils {
         for (Variable v : mi.args) {
             args += v.isArray + v.type + v.varName;
         }
-        String idMethod = mi.ci.classPackage + "." + mi.ci.className + "." + mi.methodName + "." + args.hashCode();
+        String idMethod =mi.getMethodID();
         JSONObject o = new JSONObject();
         o.put("mm_method", idMethod);
         o.put("mm_metric", "androidapis");

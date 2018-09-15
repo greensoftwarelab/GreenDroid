@@ -56,8 +56,7 @@ public class APICallUtil implements Serializable, JSONSerializable {
                 thisClass.classPackage = cu.getPackage().getName().toString();
                 thisClass.className = ((ClassOrInterfaceDeclaration) n).getName();
                 thisClass.isInterface = ((ClassOrInterfaceDeclaration) n).isInterface();
-                thisClass.isFinal = false;
-                thisClass.isAbstract = false; //TODO
+                thisClass.setModifiers(((ClassOrInterfaceDeclaration) n).getModifiers());
                 //set Imports
                 if (cu.getImports() != null) {
                     for (ImportDeclaration id : cu.getImports()) {
@@ -85,6 +84,7 @@ public class APICallUtil implements Serializable, JSONSerializable {
                                 cv.type = ((FieldDeclaration) x).getType().toString();
                                 cv.varName = vd.getId().getName();
                                 thisClass.classVariables.put(cv.varName, cv);
+                                thisClass.setModifiers(((FieldDeclaration) x).getModifiers());
                             }
                         }
                     }
@@ -99,6 +99,7 @@ public class APICallUtil implements Serializable, JSONSerializable {
                             }
                             mi.ci = thisClass;
                             mi.methodName = ((MethodDeclaration) x).getName();
+                            mi.setModifiers(((MethodDeclaration) x).getModifiers());
                             mi.cyclomaticComplexity = CyclomaticCalculator.cyclomaticAndAPI(x, mi);
                             //mi.nr_args = ((MethodDeclaration) x).getParameters() == null? 0 : ((MethodDeclaration) x).getParameters().size();
                             mi.linesOfCode = ((MethodDeclaration) x).getBody() != null ? SourceCodeLineCounter.getNumberOfLines(((MethodDeclaration) x).getBody().toStringWithoutComments()) - 2 : 0;
@@ -108,7 +109,14 @@ public class APICallUtil implements Serializable, JSONSerializable {
                             // iterate over stmt to sse class/instance vars usage
                             // check if methods called are internal or external
                             MethodInfo mi = new MethodInfo();
+                            if (((ConstructorDeclaration) x).getParameters() != null) {
+                                for (Parameter m : ((ConstructorDeclaration) x).getParameters()) {
+                                    boolean isArray = (m.getType() instanceof ReferenceType) ? ((ReferenceType) m.getType()).getArrayCount() > 0 : false;
+                                    mi.args.add(new Variable(m.getId().getName(), m.getType().toStringWithoutComments(), isArray));
+                                }
+                            }
                             mi.ci = thisClass;
+                            mi.setModifiers(((ConstructorDeclaration) x).getModifiers());
                             mi.methodName = ((ConstructorDeclaration) x).getName();
                             mi.cyclomaticComplexity = CyclomaticCalculator.cyclomaticAndAPI(x, mi);
                             mi.linesOfCode = ((ConstructorDeclaration) x).getBlock() != null ? SourceCodeLineCounter.getNumberOfLines(((ConstructorDeclaration) x).getBlock().toStringWithoutComments()) - 2 : 0;
@@ -280,10 +288,11 @@ public class APICallUtil implements Serializable, JSONSerializable {
 
     public MethodInfo getMethodOfClass(String method, String fullClassName) {
         MethodInfo m = new MethodInfo();
-        for (ClassInfo mi : proj.getCurrentApp().allJavaClasses) {
-            if (mi.getFullClassName().equals(fullClassName)) {
-                if (mi.getMethod(method) != null)
-                    return mi.getMethod(method);
+        for (ClassInfo ci : proj.getCurrentApp().allJavaClasses) {
+            String className = ci.getFullClassName();
+            if (ci.getFullClassName().equals(fullClassName)) {
+                if (ci.getMethod(method) != null)
+                    return ci.getMethod(method);
             }
         }
         return m;
@@ -367,20 +376,6 @@ public class APICallUtil implements Serializable, JSONSerializable {
 
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (ClassInfo ci : proj.getCurrentApp().allJavaClasses) {
-            sb.append(" " + ci.getFullClassName());
-            for (MethodInfo mi : ci.classMethods.values()) {
-                sb.append(mi);
-
-            }
-            sb.append("\n");
-        }
-        return sb.toString();
-    }
-
-    @Override
     public JSONObject toJSONObject(String requiredId) {
         return this.proj.toJSONObject(requiredId);
     }
@@ -397,5 +392,14 @@ public class APICallUtil implements Serializable, JSONSerializable {
 
 
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.proj.toString());
+        return sb.toString();
+    }
+
+
 
 }

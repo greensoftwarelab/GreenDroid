@@ -301,7 +301,7 @@ public class TestChangerVisitor extends VoidVisitorAdapter{
 
                 else {
                     //is normal test
-                    String metodo = ((ClassDefs) arg).getPack() + "." + ((ClassDefs) arg).getName()+"<" +n.getName() + ">";
+                    String metodo = InstrumentHelper.wrapMethod(n,cDef);
                     MethodCallExpr mce = ((TestOrientedProfiler) InstrumentHelper.getProfiler()).markTest(null,metodo);
                     x.add(0, new ExpressionStmt(mce));
                     n.getBody().setStmts(x);

@@ -6,6 +6,7 @@ import Analyzer.Results.TestResults;
 import GreenSourceBridge.GreenSourceAPI;
 import Metrics.*;
 import Metrics.AndroidProjectRepresentation.*;
+
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 import org.json.simple.JSONArray;
@@ -33,12 +34,10 @@ public class Analyzer {
     public static List<String> alltests= new ArrayList<>();
     public static HashSet<String> allmethods= new HashSet<>();
     public static APICallUtil acu = null;
-
     public static final String testResultsFile = GDConventions.TestOutputName;
     public static final String appResultsFile = GDConventions.AppOutputName;
     public static final String appIssuesFile = GDConventions.IssuesOutputName;
     public static final String serializedFile = GDConventions.fileStreamName;
-
     public static final String analyzerTag= "[Analyzer] ";
     public static  String folderPrefix= "Test";
     public static int stoppedState = 0;
@@ -520,7 +519,11 @@ public class Analyzer {
             MethodInfo mi = acu.getMethodOfClass(methodName,className);
             String metId= mi.getMethodID();
             metodos.add(metId);
-            grr.classes.add(mi.ci.toJSONObject(mi.ci.appID));
+            if(mi.ci!=null)
+                grr.classes.add(mi.ci.toJSONObject(mi.ci.appID));
+            else{
+               // System.out.println("metodo -> " + methodName + "  classe " + className);
+            }
         }
         return metodos;
     }
@@ -664,11 +667,10 @@ public class Analyzer {
 
     }
 
-    public static  List <String> getAllCsvsAndSendAppToDB(String resultDirPath){
 
-        //File f = new File(resultDirPath);
-        //Path path = Paths.get(f.getAbsoluteFile().getParent());
-        //System.out.println("folde3r " + path);
+
+
+    public static  List <String> getAllCsvsAndSendAppToDB(String resultDirPath){
 
         List <String> list = new ArrayList<>( );
         Path path = Paths.get(resultDirPath);
@@ -762,32 +764,46 @@ public class Analyzer {
             mergeOldRuns = false;
             List<String> x = getAllCsvsAndSendAppToDB(resultDirPath);
             list.addAll(x);
-            mergeOldRuns = true;
+        mergeOldRuns = true;
+    }
+
+        try{
+            acu = ((APICallUtil) new APICallUtil().fromJSONObject( new APICallUtil().fromJSONFile(projectAppJSONFile)));
+        }
+        catch (Exception e){
+            e.printStackTrace();
         }
 
+        JSONObject jo = acu.proj.toJSONObject("");
+        String projectToSend = jo.toJSONString();
 
-       grr.app=GreenSourceAPI.sendApplicationToDB( GreenSourceAPI.loadApplication(pathApp).toJSONString());
+       grr.project = ((JSONObject) GreenSourceAPI.sendProjectToDB(projectToSend));
+        AppInfo app = acu.proj.getCurrentApp();
+        app.appFlavor="demo";
+        app.buildType="c";
+        app.appDescription="";
+
+        JSONObject appl =  app.toJSONObject(acu.proj.projectID);
+        String x = appl.toJSONString();
+       grr.app=GreenSourceAPI.sendApplicationToDB(appl.toJSONString());
         GreenSourceAPI.sendAppPermissionsToDB( GreenSourceAPI.loadAppPermissions(pathPermissions).toJSONString());
-       grr.device=GreenSourceAPI.sendDeviceToDB( GreenSourceAPI.loadDevice(pathDevice).toJSONString());
+       grr.device= GreenSourceAPI.loadDevice(pathDevice);
+       GreenSourceAPI.sendDeviceToDB( grr.device.toJSONString());
         return list;
     }
 
-    public static String getApplication(String path){
-        String [] x = path.split("/");
-        return x.length>0? x[x.length-1]:"unknown";
-    }
+
 
     public static void main(String[] args) {
         Utils u = new Utils();
         //energyGreadyAPIS = u.parseAndroidApis();
-        GreenSourceAPI.operationalBackend = true; //TODO
+        GreenSourceAPI.operationalBackend = false; //TODO
         mergeOldRuns = false; // TODO
         if (args.length>2) {
             isTestOriented = args[0].equals("-TestOriented");
             if(!isTestOriented)
                 folderPrefix="Method";
             resultDirPath =args[1];
-            applicationID =getApplication(resultDirPath);
             stoppedState = args[2].equals("-Monkey")?2:0;
             monkey=stoppedState==2;
             folderPrefix = monkey? "Monkey" + folderPrefix : folderPrefix;
@@ -797,17 +813,14 @@ public class Analyzer {
 
             if (isTestOriented) {
                 try {
-                    try{
-                        acu = ((APICallUtil) new APICallUtil().fromJSONObject(new APICallUtil().fromJSONFile((projectAppJSONFile))));
-                    }
-                    catch (Exception e){
-                        e.printStackTrace();
-                    }
-                    grr.project = ((JSONObject) GreenSourceAPI.sendProjectToDB(acu.proj.toJSONObject("").toJSONString()).get(0));
 
                     List<String> allcsvs = getAllCsvsAndSendAppToDB(resultDirPath); // this send apppermissions.json
+                    applicationID = acu.proj.getCurrentApp().appID;
+                  //  grr.project = ((JSONObject) GreenSourceAPI.sendProjectToDB(acu.proj.toJSONObject("").toJSONString()).get(0));
+
+
                     grr.test =  Utils.getTest();
-                    grr.test = GreenSourceAPI.sendTestToDB(grr.test.toJSONString());
+                    grr.test = GreenSourceAPI.sendTestToDB(grr.test.toJSONString()); // must be this way to get retrive internal test id
 
                     grr.methods.addAll(Utils.getAppMethodsAndMetrics(acu));
                     testOriented(allcsvs);

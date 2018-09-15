@@ -59,7 +59,7 @@ public class JInst {
                         helper.generateTransformedProject();
                         XMLParser.buildAppPermissionsJSON(helper.getManifest(),helper.getTransFolder());
                         helper.generateTransformedTests();
-                        FileUtils.writeFile(new File( helper.getTransFolder()+"/appInfo.json"), helper.getAcu().toJSONObject(apu.proj.projectID).toJSONString());
+                        FileUtils.writeFile(new File( project+"/"+ tName +"/"+appID+".json"), helper.getAcu().toJSONObject(apu.proj.projectID).toJSONString());
 
                     } catch (Exception ex) {
                         Logger.getLogger(JInst.class.getName()).log(Level.SEVERE, null, ex);
@@ -82,20 +82,16 @@ public class JInst {
                     boolean monkeyTest = args.length>7 ? args[7].equals("-Monkey") : false;
 
                     try {
-                        //String projID = getProjectID(project);
                         APICallUtil apu = ((APICallUtil) (new APICallUtil().fromJSONObject(new APICallUtil().fromJSONFile(project+"/"+ tName +"/"+appID+".json"))));
-                        //ProjectInfo pi = new ProjectInfo(,"gradle","");
+                        apu.proj.projectBuildTool="gradle";
+                        apu.proj.projectDescription="";
                         InstrumentGradleHelper helper = new InstrumentGradleHelper(apu,tName, workspace, project, "", manifestSource, manifestTests, testOriented);
                         helper.monkeyTest = monkeyTest;
                         helper.projectID = apu.proj.projectID;
-                        //Appinfo app = new Metrics.AndroidProjectRepresentation.AppInfo(helper.projectID, project, "", "Java", "Gradle", 0.0, "unknown", "unknown");
                         helper.generateTransformedProject();
                         helper.addPermission();
                         XMLParser.buildAppPermissionsJSON(manifestSource,helper.getTransFolder());
-                        //classInfos = helper.getTransFolder() + classInfos;
-                        //APICallUtil.serializeAPICallUtil(helper.getAcu(),classInfos );
-
-                        FileUtils.writeFile(new File( helper.getTransFolder()+"/appInfo.json"), helper.getAcu().toJSONObject(apu.proj.projectID).toJSONString());
+                        FileUtils.writeFile(new File( project+"/"+ tName +"/"+appID+".json"), helper.getAcu().toJSONObject(apu.proj.projectID).toJSONString());
 
                         // loadAndSendApplicationJSON(project+"/"+"application.json");
                     } catch (Exception ex) {

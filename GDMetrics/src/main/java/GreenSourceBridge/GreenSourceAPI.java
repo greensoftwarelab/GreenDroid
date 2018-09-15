@@ -17,7 +17,7 @@ public class GreenSourceAPI {
     private static final String greenRepoURL = "http://localhost:8000/";
     private static String testUlr = "tests/";
     private static String appsUlr = "apps/";
-    private static String projectsUlr = "project/";
+    private static String projectsUlr = "projects/";
     private static String testsResultsUlr = "tests/results/";
     private static String appPermissionsUrl = "apps/permissions/";
     private static String devicesUrl = "devices/";
@@ -383,101 +383,142 @@ public class GreenSourceAPI {
 
     public static JSONArray sendMethodsInvokedToDB(String json) {
 
-        Pair<Integer,String> res = GSUtils.sendJSONtoDB(greenRepoURL + methodsInvokedUrl, json);
-        JSONParser parser = new JSONParser();
-        JSONArray jsonObject = new JSONArray();
-        if (res.first!=200) {
-            System.out.println("FATAL ERROR ! HTTP CODE != 200 . something went wrong check internet connection or methods JSON FILE");
-            return null;
-        }
-        try {
-            Object obj = parser.parse(res.second);
-            jsonObject = (JSONArray) obj;
+        if (operationalBackend){
 
-        } catch (ParseException e) {
-            e.printStackTrace();
+            Pair<Integer,String> res = GSUtils.sendJSONtoDB(greenRepoURL + methodsInvokedUrl, json);
+            JSONParser parser = new JSONParser();
+            JSONArray jsonObject = new JSONArray();
+            if (res.first!=200) {
+                System.out.println("FATAL ERROR ! HTTP CODE != 200 . something went wrong check internet connection or methods JSON FILE");
+                return null;
+            }
+            try {
+                Object obj = parser.parse(res.second);
+                jsonObject = (JSONArray) obj;
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            return jsonObject;
         }
 
-        return jsonObject;
+        else{
+            return  new JSONArray();
+        }
+
+
     }
 
-    public static JSONArray sendProjectToDB(String json) {
+    public static JSONObject sendProjectToDB(String json) {
 
-        Pair<Integer,String> res = GSUtils.sendJSONtoDB(greenRepoURL + projectsUlr, json);
-        JSONParser parser = new JSONParser();
-        JSONArray jsonObject = new JSONArray();
-        if (res.first!=200) {
-            System.out.println("FATAL ERROR ! HTTP CODE != 200 . something went wrong check internet connection or methods JSON FILE");
-            return null;
+
+        if (operationalBackend){
+            Pair<Integer,String> res = GSUtils.sendJSONtoDB(greenRepoURL + projectsUlr, json);
+            JSONParser parser = new JSONParser();
+            JSONObject jsonObject = new JSONObject();
+            if (res.first!=200) {
+                System.out.println("FATAL ERROR ! HTTP CODE != 200 . something went wrong check internet connection or methods JSON FILE");
+                return null;
+            }
+            try {
+                Object obj = parser.parse(res.second);
+                jsonObject = (JSONObject) obj;
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            return jsonObject;
         }
-        try {
-            Object obj = parser.parse(res.second);
-            jsonObject = (JSONArray) obj;
 
-        } catch (ParseException e) {
-            e.printStackTrace();
+        else{
+            return  new JSONObject();
         }
 
-        return jsonObject;
+
     }
     public static JSONArray sendClassesToDB(String json) {
 
-        Pair<Integer,String> res = GSUtils.sendJSONtoDB(greenRepoURL + classesUrl, json);
-        JSONParser parser = new JSONParser();
-        JSONArray jsonObject = new JSONArray();
-        if (res.first!=200) {
-            System.out.println("FATAL ERROR ! HTTP CODE != 200 . something went wrong check internet connection or methods JSON FILE");
-            return null;
-        }
-        try {
-            Object obj = parser.parse(res.second);
-            jsonObject = (JSONArray) obj;
+        if (operationalBackend){
+            Pair<Integer,String> res = GSUtils.sendJSONtoDB(greenRepoURL + classesUrl, json);
+            JSONParser parser = new JSONParser();
+            JSONArray jsonObject = new JSONArray();
+            if (res.first!=200) {
+                System.out.println("FATAL ERROR ! HTTP CODE != 200 . something went wrong check internet connection or methods JSON FILE");
+                return null;
+            }
+            try {
+                Object obj = parser.parse(res.second);
+                jsonObject = (JSONArray) obj;
 
-        } catch (ParseException e) {
-            e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            return jsonObject;
         }
 
-        return jsonObject;
+        else{
+            return  new JSONArray();
+        }
+
+
     }
 
     public static JSONArray sendAppMetricsToDB(String json) {
 
-        Pair<Integer,String> res = GSUtils.sendJSONtoDB(greenRepoURL + appsMetricsUrl, json);
-        JSONParser parser = new JSONParser();
-        JSONArray jsonObject = new JSONArray();
-        if (res.first!=200) {
-            System.out.println("FATAL ERROR ! HTTP CODE != 200 . something went wrong check internet connection or methods JSON FILE");
-            return null;
-        }
-        try {
-            Object obj = parser.parse(res.second);
-            jsonObject = (JSONArray) obj;
+        if (operationalBackend){
+            Pair<Integer,String> res = GSUtils.sendJSONtoDB(greenRepoURL + appsMetricsUrl, json);
+            JSONParser parser = new JSONParser();
+            JSONArray jsonObject = new JSONArray();
+            if (res.first!=200) {
+                System.out.println("FATAL ERROR ! HTTP CODE != 200 . something went wrong check internet connection or methods JSON FILE");
+                return null;
+            }
+            try {
+                Object obj = parser.parse(res.second);
+                jsonObject = (JSONArray) obj;
 
-        } catch (ParseException e) {
-            e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            return jsonObject;
         }
 
-        return jsonObject;
+        else{
+            return  new JSONArray();
+        }
+
     }
 
     public static JSONArray sendClassMetricsToDB(String json) {
 
-        Pair<Integer,String> res = GSUtils.sendJSONtoDB(greenRepoURL + classesMetricsUrl, json);
-        JSONParser parser = new JSONParser();
-        JSONArray jsonObject = new JSONArray();
-        if (res.first!=200) {
-            System.out.println("FATAL ERROR ! HTTP CODE != 200 . something went wrong check internet connection or methods JSON FILE");
-            return null;
-        }
-        try {
-            Object obj = parser.parse(res.second);
-            jsonObject = (JSONArray) obj;
+        if (operationalBackend){
+            Pair<Integer,String> res = GSUtils.sendJSONtoDB(greenRepoURL + classesMetricsUrl, json);
+            JSONParser parser = new JSONParser();
+            JSONArray jsonObject = new JSONArray();
+            if (res.first!=200) {
+                System.out.println("FATAL ERROR ! HTTP CODE != 200 . something went wrong check internet connection or methods JSON FILE");
+                return null;
+            }
+            try {
+                Object obj = parser.parse(res.second);
+                jsonObject = (JSONArray) obj;
 
-        } catch (ParseException e) {
-            e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            return jsonObject;
         }
 
-        return jsonObject;
+        else{
+            return  new JSONArray();
+        }
+
+
     }
 
 

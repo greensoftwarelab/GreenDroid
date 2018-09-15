@@ -3,6 +3,7 @@ package Metrics.AndroidProjectRepresentation;
 
 
 import Metrics.NameExpression;
+import com.github.javaparser.ast.body.ModifierSet;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -23,7 +24,7 @@ public class ClassInfo implements Serializable, JSONSerializable {
     public String accessModifier = "public"; //TODO
     public String classPackage = "";
     public String className = "";
-    public String extendedClass = null;
+    public String extendedClass = "";
     public Set<NameExpression> classImports = new HashSet<>();
     public Map<String, MethodInfo> classMethods = new HashMap<>();
     public Map<String, Variable> classVariables = new HashMap<>();
@@ -35,6 +36,12 @@ public class ClassInfo implements Serializable, JSONSerializable {
         return this.className.hashCode();
     }
 
+
+    public void setModifiers(int modifiers) {
+        this.isAbstract = ModifierSet.isAbstract(modifiers);
+        this.isFinal = ModifierSet.isFinal(modifiers);
+        this.accessModifier = ModifierSet.isPublic(modifiers)? "public" : (ModifierSet.isProtected(modifiers)? "protected" : (ModifierSet.isPrivate(modifiers)? "private": ""));
+    }
 
     public ClassInfo (String appID){
 
@@ -76,7 +83,7 @@ public class ClassInfo implements Serializable, JSONSerializable {
         jo.put("class_imports", imports);
         JSONArray methods = new JSONArray();
         for (MethodInfo mi : this.classMethods.values()){
-            JSONObject m= mi.methodInfoToJSON();
+            JSONObject m= mi.methodInfoToJSON(this.getClassID());
             methods.add(m);
 
         }
@@ -108,7 +115,11 @@ public class ClassInfo implements Serializable, JSONSerializable {
     }
 
     public MethodInfo getMethod(String methodName){
-        return classMethods.get(methodName);
+        for (String s : this.classMethods.keySet()){
+            if (s.contains(methodName));
+                return this.classMethods.get(s);
+        }
+        return null;
     }
 
 
@@ -150,23 +161,36 @@ public class ClassInfo implements Serializable, JSONSerializable {
             }
         }
 
-        for (Object o : ((JSONArray) jo.get("class_methods"))){
-            JSONObject job = ((JSONObject) o);
-            if (job.containsKey("method_id")){
-                MethodInfo mi = new MethodInfo();
-                mi.ci = classe;
-                mi = ((MethodInfo) mi.fromJSONObject(jo));
-                classe.classMethods.put(mi.getMethodID(), mi);
+        if (jo.containsKey("class_methods")){
+            JSONArray jj = ((JSONArray) jo.get("class_methods"));
+            if (!jo.isEmpty()){
+                for (Object o : jj){
+                    JSONObject job = ((JSONObject) o);
+                    if (job.containsKey("method_id")){
+                        MethodInfo mi = new MethodInfo();
+                        mi = ((MethodInfo) new MethodInfo().fromJSONObject(job));
+                        mi.ci = classe;
+                        classe.classMethods.put(mi.getMethodID(),mi );
+                    }
+                }
+            }
+
+        }
+
+        if (jo.containsKey("class_vars")){
+            JSONArray jj = ((JSONArray) jo.get("class_vars"));
+            if (!jj.isEmpty()){
+                for (Object o : jj){
+                    JSONObject job = ((JSONObject) o);
+                    if (job.containsKey("var_type")){
+                        Variable v = ((Variable) new Variable().fromJSONObject(job));
+                        classe.classVariables.put(v.varName, v);
+                    }
+                }
             }
         }
 
-        for (Object o : ((JSONArray) jo.get("class_vars"))){
-            JSONObject job = ((JSONObject) o);
-            if (job.containsKey("var_type")){
-                Variable v = ((Variable) new Variable().fromJSONObject(job));
-                classe.classVariables.put(v.varName, v);
-            }
-        }
+
         return classe;
 
     }

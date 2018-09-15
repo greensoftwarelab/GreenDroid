@@ -8,19 +8,19 @@ package jInst.transform;
 import Metrics.APICallUtil;
 import Metrics.AndroidProjectRepresentation.ProjectInfo;
 import Metrics.AndroidProjectRepresentation.AppInfo;
+import Metrics.AndroidProjectRepresentation.Variable;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ASTHelper;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.ModifierSet;
+import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.type.VoidType;
 
 import java.io.*;
@@ -1227,6 +1227,53 @@ public class InstrumentHelper {
         metodo.setArgs(list);
         return exp;
     }
+
+
+    public static String wrapMethod(MethodDeclaration n, ClassDefs arg){
+
+        String metId=  ((ClassDefs) arg).getPack() + "." + ((ClassDefs) arg).getName()+"<"+n.getName();
+        metId +="(";
+        Set<Variable> args = new HashSet<>();
+
+        if (n.getParameters()!=null){
+            for (Parameter m : ((MethodDeclaration) n).getParameters()) {
+                boolean isArray = (m.getType() instanceof ReferenceType) ? ((ReferenceType) m.getType()).getArrayCount() > 0 : false;
+                args.add(new Variable(m.getId().getName(), m.getType().toStringWithoutComments(), isArray));
+            }
+        }
+
+
+        for (Variable v : args) {
+            metId += "#" + v.type;
+        }
+        metId +=")";
+        metId += ">";
+        return metId;
+
+    }
+
+    public static String wrapMethod(ConstructorDeclaration n, ClassDefs arg){
+
+        String metId=  ((ClassDefs) arg).getPack() + "." + ((ClassDefs) arg).getName()+"<"+n.getName();
+        metId +="(";
+        Set<Variable> args = new HashSet<>();
+
+        if (n.getParameters()!=null){
+            for (Parameter m : ((ConstructorDeclaration) n).getParameters()) {
+                boolean isArray = (m.getType() instanceof ReferenceType) ? ((ReferenceType) m.getType()).getArrayCount() > 0 : false;
+                args.add(new Variable(m.getId().getName(), m.getType().toStringWithoutComments(), isArray));
+            }
+        }
+
+        for (Variable v : args) {
+            metId += "#" + v.type;
+        }
+        metId +=")";
+        metId += ">";
+        return metId;
+
+    }
+
 
 
 //    public static String inferContext(ClassOrInterfaceDeclaration cid ) {

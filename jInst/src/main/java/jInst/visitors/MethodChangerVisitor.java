@@ -336,12 +336,12 @@ public class MethodChangerVisitor extends VoidVisitorAdapter {
        // if((modifiers & Modifier.STATIC ) != 0) return;
         //All the arguments for the function call
         //Expression className = new StringLiteralExpr(cDef.getDescriptor());
-        String metodo = ((ClassDefs) arg).getPack() + "." + ((ClassDefs) arg).getName()+"<" +n.getName() + ">";
-        Expression method = new StringLiteralExpr( ((ClassDefs) arg).getPack() + "." + ((ClassDefs) arg).getName()+"<" +n.getName() + ">");
+        String metodo = InstrumentHelper.wrapMethod(n,cDef);
+        //Expression method = new StringLiteralExpr( ((ClassDefs) arg).getPack() + "." + ((ClassDefs) arg).getName()+"<" +n.getName() + ">");
 
 //---write the string to the file---
         try {
-            osw.write(((ClassDefs) arg).getPack() + "." + ((ClassDefs) arg).getName()+"<" +n.getName() + ">"+ "\n");
+            osw.write(metodo+"\n");
             osw.flush();
             osw.close();
 

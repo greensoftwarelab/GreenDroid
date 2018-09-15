@@ -1,5 +1,6 @@
 package Metrics.AndroidProjectRepresentation;
 
+import com.github.javaparser.ast.body.ModifierSet;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -15,9 +16,29 @@ public class Variable implements Serializable, JSONSerializable{
     public boolean isFinal = false;
     public boolean isVolatile = false;
     public boolean isTransient = false;
+    public String accessModifier = "";
 
+    public void setModifiers(int modifiers) {
+        this.isStatic = ModifierSet.isStatic(modifiers);
+        this.isTransient = ModifierSet.isTransient(modifiers);
+        this.isFinal = ModifierSet.isFinal(modifiers);
+        this.isVolatile = ModifierSet.isVolatile(modifiers);
+        this.accessModifier = ModifierSet.isPublic(modifiers)? "public" : (ModifierSet.isProtected(modifiers)? "protected" : (ModifierSet.isPrivate(modifiers)? "private": ""));
+    }
 
-
+    @Override
+    public String toString() {
+        return "Variable{" +
+                "type='" + type + '\'' +
+                ", varName='" + varName + '\'' +
+                ", isStatic=" + isStatic +
+                ", isArray=" + isArray +
+                ", isFinal=" + isFinal +
+                ", isVolatile=" + isVolatile +
+                ", isTransient=" + isTransient +
+                ", accessModifier='" + accessModifier + '\'' +
+                '}';
+    }
 
     public Variable(String varName, String type) {
         this.type = type;
@@ -40,11 +61,6 @@ public class Variable implements Serializable, JSONSerializable{
         Variable ne = (Variable) obj;
        // return this.type.equals(ne.type) && this.varName.equals(ne.varName);
         return this.varName.equals(ne.varName);
-    }
-
-    @Override
-    public String toString() {
-        return this.type + " " + this.varName;
     }
 
     @Override

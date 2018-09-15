@@ -3,13 +3,16 @@ package Metrics.AndroidProjectRepresentation;
 
 
 import Metrics.MethodOfAPI;
+import com.github.javaparser.ast.body.ModifierSet;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.FileReader;
 import java.io.Serializable;
+import java.lang.reflect.Modifier;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 
@@ -56,14 +59,14 @@ public class MethodInfo implements Serializable, JSONSerializable {
 
 
 
-    public JSONObject methodInfoToJSON (){
+    public JSONObject methodInfoToJSON (String classID){
         JSONObject method = new JSONObject();
         method.put("method_id", this.getMethodID());
         method.put("method_name", this.methodName);
         method.put("method_non_acc_mod",  (this.isSynchronized? "#synchronized" : "" )+ (this.isFinal? "#final" : "" )+ (this.isStatic? "#static" : ""  ));
         method.put("method_acc_modifier", this.accessModifier);
 
-        method.put("method_class", this.ci.getClassID());
+        method.put("method_class", classID);
         JSONArray methodMetrics = new JSONArray();
 
         methodMetrics.add(getMethodMetric(this.getMethodID(),"loc", this.linesOfCode, "",null));
@@ -155,11 +158,6 @@ public class MethodInfo implements Serializable, JSONSerializable {
         return this.methodName.hashCode() + new Integer(this.args.size()).hashCode();
     }
 
-    @Override
-    public String toString() {
-        return methodName + "  cc -> " + cyclomaticComplexity + " loc -> " + linesOfCode  ;
-    }
-
     // Add correct
     public void addRespectiveAPI(MethodOfAPI x){
         if (!this.declaredVars.contains(new Variable(x.api,""))){
@@ -208,126 +206,168 @@ public class MethodInfo implements Serializable, JSONSerializable {
 
     @Override
     public JSONObject toJSONObject(String classID) {
-        return this.methodInfoToJSON();
+        return this.methodInfoToJSON(classID);
     }
 
     @Override
     public JSONSerializable fromJSONObject(JSONObject jo) {
         MethodInfo mi = new MethodInfo();
-        mi.methodName = ((String) jo.get("method_name"));
-        mi.isFinal = ((String) jo.get("method_non_acc_mod")).contains("final");
-        mi.isSynchronized = ((String) jo.get("method_non_acc_mod")).contains("ynchronized");
-        mi.isStatic = ((String) jo.get("method_non_acc_mod")).contains("static");
-        mi.accessModifier = ((String) jo.get("method_acc_modifier"));
+        mi.methodName = (String)jo.get("method_name");
+        if (jo.containsKey("method_non_acc_mod") && jo.get("method_non_acc_mod") != null) {
+            mi.isFinal = ((String)jo.get("method_non_acc_mod")).contains("final");
+            mi.isSynchronized = ((String)jo.get("method_non_acc_mod")).contains("ynchronized");
+            mi.isStatic = ((String)jo.get("method_non_acc_mod")).contains("static");
+        }
 
-        for (Object o : ((JSONArray) jo.get("method_declared_vars"))){
-            JSONObject job = ((JSONObject) o);
-            if (job.containsKey("var_type")){
-                Variable v = ((Variable) new Variable().fromJSONObject(job));
-                mi.declaredVars.add(v);
+        mi.accessModifier = (String)jo.get("method_acc_modifier");
+        JSONArray methodMetrics;
+        Iterator var4;
+        Object ob;
+        JSONObject metric;
+        Variable v;
+        if (jo.containsKey("method_declared_vars")) {
+            methodMetrics = (JSONArray)jo.get("method_declared_vars");
+            if (!methodMetrics.isEmpty()) {
+                var4 = methodMetrics.iterator();
+
+                while(var4.hasNext()) {
+                    ob = var4.next();
+                    metric = (JSONObject)ob;
+                    if (metric.containsKey("var_type")) {
+                        v = (Variable)(new Variable()).fromJSONObject(metric);
+                        mi.declaredVars.add(v);
+                    }
+                }
             }
         }
 
-        for (Object o : ((JSONArray) jo.get("method_declared_vars"))){
-            JSONObject job = ((JSONObject) o);
-            if (job.containsKey("var_type")){
-                Variable v = ((Variable) new Variable().fromJSONObject(job));
-                mi.declaredVars.add(v);
+
+        String metricName;
+        if (jo.containsKey("method_args")) {
+            String[] args = ((String)jo.get("method_args")).split("#");
+            if (args.length >= 1) {
+                String[] var17 = args;
+                int var18 = args.length;
+
+                for(int var19 = 0; var19 < var18; ++var19) {
+                    metricName = var17[var19];
+                    if (!metricName.isEmpty()) {
+                        Variable vv = new Variable();
+                        vv.isArray = metricName.contains("[]");
+                        vv.type = metricName.replaceAll("\\[\\]", "");
+                        mi.args.add(vv);
+                    }
+                }
             }
         }
 
-        String [] args = ((String) jo.get("method_args")).split("#");
-        if (args.length>1){
-            for (String s : args){
-                if (!s.isEmpty()){
-                    Variable v = new Variable();
-                    v.isArray = s.contains("[]");
-                    v.type = s.replaceAll("\\[\\]","");
-                    mi.args.add(v);
-                }
+        if (jo.containsKey("method_metrics")) {
+            methodMetrics = (JSONArray)jo.get("method_metrics");
+            var4 = methodMetrics.iterator();
 
-            }
-        }
+            while(true) {
+                MethodOfAPI moa;
+                String[] apiArgs;
+                String[] var11;
+                int var12;
+                int var13;
+                String s;
+                Variable vv;
+                String[] api;
+                do {
+                    do {
+                        do {
+                            if (!var4.hasNext()) {
+                                return mi;
+                            }
 
-        JSONArray methodMetrics = ((JSONArray) jo.get("method_metrics"));
-        for (Object ob : methodMetrics){
-            JSONObject metric = (JSONObject) ob;
+                            ob = var4.next();
+                            metric = (JSONObject)ob;
+                        } while(!metric.containsKey("metric_name"));
 
-            if (metric.containsKey("metric_name")){
-                String metricName = (String) metric.get("metric_name");
-                if (metricName.equals("loc")){
-                    mi.linesOfCode = ((int) metric.get("mm_value"));
-                }
-                if (metricName.equals("cc")){
-                    mi.cyclomaticComplexity = ((int) metric.get("mm_value"));
-                }
-                if (metricName.equals("androidapi")){
-                    String [] api = ((String) metric.get("mm_value_text")).split("\\|");
-                    if(api.length>2){
-                        MethodOfAPI moa = new MethodOfAPI(api[0].replace("API:", ""),api[1].replace("method:",""));
-                        String [] apiArgs =  (api[2].substring(api[2].indexOf("(")+1,api[2].indexOf(")"))).split("#");
-                        if (apiArgs.length>1){
-                            for (String s : apiArgs){
-                                if (!s.isEmpty()){
-                                    Variable v = new Variable();
-                                    v.isArray = s.contains("[]");
-                                    v.type = s.replaceAll("\\[\\]","");
-                                    moa.args.add(v);
+                        metricName = (String)metric.get("metric_name");
+                        if (metricName.equals("loc")) {
+                            mi.linesOfCode = ((Integer)metric.get("mm_value")).intValue();
+                        }
+
+                        if (metricName.equals("cc")) {
+                            mi.cyclomaticComplexity = ((Integer)metric.get("mm_value")).intValue();
+                        }
+
+                        if (metricName.equals("androidapi")) {
+                            api = ((String)metric.get("mm_value_text")).split("\\|");
+                            if (api.length > 2) {
+                                moa = new MethodOfAPI(api[0].replace("API:", ""), api[1].replace("method:", ""));
+                                apiArgs = api[2].substring(api[2].indexOf("(") + 1, api[2].indexOf(")")).split("#");
+                                if (apiArgs.length > 1) {
+                                    var11 = apiArgs;
+                                    var12 = apiArgs.length;
+
+                                    for(var13 = 0; var13 < var12; ++var13) {
+                                        s = var11[var13];
+                                        if (!s.isEmpty()) {
+                                            v = new Variable();
+                                            v.isArray = s.contains("[]");
+                                            v.type = s.replaceAll("\\[\\]", "");
+                                            moa.args.add(v);
+                                        }
+                                    }
                                 }
 
+                                mi.androidApi.add(moa);
                             }
                         }
-                        mi.androidApi.add(moa);
-                    }
 
-                }
-                if (metricName.equals("javaapi")){
-                    String [] api = ((String) metric.get("mm_value_text")).split("\\|");
-                    if(api.length>2){
-                        MethodOfAPI moa = new MethodOfAPI(api[0].replace("API:", ""),api[1].replace("method:",""));
-                        String [] apiArgs =  (api[2].substring(api[2].indexOf("(")+1,api[2].indexOf(")"))).split("#");
-                        if (apiArgs.length>1){
-                            for (String s : apiArgs){
-                                if (!s.isEmpty()){
-                                    Variable v = new Variable();
-                                    v.isArray = s.contains("[]");
-                                    v.type = s.replaceAll("\\[\\]","");
-                                    moa.args.add(v);
+                        if (metricName.equals("javaapi")) {
+                            api = ((String)metric.get("mm_value_text")).split("\\|");
+                            if (api.length > 2) {
+                                moa = new MethodOfAPI(api[0].replace("API:", ""), api[1].replace("method:", ""));
+                                apiArgs = api[2].substring(api[2].indexOf("(") + 1, api[2].indexOf(")")).split("#");
+                                if (apiArgs.length > 1) {
+                                    var11 = apiArgs;
+                                    var12 = apiArgs.length;
+
+                                    for(var13 = 0; var13 < var12; ++var13) {
+                                        s = var11[var13];
+                                        if (!s.isEmpty()) {
+                                            v = new Variable();
+                                            v.isArray = s.contains("[]");
+                                            v.type = s.replaceAll("\\[\\]", "");
+                                            moa.args.add(v);
+                                        }
+                                    }
                                 }
 
+                                mi.javaApi.add(moa);
                             }
                         }
-                        mi.javaApi.add(moa);
-                    }
+                    } while(!metricName.equals("externalapi"));
 
-                }
-                if (metricName.equals("externalapi")){
-                    String [] api = ((String) metric.get("mm_value_text")).split("\\|");
-                    if(api.length>2){
-                        MethodOfAPI moa = new MethodOfAPI(api[0].replace("API:", ""),api[1].replace("method:",""));
-                        String [] apiArgs =  (api[2].substring(api[2].indexOf("(")+1,api[2].indexOf(")"))).split("#");
-                        if (apiArgs.length>1){
-                            for (String s : apiArgs){
-                                if (!s.isEmpty()){
-                                    Variable v = new Variable();
-                                    v.isArray = s.contains("[]");
-                                    v.type = s.replaceAll("\\[\\]","");
-                                    moa.args.add(v);
-                                }
+                    api = ((String)metric.get("mm_value_text")).split("\\|");
+                } while(api.length <= 2);
 
-                            }
+                moa = new MethodOfAPI(api[0].replace("API:", ""), api[1].replace("method:", ""));
+                apiArgs = api[2].substring(api[2].indexOf("(") + 1, api[2].indexOf(")")).split("#");
+                if (apiArgs.length > 1) {
+                    var11 = apiArgs;
+                    var12 = apiArgs.length;
+
+                    for(var13 = 0; var13 < var12; ++var13) {
+                        s = var11[var13];
+                        if (!s.isEmpty()) {
+                            v = new Variable();
+                            v.isArray = s.contains("[]");
+                            v.type = s.replaceAll("\\[\\]", "");
+                            moa.args.add(v);
                         }
-                        mi.externalApi.add(moa);
                     }
-
                 }
+
+                mi.externalApi.add(moa);
             }
-
+        } else {
+            return mi;
         }
-
-
-        return mi;
-
     }
 
     @Override
@@ -346,5 +386,32 @@ public class MethodInfo implements Serializable, JSONSerializable {
         }
 
         return ja;
+    }
+
+    public void setModifiers(int modifiers) {
+        this.isStatic = ModifierSet.isStatic(modifiers);
+        this.isSynchronized = ModifierSet.isSynchronized(modifiers);
+        this.isFinal = ModifierSet.isFinal(modifiers);
+        this.accessModifier = ModifierSet.isPublic(modifiers)? "public" : (ModifierSet.isProtected(modifiers)? "protected" : (ModifierSet.isPrivate(modifiers)? "private": ""));
+    }
+
+    @Override
+    public String toString() {
+        return "MethodInfo{" +
+                "externalApi=" + externalApi +
+                ", androidApi=" + androidApi +
+                ", javaApi=" + javaApi +
+                ", unknownApi=" + unknownApi +
+                ", declaredVars=" + declaredVars +
+                ", args=" + args +
+                ", isStatic=" + isStatic +
+                ", isSynchronized=" + isSynchronized +
+                ", isFinal=" + isFinal +
+                ", linesOfCode=" + linesOfCode +
+                ", cyclomaticComplexity=" + cyclomaticComplexity +
+                ", accessModifier='" + accessModifier + '\'' +
+                ", methodName='" + methodName + '\'' +
+                ", ci=" + ci +
+                '}';
     }
 }

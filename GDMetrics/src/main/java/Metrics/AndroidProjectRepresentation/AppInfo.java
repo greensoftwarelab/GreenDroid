@@ -1,5 +1,6 @@
 package Metrics.AndroidProjectRepresentation;
 
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -14,7 +15,7 @@ public class AppInfo implements Serializable, JSONSerializable {
     public String appID="unknown";
     public String appLocation="/unknown";
     public String appDescription="";
-    public double appVersion=1.0;
+    public double appVersion=0.0;
     public String appFlavor="demo"; // demo or full -> https://developer.android.com/studio/build/build-variants
     public String buildType="release"; // debug or release -> https://developer.android.com/studio/build/build-variants
     public Set<String> permissions = new HashSet<>();
@@ -22,10 +23,13 @@ public class AppInfo implements Serializable, JSONSerializable {
 
 
     public AppInfo (){
+        this.appVersion = 0.0;
+        this.appFlavor = "unknown";
+        this.buildType = "unknown";
     }
 
     public String getAppInfoID (String projID ){
-        return projID + "#" + this.appID;
+        return this.appID;
     }
 
     public AppInfo(String appID, String appLocation, String appDescription, double appVersion, String appFlavor, String buildType) {
@@ -33,8 +37,8 @@ public class AppInfo implements Serializable, JSONSerializable {
         this.appLocation = appLocation;
         this.appDescription = appDescription;
         this.appVersion = appVersion;
-        this.appFlavor = appFlavor;
-        this.buildType = buildType;
+        this.appFlavor = appFlavor.equals("")? "demo" : appFlavor;
+        this.buildType = buildType.equals("")? "debug" : appFlavor;
     }
 
 
@@ -78,7 +82,7 @@ public class AppInfo implements Serializable, JSONSerializable {
         app.appID = ((String) jo.get("app_id"));
         app.appLocation = ((String) jo.get("app_location"));
         app.appDescription = ((String) jo.get("app_description"));
-        app.appVersion = Double.parseDouble((String) jo.get("app_version"));
+        app.appVersion = 0.0; //TODO
         app.appFlavor = ((String) jo.get("app_flavor"));
         app.buildType = ((String) jo.get("app_build_type"));
         JSONArray permissions = new JSONArray(), classes = new JSONArray();
@@ -99,9 +103,11 @@ public class AppInfo implements Serializable, JSONSerializable {
         try{
             if (jo.containsKey("app_classes")){
                 classes = ((JSONArray) jo.get("app_classes"));
-                for (Object j : classes){
-                    JSONObject job = ((JSONObject) j);
-                    app.allJavaClasses.add(((ClassInfo) new ClassInfo(appID).fromJSONObject(job)));
+                if (!classes.isEmpty()){
+                    for (Object j : classes){
+                        JSONObject job = ((JSONObject) j);
+                        app.allJavaClasses.add(((ClassInfo) new ClassInfo(appID).fromJSONObject(job)));
+                    }
                 }
             }
 
@@ -129,5 +135,19 @@ public class AppInfo implements Serializable, JSONSerializable {
         }
 
         return ja;
+    }
+
+    @Override
+    public String toString() {
+        return "AppInfo{" +
+                "appID='" + appID + '\'' +
+                ", appLocation='" + appLocation + '\'' +
+                ", appDescription='" + appDescription + '\'' +
+                ", appVersion=" + appVersion +
+                ", appFlavor='" + appFlavor + '\'' +
+                ", buildType='" + buildType + '\'' +
+                ", permissions=" + permissions +
+                ", allJavaClasses=" + allJavaClasses +
+                '}';
     }
 }
