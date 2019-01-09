@@ -11,8 +11,8 @@
     <boolean name="com.quicinc.preferences.general.show_deltas" value="true" />
     <string name="com.quicinc.preferences.battery_power_source_selection">Estimate Power Consumption</string>
     <boolean name="com.quicinc.preferences.help.all_dialogs_disabled" value="false" />
-    <boolean name="com.quicinc.preferences.saved_first_run" value="true" />
     <boolean name="com.quicinc.preferences.eula_accepted_v2" value="true" />
+    <boolean name="com.quicinc.preferences.saved_first_run" value="true" />
     <boolean name="com.quicinc.preferences.help.preset_cpu_usage_monitor" value="true" />
     <boolean name="com.quicinc.preferences.disabled_data_points_performance_prompt" value="false" />
     <boolean name="com.quicinc.preferences.help.preset_mobile_data_detective" value="true" />
@@ -21,7 +21,7 @@
     <boolean name="com.quicinc.preferences.disabled_lockout_prompt" value="false" />
     <boolean name="com.quicinc.preferences.advanced_mode" value="true" />
     <boolean name="com.quicinc.preferences.help.graph_merged_view" value="true" />
-    <boolean name="com.quicinc.preferences.general.show_app_stats" value="true" />
+    <boolean name="com.quicinc.preferences.general.show_app_stats" value="false" />
     <boolean name="com.quicinc.preferences.help.preset_network_activity" value="true" />
     <boolean name="com.quicinc.preferences.general.acquire_profiling_wakelock" value="true" />
     <boolean name="com.quicinc.preferences.help.advanced_mode_to_preset_mode" value="true" />

@@ -1,8 +1,7 @@
-package Metrics.AndroidProjectRepresentation;
+package AndroidProjectRepresentation;
 
 
 
-import Metrics.MethodOfAPI;
 import com.github.javaparser.ast.body.ModifierSet;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -10,7 +9,6 @@ import org.json.simple.parser.JSONParser;
 
 import java.io.FileReader;
 import java.io.Serializable;
-import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -24,7 +22,7 @@ public class MethodInfo implements Serializable, JSONSerializable {
     public Set<MethodOfAPI> unknownApi = new HashSet<>();
 
     public Set<Variable> declaredVars = new HashSet<>();
-    public Set<Variable> args = new HashSet<>();
+    public Set<Variable> args = new HashSet<Variable>();
 
     public boolean isStatic = false;
     public boolean isSynchronized = false;
@@ -128,7 +126,7 @@ public class MethodInfo implements Serializable, JSONSerializable {
     }
 
     public  String getMethodID() {
-        String metId= this.ci!=null ? this.ci.classPackage+"."+this.ci.className+"."+ this.methodName : this.methodName ;
+        String metId= this.ci!=null ?  this.ci.getSimpleClassID() + "." + this.methodName : this.methodName ;
         metId +="(";
         for (Variable v : args) {
             metId += "#" + v.type;
@@ -241,7 +239,6 @@ public class MethodInfo implements Serializable, JSONSerializable {
             }
         }
 
-
         String metricName;
         if (jo.containsKey("method_args")) {
             String[] args = ((String)jo.get("method_args")).split("#");
@@ -254,7 +251,8 @@ public class MethodInfo implements Serializable, JSONSerializable {
                     if (!metricName.isEmpty()) {
                         Variable vv = new Variable();
                         vv.isArray = metricName.contains("[]");
-                        vv.type = metricName.replaceAll("\\[\\]", "");
+                        vv.uuid = var19;
+                        vv.type = metricName.replaceAll("\\[", "").replaceAll("\\]","");
                         mi.args.add(vv);
                     }
                 }
@@ -263,111 +261,62 @@ public class MethodInfo implements Serializable, JSONSerializable {
 
         if (jo.containsKey("method_metrics")) {
             methodMetrics = (JSONArray)jo.get("method_metrics");
-            var4 = methodMetrics.iterator();
-
-            while(true) {
-                MethodOfAPI moa;
-                String[] apiArgs;
-                String[] var11;
-                int var12;
-                int var13;
-                String s;
-                Variable vv;
-                String[] api;
-                do {
-                    do {
-                        do {
-                            if (!var4.hasNext()) {
-                                return mi;
-                            }
-
-                            ob = var4.next();
-                            metric = (JSONObject)ob;
-                        } while(!metric.containsKey("metric_name"));
-
-                        metricName = (String)metric.get("metric_name");
-                        if (metricName.equals("loc")) {
-                            mi.linesOfCode = ((Integer)metric.get("mm_value")).intValue();
+            if (!methodMetrics.isEmpty()) {
+                for (Object o : methodMetrics) {
+                    JSONObject mt = (JSONObject) o;
+                    if (((JSONObject) o).containsKey("mm_metric")) {
+                        if (((JSONObject) o).get("mm_metric").equals("loc")) {
+                            mi.linesOfCode = ((Long) ((JSONObject) o).get("mm_value")).intValue();
                         }
-
-                        if (metricName.equals("cc")) {
-                            mi.cyclomaticComplexity = ((Integer)metric.get("mm_value")).intValue();
+                        if (((JSONObject) o).get("mm_metric").equals("cc")) {
+                            mi.cyclomaticComplexity = ((Long) ((JSONObject) o).get("mm_value")).intValue();
                         }
+                        if (((JSONObject) o).get("mm_metric").equals("androidapi")) {
+                            String apis = (String) ((JSONObject) o).get("mm_value_text");
+                            String[] splits = apis.split("\\|");
+                            if (splits.length > 2) {
+                                if (splits[1].endsWith("null") && splits[2].equals("()")){
 
-                        if (metricName.equals("androidapi")) {
-                            api = ((String)metric.get("mm_value_text")).split("\\|");
-                            if (api.length > 2) {
-                                moa = new MethodOfAPI(api[0].replace("API:", ""), api[1].replace("method:", ""));
-                                apiArgs = api[2].substring(api[2].indexOf("(") + 1, api[2].indexOf(")")).split("#");
-                                if (apiArgs.length > 1) {
-                                    var11 = apiArgs;
-                                    var12 = apiArgs.length;
-
-                                    for(var13 = 0; var13 < var12; ++var13) {
-                                        s = var11[var13];
-                                        if (!s.isEmpty()) {
-                                            v = new Variable();
-                                            v.isArray = s.contains("[]");
-                                            v.type = s.replaceAll("\\[\\]", "");
-                                            moa.args.add(v);
-                                        }
-                                    }
                                 }
-
-                                mi.androidApi.add(moa);
+                                else
+                                    mi.androidApi.add(new MethodOfAPI(splits[0].split("\\:").length>1? splits[0].split("\\:")[1]: splits[0] , splits[1] + splits[2]));
                             }
                         }
+                        if (((JSONObject) o).get("mm_metric").equals("javaapi")) {
+                            String apis = (String) ((JSONObject) o).get("mm_value_text");
+                            String[] splits = apis.split("\\|");
+                            if (splits.length > 2) {
+                                if (splits[1].endsWith("null") && splits[2].equals("()")){
 
-                        if (metricName.equals("javaapi")) {
-                            api = ((String)metric.get("mm_value_text")).split("\\|");
-                            if (api.length > 2) {
-                                moa = new MethodOfAPI(api[0].replace("API:", ""), api[1].replace("method:", ""));
-                                apiArgs = api[2].substring(api[2].indexOf("(") + 1, api[2].indexOf(")")).split("#");
-                                if (apiArgs.length > 1) {
-                                    var11 = apiArgs;
-                                    var12 = apiArgs.length;
-
-                                    for(var13 = 0; var13 < var12; ++var13) {
-                                        s = var11[var13];
-                                        if (!s.isEmpty()) {
-                                            v = new Variable();
-                                            v.isArray = s.contains("[]");
-                                            v.type = s.replaceAll("\\[\\]", "");
-                                            moa.args.add(v);
-                                        }
-                                    }
                                 }
-
-                                mi.javaApi.add(moa);
+                                else
+                                    mi.javaApi.add(new MethodOfAPI(splits[0].split("\\:").length>1? splits[0].split("\\:")[1]: splits[0] , splits[1] + splits[2]));
                             }
                         }
-                    } while(!metricName.equals("externalapi"));
+                        if (((JSONObject) o).get("mm_metric").equals("externalapi")) {
+                            String apis = (String) ((JSONObject) o).get("mm_value_text");
+                            String[] splits = apis.split("\\|");
+                            if (splits.length > 2) {
+                                if (splits[1].endsWith("null") && splits[2].equals("()")){
 
-                    api = ((String)metric.get("mm_value_text")).split("\\|");
-                } while(api.length <= 2);
-
-                moa = new MethodOfAPI(api[0].replace("API:", ""), api[1].replace("method:", ""));
-                apiArgs = api[2].substring(api[2].indexOf("(") + 1, api[2].indexOf(")")).split("#");
-                if (apiArgs.length > 1) {
-                    var11 = apiArgs;
-                    var12 = apiArgs.length;
-
-                    for(var13 = 0; var13 < var12; ++var13) {
-                        s = var11[var13];
-                        if (!s.isEmpty()) {
-                            v = new Variable();
-                            v.isArray = s.contains("[]");
-                            v.type = s.replaceAll("\\[\\]", "");
-                            moa.args.add(v);
+                                }
+                                else
+                                    mi.externalApi.add(new MethodOfAPI(splits[0].split("\\:").length>1? splits[0].split("\\:")[1]: splits[0] , splits[1] + splits[2]));
+                            }
                         }
+
+
                     }
+
                 }
 
-                mi.externalApi.add(moa);
+
             }
-        } else {
-            return mi;
+
         }
+
+
+        return mi;
     }
 
     @Override

@@ -4,6 +4,8 @@
  */
 package jInst.visitors.utils;
 
+import com.github.javaparser.ast.CompilationUnit;
+
 /**
  *
  * @author User
@@ -12,6 +14,7 @@ public class ClassDefs {
     private String pack ="";
     private String name = "";
     private String appName = "";
+    private String innerClass = "";
     private boolean isLauncher;
     private boolean isActivity;
     private boolean tests;
@@ -28,6 +31,13 @@ public class ClassDefs {
     private boolean beforeClass;
     private boolean isOther;
 
+    public String getInnerClass(){
+        return this.innerClass;
+    }
+
+    public void setInnerClass(String innerClass){
+       this.innerClass = innerClass;
+    }
 
     public ClassDefs() {
         this.hasStop = false;

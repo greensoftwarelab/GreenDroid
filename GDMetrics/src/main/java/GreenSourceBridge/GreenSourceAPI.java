@@ -1,7 +1,7 @@
 package GreenSourceBridge;
 
-import Metrics.AndroidProjectRepresentation.MethodInfo;
-import Metrics.AndroidProjectRepresentation.Variable;
+import AndroidProjectRepresentation.MethodInfo;
+import AndroidProjectRepresentation.Variable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -14,7 +14,8 @@ import java.io.IOException;
 public class GreenSourceAPI {
 
     public static boolean operationalBackend = true;
-    private static final String greenRepoURL = "http://localhost:8000/";
+    //private static final String greenRepoURL = "http://localhost:8000/";
+    private static  String greenRepoURL = "http://greensource.di.uminho.pt/";
     private static String testUlr = "tests/";
     private static String appsUlr = "apps/";
     private static String projectsUlr = "projects/";
@@ -28,7 +29,7 @@ public class GreenSourceAPI {
     private static String classesMetricsUrl = "classes/metrics/";
     private static String methodsInvokedUrl = "methods/invoked/";
     private static String testsMetricsUrl = "tests/metrics/";
-
+    private static String importsURL = "imports/";
 
 
     public JSONObject project;
@@ -36,16 +37,17 @@ public class GreenSourceAPI {
     public JSONObject device;
     public JSONObject test;
     public JSONObject testResults;
-    public JSONArray allTestResults;
-    public JSONArray methods;
-    public JSONArray classes;
+    public JSONContainer allTestResults;
+    public JSONContainer methods;
+    public JSONContainer classes;
     public JSONArray methodMetrics;
     public JSONArray classMetrics;
     public JSONArray appMetrics;
     public JSONArray testMetrics;
     public JSONObject deviceStateEnd;
     public JSONObject deviceStateBegin;
-    public JSONArray methodsInvoked;
+    public JSONContainer methodsInvoked;
+    public JSONContainer classImports;
 
 
     public GreenSourceAPI() {
@@ -53,17 +55,18 @@ public class GreenSourceAPI {
         this.app = new JSONObject();
         this.test = new JSONObject();
         this.testResults = new JSONObject();
-        this.methods = new JSONArray();
-        this.classes = new JSONArray();
+        this.methods = new JSONContainer();
+        this.classes = new JSONContainer();
         this.classMetrics = new JSONArray();
         this.appMetrics = new JSONArray();
         this.methodMetrics = new JSONArray();
         this.testMetrics = new JSONArray();
-        this.methodsInvoked = new JSONArray();
+        this.methodsInvoked = new JSONContainer();
         this.deviceStateBegin = new JSONObject();
         this.deviceStateEnd = new JSONObject();
         this.device=new JSONObject();
-        this.allTestResults = new JSONArray();
+        this.allTestResults = new JSONContainer();
+        this.classImports = new JSONContainer();
     }
 
     public String getActualTestID(){
@@ -92,6 +95,13 @@ public class GreenSourceAPI {
 
 
 
+    public String getGreenRepoURL(){
+     return greenRepoURL;
+    }
+
+    public void setGreenRepoUrl(String url){
+        greenRepoURL= url;
+    }
 
 
 
@@ -112,6 +122,8 @@ public class GreenSourceAPI {
         }
         return ja;
     }
+
+
 
 
     public static JSONObject loadDevice(String deviceJSONFile){
@@ -136,6 +148,11 @@ public class GreenSourceAPI {
         return ja;
     }
 
+
+    public JSONObject loadDeviceState(String deviceStateFile) {
+        return new DeviceState().fromJSONFile(deviceStateFile);
+    }
+
     public static JSONObject loadApplication(String appJSONFile){
         JSONParser parser = new JSONParser();
         JSONObject ja = new JSONObject();
@@ -157,6 +174,26 @@ public class GreenSourceAPI {
         }
         return ja;
     }
+
+    public static Object sendImportsToDB(String json) {
+
+        if (operationalBackend){
+            String response = GSUtils.sendJSONtoDB(greenRepoURL + importsURL, json).second;
+            JSONParser parser = new JSONParser();
+            //JSONArray jsonObject = new JSONArray();
+            Object jsonObject;
+            try {
+                Object obj = parser.parse(response);
+               jsonObject = (Object) obj;
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+            return new JSONObject();
+
+    }
+
 
 
     public static JSONObject sendTestToDB(String json) {
@@ -324,7 +361,7 @@ public class GreenSourceAPI {
 
     public String getIDFromMethodInvokation(String methodID){
 
-        for (Object jo : this.methodsInvoked){
+        for (Object jo : this.methodsInvoked.getAll()){
             JSONObject o = ((JSONObject) jo);
             if (o.containsKey("method")){
                 if (o.get("method").equals(methodID)){

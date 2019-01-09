@@ -1,4 +1,4 @@
-package Metrics.AndroidProjectRepresentation;
+package AndroidProjectRepresentation;
 
 import com.github.javaparser.ast.body.ModifierSet;
 import org.json.simple.JSONObject;
@@ -16,6 +16,7 @@ public class Variable implements Serializable, JSONSerializable{
     public boolean isFinal = false;
     public boolean isVolatile = false;
     public boolean isTransient = false;
+    public int uuid = 0;
     public String accessModifier = "";
 
     public void setModifiers(int modifiers) {
@@ -60,12 +61,12 @@ public class Variable implements Serializable, JSONSerializable{
             return false;
         Variable ne = (Variable) obj;
        // return this.type.equals(ne.type) && this.varName.equals(ne.varName);
-        return this.varName.equals(ne.varName);
+        return (this.varName.equals("")? true: this.varName.equals(ne.varName)) && (this.type.equals("")? true : this.type.equals(ne.type));
     }
 
     @Override
     public int hashCode() {
-        return this.varName.hashCode();
+        return this.varName.hashCode() +  new Integer(uuid).hashCode();
     }
 
     @Override

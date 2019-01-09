@@ -1,4 +1,4 @@
-package Metrics;
+package GreenSourceBridge;
 
 public class GDConventions {
 

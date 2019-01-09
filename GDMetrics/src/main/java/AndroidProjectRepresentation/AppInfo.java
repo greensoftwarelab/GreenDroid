@@ -1,4 +1,4 @@
-package Metrics.AndroidProjectRepresentation;
+package AndroidProjectRepresentation;
 
 
 import org.json.simple.JSONArray;
@@ -29,7 +29,7 @@ public class AppInfo implements Serializable, JSONSerializable {
     }
 
     public String getAppInfoID (String projID ){
-        return this.appID;
+        return   appID + "|V:"+ appVersion + "|Flavor:" + appFlavor + "|BuildType:" + buildType;
     }
 
     public AppInfo(String appID, String appLocation, String appDescription, double appVersion, String appFlavor, String buildType) {
@@ -149,5 +149,17 @@ public class AppInfo implements Serializable, JSONSerializable {
                 ", permissions=" + permissions +
                 ", allJavaClasses=" + allJavaClasses +
                 '}';
+    }
+
+
+
+
+    public ClassInfo getClass(ClassInfo ci){
+        for (ClassInfo c : this.allJavaClasses){
+            if (c.equals(ci)){
+                return c;
+            }
+        }
+        return null;
     }
 }

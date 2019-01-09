@@ -5,22 +5,17 @@
  */
 package jInst.transform;
 
-import Metrics.APICallUtil;
+
+import AndroidProjectRepresentation.APICallUtil;
+
 import jInst.util.FileUtils;
 import jInst.util.PackageM;
 import jInst.util.XMLParser;
 import jInst.visitors.MethodChangerVisitor;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.charset.Charset;
-import java.util.List;
 
-import static jInst.util.XMLParser.insertReadWriteExternalPermissions;
+import java.io.File;
+
 
 /**
  *
@@ -184,14 +179,12 @@ public class InstrumentGradleHelper extends InstrumentHelper{
         else{
             //if file, then transform it
             if(src.getAbsolutePath().endsWith(".java")){
-//                if (src.getAbsolutePath().endsWith("DocumentCentricAppsInstrumentationTest.java"))
-//                    System.out.println("aqui");
                 String res = "";
                 if(this.isTestCase(src)){
                     res = transformTest(src.getAbsolutePath());
                 }else{
                     res = transform(src.getAbsolutePath());
-                    getAcu().getClassInfo(src.getAbsolutePath());
+                   getAcu().processJavaFile(src.getAbsolutePath());
                 }
                 if(!res.equals("")){
                     dest.createNewFile();

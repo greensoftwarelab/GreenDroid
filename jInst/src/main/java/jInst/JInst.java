@@ -5,15 +5,13 @@
  */
 package jInst;
 
-import Metrics.APICallUtil;
-import Metrics.AndroidProjectRepresentation.ProjectInfo;
-import Metrics.AndroidProjectRepresentation.AppInfo;
-import Metrics.GDConventions;
 
+import AndroidProjectRepresentation.APICallUtil;
 import jInst.transform.InstrumentGradleHelper;
 import jInst.transform.InstrumentHelper;
 import jInst.util.FileUtils;
 import jInst.util.XMLParser;
+import org.json.simple.JSONObject;
 
 import java.io.File;
 import java.util.logging.Level;

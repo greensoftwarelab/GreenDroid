@@ -1,4 +1,4 @@
-package Metrics.AndroidProjectRepresentation;
+package AndroidProjectRepresentation;
 
 import org.json.simple.JSONObject;
 

@@ -3,14 +3,19 @@ package Analyzer;
 
 import Analyzer.Results.Results;
 import Analyzer.Results.TestResults;
+import AndroidProjectRepresentation.APICallUtil;
+import AndroidProjectRepresentation.AppInfo;
+import AndroidProjectRepresentation.ClassInfo;
+import AndroidProjectRepresentation.MethodInfo;
+import GreenSourceBridge.GDConventions;
 import GreenSourceBridge.GreenSourceAPI;
-import Metrics.*;
-import Metrics.AndroidProjectRepresentation.*;
 
+import GreenSourceBridge.JSONContainer;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -47,7 +52,11 @@ public class Analyzer {
     public static List<String> actualTestMethods = new ArrayList<>();
     public static GreenSourceAPI grr = new GreenSourceAPI();
     public static JSONArray energyGreadyAPIS = new JSONArray();
-    public static JSONArray methodsInvoked = new JSONArray();
+    public static Hashtable<String, String> deviceStates = new Hashtable();
+
+    public static Set<ClassInfo> classesSet = new HashSet<>();
+    public static Map<String, Integer> methodsSet = new HashMap<>();
+
 
     private static List<String> loadTests(String csvFile) throws Exception {
         alltests = new ArrayList<String>();
@@ -87,6 +96,60 @@ public class Analyzer {
     }
 
 
+
+    public static String processMethodInvoked (String methodName,String className){
+       // System.out.println(acu.proj.getCurrentApp().allJavaClasses);
+        MethodInfo mi = acu.getMethodOfClass(methodName,className);
+        String metId= mi.getMethodID();
+        //System.out.println(acu.proj.apps);
+        if (methodsSet.containsKey(metId)){
+           methodsSet.put(metId ,methodsSet.get(metId)+1);
+        }
+        else {
+            methodsSet.put(metId,1);
+            if(mi.ci!=null){
+                grr.methods.add(mi.toJSONObject(mi.ci.getClassID()),  mi.getMethodID());
+                grr.methodMetrics.addAll(Utils.getMethodsMetrics(mi));
+                if( !classesSet.contains(mi.ci)){
+                    grr.classes.add(mi.ci.toJSONObject(applicationID),  mi.ci.getClassID());
+                    classesSet.add(mi.ci);
+                }
+            }
+        }
+        return metId;
+    }
+
+    public static JSONArray getClassMetrics() {
+       JSONArray ja  = new JSONArray();
+        for (ClassInfo ci : classesSet){
+            JSONObject jo = new JSONObject();
+            String s = ci.getClassID();
+            jo.put("cm_class",s);
+            jo.put("cm_metric","nr_declared_vars");
+            jo.put("cm_value", ci.classVariables.size());
+            jo.put("cm_coeficient", 1);
+            ja.add(jo);
+            jo.put("cm_class",s);
+            jo.put("cm_metric","nr_imports");
+            jo.put("cm_coeficient", 1);
+            jo.put("cm_value", ci.classImports);
+            ja.add(jo);
+            jo.put("cm_class",s);
+            jo.put("cm_metric","nr_methods");
+            jo.put("cm_coeficient", 1);
+            jo.put("cm_value", ci.classMethods.size());
+            ja.add(jo);
+        }
+
+         return ja;
+        //return new JSONArray();
+    }
+
+
+    public void cleanThrash(){
+        classesSet.clear();
+    }
+
     private static HashSet<String> loadMethods(String allMethods) {
         allmethods = new HashSet<String>();
 
@@ -104,8 +167,6 @@ public class Analyzer {
             // e.printStackTrace();
         }
 
-
-        
         return allmethods;
     }
 
@@ -146,6 +207,7 @@ public class Analyzer {
 
 
     private static void testOriented( List<String> args) throws NullPointerException{
+        System.out.println("Nr of tests: " +args.size()+ " tests");
         CsvParserSettings settings = new CsvParserSettings();
         Map<Integer,Integer> timeConsumption = new HashMap<>();
         List <Consumption> consumptionList = new ArrayList<>();
@@ -259,24 +321,25 @@ public class Analyzer {
             showData(consumptionList);
             //TODO
             //get resume of test results
-
-
-
-
-
             globalReturnList.put(number, actualResult);
 
-            grr.testResults = (Utils.getTestResult("0", "nada", grr.getActualTestID(), "greendroid", grr.getActualDeviceID(), "1", "1")); // TODO
-            grr.testResults = GreenSourceAPI.sendTestResultToDB(grr.testResults.toJSONString());
-            grr.allTestResults.add(grr.testResults);
-            grr.testMetrics.addAll(Utils.getTestMetrics(grr.getActualTestResultsID(), res, actualResult.getTotalConsumption(), actualResult.time, ((TestResults) actualResult).getCoverage()));
-            grr.methodsInvoked.addAll(Utils.getMethodsInvoked(grr.getActualTestResultsID(), getMethodHashList()));
+            if (GreenSourceAPI.operationalBackend){
+                JSONObject stateInit= grr.loadDeviceState(deviceStates.get("begin_state"+ number+".json"));
+                JSONObject stateEnd= grr.loadDeviceState(deviceStates.get("end_state"+ number+".json"));
+                grr.testResults = (Utils.getTestResult("0", "", grr.getActualTestID(), "greendroid", grr.getActualDeviceID(),  stateInit, stateEnd)); // TODO
+                //System.out.println(grr.testResults.toJSONString());
+                grr.testResults = GreenSourceAPI.sendTestResultToDB(grr.testResults.toJSONString());
+                grr.allTestResults.add(grr.testResults, "");
+                grr.testMetrics.addAll(Utils.getTestMetrics(grr.getActualTestResultsID(), res, actualResult.getTotalConsumption(), actualResult.time, ((TestResults) actualResult).getCoverage()));
+                getMethodHashList();
+                grr.methodsInvoked.addAll(Utils.getMethodsInvoked(grr.getActualTestResultsID()),"method");
+                // System.out.println("");
+            }
 
      // end of csv file processing [END]
         }
 
         // final Results
-
         //  print to file the results and name of test
         for (Results resu : globalReturnList.values()) {
             String [] testResults = ((TestResults) resu).showGlobalData();
@@ -288,25 +351,6 @@ public class Analyzer {
             }
             l.clear();
         }
-
-
-//        for (String testNr: globalReturnList.keySet()) {
-//
-//            testResults = showGlobalData(testNr);
-//            l.add(testNr);
-//            l.add(getTestName(testNr));
-//            l.add(String.valueOf(testResults[11]));
-//            l.add( String.valueOf(testResults[10]));
-//            l.add( String.valueOf(testResults[12]));
-//            for (int i = 0; i < 10 ; i++) { l.add(String.valueOf(testResults[i].intValue())); }
-//            try {
-//                write(fw,l);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            l.clear();
-//        }
-
 
         double tc = totalCoverage()*100;
         System.out.println("\n///////////////////////////////////////////////");
@@ -322,7 +366,7 @@ public class Analyzer {
             e.printStackTrace();
         }
         l.add("Class"); l.add("Method"); l.add("Times invoked");
-        l.add("CC");l.add("LoC"); l.add("AndroidAPIs"); l.add("N args"); //l.add("EnergyGreadyAPIS");
+        l.add("CC");l.add("LoC"); l.add("AndroidAPIs"); l.add("JavaAPIs"); l.add("ExternalAPIs"); l.add("Declared vars"); l.add("N args"); //l.add("EnergyGreadyAPIS");
         for ( String s : allTracedMethods.keySet()){
             try {
                 write(fwApp,l);
@@ -332,9 +376,8 @@ public class Analyzer {
                 l.add(xx[0]); l.add(methodName) ;l.add(String.valueOf(allTracedMethods.get(s)));
                 String s1 = s.replaceAll("<.*?>", "");
                 MethodInfo mi = acu!=null? acu.getMethodOfClass(methodName,s1) : new MethodInfo();
-                methodsInvoked.add(Utils.getMethodAPIS(mi));
-
-                l.add(String.valueOf(mi.cyclomaticComplexity)); l.add(String.valueOf(mi.linesOfCode+(isTestOriented?1:0))); l.add(String.valueOf(mi.androidApi.size())); l.add(String.valueOf(mi.args.size())); //l.add(redapis);
+                grr.methodsInvoked.add(Utils.getMethodAPIS(mi), "method_id");
+                l.add(String.valueOf(mi.cyclomaticComplexity)); l.add(String.valueOf(mi.linesOfCode)); l.add(String.valueOf(mi.androidApi.size()));l.add(String.valueOf(mi.javaApi.size())); l.add(String.valueOf(mi.externalApi.size())); l.add(String.valueOf(mi.declaredVars.size()));l.add(String.valueOf(mi.args.size())); //l.add(redapis);
 
             } catch (IOException  | NullPointerException e) {
                 e.printStackTrace();
@@ -367,30 +410,19 @@ public class Analyzer {
 //        }
         //Utils.sendApiCallUtil(acu);
 
-        Utils.writeJSONMethodAPIS(methodsInvoked, resultDirPath+"/" + "methodsInvoked.json" );
+        grr.classMetrics.addAll(getClassMetrics());
+        Utils.writeJSONMethodAPIS(((JSONArray) grr.methodsInvoked.getAll()), resultDirPath+"/" + "methodsInvoked.json" );
         //send results do DBASE
-
-        // send testmetrics
-   //     System.out.println("sending " + grr.methodsInvoked.size() + " test metrics");
-  //      System.out.println(grr.testMetrics.toJSONString());
         GreenSourceAPI.sendTestsMetricsToDB(grr.testMetrics.toJSONString());
-//        //send methods
-    //    System.out.println("sending " + grr.methods.size() + " methods");
-   //     System.out.println(grr.methods.toJSONString());
         GreenSourceAPI.sendClassesToDB(grr.classes.toJSONString());
-
+        grr.classImports = getAllImports(grr.classes.getAll());
+        GreenSourceAPI.sendImportsToDB(grr.classImports.toJSONString());
         GreenSourceAPI.sendMethodsToDB(grr.methods.toJSONString());
-//        // send methods invoked
-    //    System.out.println("sending " + grr.methodsInvoked.size() + " methods invoked");
-     //   System.out.println(grr.methodsInvoked.toJSONString());
         GreenSourceAPI.sendMethodsInvokedToDB(grr.methodsInvoked.toJSONString());
-//        // send methods metrics ??
-     //   System.out.println("sending " + grr.methodMetrics.size() + " method metrics");
-     //   System.out.println(grr.methodMetrics.toJSONString());
         GreenSourceAPI.sendMethodsMetricsToDB(grr.methodMetrics.toJSONString());
-
+        // System.out.println(grr.classMetrics.toJSONString());
+        GreenSourceAPI.sendClassMetricsToDB(grr.classMetrics.toJSONString());
     }
-
 
     public static boolean isValidMetric( HashMap<String, Pair<Integer, Integer>> columns,String metricDefinition, String [] rowFromCsv ){
 
@@ -400,6 +432,18 @@ public class Analyzer {
 
     }
 
+    public static JSONContainer getAllImports(Collection<Object> jc){
+        JSONContainer jco = new JSONContainer();
+        for (Object jj : jc){
+            JSONObject jo = ((JSONObject) jj);
+            JSONArray j = ((JSONArray) jo.get("class_imports"));
+           for (Object obj : j){
+               JSONObject jop = ((JSONObject) obj);
+               jco.add(jop, jop.get("import_name").toString() +jop.get("import_class").toString() );
+           }
+        }
+        return jco;
+    }
 
 
 //    public static Consumption getDataFromRow( HashMap<String, Pair<Integer, Integer>> columns,String[] row) {
@@ -417,6 +461,7 @@ public class Analyzer {
 //        Consumption c = new  Consumption(((int) memUsage), ((int) mobileData), ((int) wifiState), ((int) wifiRSSI), ((int) screenState), 0, 0, ((int) batteryStatus), ((int) bluetooth), ((int) gpuLoad), ((int) gps), ((int) cpuLoadNormalized));
 //        return c;
 //    }
+
 
     public static Consumption getDataFromRow( HashMap<String, Pair<Integer, Integer>> columns,String[] row) {
 
@@ -510,22 +555,15 @@ public class Analyzer {
     }
 
 
-    public static List<String> getMethodHashList(){
-        List<String> metodos = new ArrayList<>();
+    public static void getMethodHashList(){
+
         for(String s: actualTestMethods){
             String [] xx = s.split("<");
             String methodName = xx[xx.length-1].replace(">","");
             String className = s.replaceAll("<.*?>", "");
-            MethodInfo mi = acu.getMethodOfClass(methodName,className);
-            String metId= mi.getMethodID();
-            metodos.add(metId);
-            if(mi.ci!=null)
-                grr.classes.add(mi.ci.toJSONObject(mi.ci.appID));
-            else{
-               // System.out.println("metodo -> " + methodName + "  classe " + className);
-            }
+            processMethodInvoked(methodName,className);
         }
-        return metodos;
+
     }
 
 
@@ -702,25 +740,32 @@ public class Analyzer {
                         if (entry1.getFileName().toString().matches("GreendroidResultTrace[0-9]+\\.csv")) {
                             list.add(entry1.toString());
                         }
+                        if (entry1.getFileName().toString().matches("begin_state[0-9]+\\.json")) {
+                            deviceStates.put(entry1.getFileName().toString(),entry1.toString());
+                        }
+                        if (entry1.getFileName().toString().matches("end_state[0-9]+\\.json")) {
+                            deviceStates.put(entry1.getFileName().toString(),entry1.toString());
+                        }
+
                         if (entry1.getFileName().toString().matches("appPermissions.json")) {
                             pathPermissions = entry1.toString();
-                            System.out.println(pathPermissions);
+                            //System.out.println(pathPermissions);
                         }
                         if (entry1.getFileName().toString().contains("#")) {
                             if (entry1.getFileName().toString().contains(".json")){
                                 pathApp=entry1.toString();
-                                System.out.println(pathApp);
+                              //  System.out.println(pathApp);
                                 projectAppJSONFile =pathApp;
                             }
 
                         }
                         if (entry1.getFileName().toString().matches("device.json")) {
                             pathDevice= entry1.toString();
-                            System.out.println(pathDevice);
+                           // System.out.println(pathDevice);
                         }
                         if (entry.getFileName().toString().matches(".json")) {
                             pathApp=entry.getFileName().toString();
-                            System.out.println(pathApp);
+                            //System.out.println(pathApp);
                         }
                     }
                 }
@@ -731,21 +776,27 @@ public class Analyzer {
                     if (entry.getFileName().toString().matches("GreendroidResultTrace[0-9]+\\.csv")) {
                         list.add(entry.toString());
                     }
+                    if (entry.getFileName().toString().matches("begin_state[0-9]+\\.json")) {
+                        deviceStates.put(entry.getFileName().toString(),entry.toString());
+                    }
+                    if (entry.getFileName().toString().matches("end_state[0-9]+\\.json")) {
+                        deviceStates.put(entry.getFileName().toString(),entry.toString());
+                    }
                     if (entry.getFileName().toString().matches("appPermissions.json")) {
                         pathPermissions = entry.getFileName().toString();
-                        System.out.println(pathPermissions);
+                       // System.out.println(pathPermissions);
                     }
                     if (entry.getFileName().toString().contains("#")) {
                         if (entry.getFileName().toString().contains(".json")){
                             pathApp=entry.toString();
-                            System.out.println(pathApp);
+                           // System.out.println(pathApp);
                             projectAppJSONFile =pathApp;
                         }
 
                     }
                     if (entry.getFileName().toString().matches("device.json")) {
                         pathDevice= entry.getFileName().toString();
-                        System.out.println(pathDevice);
+                       // System.out.println(pathDevice);
                     }
                 }
             }
@@ -768,15 +819,16 @@ public class Analyzer {
     }
 
         try{
-            acu = ((APICallUtil) new APICallUtil().fromJSONObject( new APICallUtil().fromJSONFile(projectAppJSONFile)));
+            JSONObject jj =  new APICallUtil().fromJSONFile(projectAppJSONFile);
+            acu = ((APICallUtil) new APICallUtil().fromJSONObject(jj));
         }
         catch (Exception e){
             e.printStackTrace();
         }
 
         JSONObject jo = acu.proj.toJSONObject("");
-        String projectToSend = jo.toJSONString();
-
+        //String projectToSend = jo.toJSONString();
+        String projectToSend = getSimpleProjectJSON(jo); // ProjectInfo.getSimpleProjectJSON(jo); //TODO
        grr.project = ((JSONObject) GreenSourceAPI.sendProjectToDB(projectToSend));
         AppInfo app = acu.proj.getCurrentApp();
         app.appFlavor="demo";
@@ -784,8 +836,9 @@ public class Analyzer {
         app.appDescription="";
 
         JSONObject appl =  app.toJSONObject(acu.proj.projectID);
-        String x = appl.toJSONString();
-       grr.app=GreenSourceAPI.sendApplicationToDB(appl.toJSONString());
+        String apptosend = getSimpleAppJSON(acu.proj.apps.get(0).toJSONObject(acu.proj.projectID));
+        applicationID = (String) (acu.proj.apps.get(0).toJSONObject(acu.proj.projectID)).get("app_id");
+       grr.app=GreenSourceAPI.sendApplicationToDB(apptosend);
         GreenSourceAPI.sendAppPermissionsToDB( GreenSourceAPI.loadAppPermissions(pathPermissions).toJSONString());
        grr.device= GreenSourceAPI.loadDevice(pathDevice);
        GreenSourceAPI.sendDeviceToDB( grr.device.toJSONString());
@@ -793,18 +846,47 @@ public class Analyzer {
     }
 
 
+    public static String getSimpleProjectJSON (JSONObject jo ){
+        JSONObject pro = new JSONObject();
+        pro.put("project_id", jo.get("project_id") );
+        pro.put("project_build_tool", jo.get("project_build_tool") );
+        pro.put("project_description", jo.get("project_description") );
+        return pro.toJSONString();
+    }
+
+    public static String getSimpleAppJSON (JSONObject jo ){
+        JSONObject pro = new JSONObject();
+        pro.put("app_id", jo.get("app_id") );
+        pro.put("app_location", jo.get("app_location") );
+        pro.put("app_description", jo.get("app_description") );
+        pro.put("app_description", jo.get("app_description") );
+        pro.put("app_flavor", jo.get("app_flavor") );
+        pro.put("app_build_type", jo.get("app_build_type") );
+        pro.put("app_project", jo.get("app_project") );
+
+        return pro.toJSONString();
+
+    }
+
+
 
     public static void main(String[] args) {
         Utils u = new Utils();
-        //energyGreadyAPIS = u.parseAndroidApis();
-        GreenSourceAPI.operationalBackend = false; //TODO
+        GreenSourceAPI.operationalBackend = true; //TODO
+        GreenSourceAPI gapi = new GreenSourceAPI();
+        //gapi.setGreenRepoUrl("http://localhost:8000/");
+        System.out.println("Sending results to " + gapi.getGreenRepoURL());
         mergeOldRuns = false; // TODO
-        if (args.length>2) {
+        if (args.length>3) {
             isTestOriented = args[0].equals("-TestOriented");
-            if(!isTestOriented)
+            if(!isTestOriented){
                 folderPrefix="Method";
+            }
             resultDirPath =args[1];
             stoppedState = args[2].equals("-Monkey")?2:0;
+            if(args[3].equals("localhost") ){
+                gapi.setGreenRepoUrl("http://localhost:8000/");
+            }
             monkey=stoppedState==2;
             folderPrefix = monkey? "Monkey" + folderPrefix : folderPrefix;
            // boolean analyzeOldRuns=  args[2].equals("-oldRuns");
@@ -813,20 +895,14 @@ public class Analyzer {
 
             if (isTestOriented) {
                 try {
-
                     List<String> allcsvs = getAllCsvsAndSendAppToDB(resultDirPath); // this send apppermissions.json
-                    applicationID = acu.proj.getCurrentApp().appID;
-                  //  grr.project = ((JSONObject) GreenSourceAPI.sendProjectToDB(acu.proj.toJSONObject("").toJSONString()).get(0));
-
-
-                    grr.test =  Utils.getTest();
-                    grr.test = GreenSourceAPI.sendTestToDB(grr.test.toJSONString()); // must be this way to get retrive internal test id
-
-                    grr.methods.addAll(Utils.getAppMethodsAndMetrics(acu));
+                    if(GreenSourceAPI.operationalBackend){
+                        grr.test =  Utils.getTest();
+                        grr.test = GreenSourceAPI.sendTestToDB(grr.test.toJSONString()); // must be this way to get retrive internal test id
+                        //grr.methods.addAll(Utils.getAppMethodsAndMetrics(acu) ,"method_id");
+                    }
                     testOriented(allcsvs);
-
                 } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
-//                  System.out.println("[Analyzer] Error parsing the file. Please run again or restart Trepn");
                     e.printStackTrace();
                 }
             } else {
@@ -839,12 +915,10 @@ public class Analyzer {
                 catch (Exception e){
                     e.printStackTrace();
                 }
-                grr.methods.addAll(Utils.getAppMethodsAndMetrics(acu));
+                //grr.methods.addAll(Utils.getAppMethodsAndMetrics(acu),"method_id");
                 methodOriented(allcsvs);
                 // methodOriented(Arrays.copyOfRange(args, 3, args.length));
             }
-
-            //System.out.println(acu);
         }
         else {
             System.out.println("Bad argument length for Greendroid Analyzer! Usage ->  [-(Test|Method)Oriented] resultsdir [-Monkey|XXX]");

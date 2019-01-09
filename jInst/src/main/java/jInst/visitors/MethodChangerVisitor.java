@@ -310,9 +310,8 @@ public class MethodChangerVisitor extends VoidVisitorAdapter {
     }
 
 
-    @Override
-    public void visit(MethodDeclaration n, Object arg) {
 
+    public static void registMethod(String method){
         File file = new File("allMethods.txt" );
         if (!file.exists())
         {
@@ -329,19 +328,9 @@ public class MethodChangerVisitor extends VoidVisitorAdapter {
             System.out.println("[Jinst] Error opening allMethods.txt");
         }
         OutputStreamWriter osw = new OutputStreamWriter(fOut);
-        ClassDefs cDef = (ClassDefs)arg;
-        String retType = n.getType().getClass().getName();
-        int modifiers = n.getModifiers();
-        // if is static
-       // if((modifiers & Modifier.STATIC ) != 0) return;
-        //All the arguments for the function call
-        //Expression className = new StringLiteralExpr(cDef.getDescriptor());
-        String metodo = InstrumentHelper.wrapMethod(n,cDef);
-        //Expression method = new StringLiteralExpr( ((ClassDefs) arg).getPack() + "." + ((ClassDefs) arg).getName()+"<" +n.getName() + ">");
 
-//---write the string to the file---
         try {
-            osw.write(metodo+"\n");
+            osw.write(method+"\n");
             osw.flush();
             osw.close();
 
@@ -349,8 +338,17 @@ public class MethodChangerVisitor extends VoidVisitorAdapter {
             e.printStackTrace();
             System.out.println("[Jinst] An error occured while appending to allMethods file ");
         }
-//        Expression flagB = new IntegerLiteralExpr("0");
-//        Expression flagE = new IntegerLiteralExpr("1");
+    }
+
+
+    @Override
+    public void visit(MethodDeclaration n, Object arg) {
+
+        ClassDefs cDef = (ClassDefs)arg;
+        String retType = n.getType().getClass().getName();
+        String metodo = InstrumentHelper.wrapMethod(n,cDef);
+        registMethod(metodo);
+
 
         if(n.getBody() != null){
             if(n.getBody().getStmts() != null){
@@ -426,6 +424,118 @@ public class MethodChangerVisitor extends VoidVisitorAdapter {
 
                         if(hasRet.hasRet()){
 
+                            new GenericBlockVisitor().visit(n, new ExpressionStmt(mcE));
+                        }
+
+                        String stm = x.get(x.size()-1).getClass().getName();
+                        if(stm.contains("ReturnStmt") || stm.contains("ThrowStmt")){
+                            x.add((x.size()-1), new ExpressionStmt(mcE));
+                        }else if(retType.contains("VoidType")){
+                            if(!unReachable.hasRet()){
+                                x.add(new ExpressionStmt(mcE));
+                            }
+                        }
+
+                        ClassM cm = this.getClass(cDef.getName(), cDef.getPack());
+                        cm.getMethods().add(n.getName());
+                    }
+                    //TODO add annotation to non profiled methods
+//                    else {
+//                        LinkedList<AnnotationExpr> anot = new LinkedList<AnnotationExpr>();
+//                        anot.add(new MarkerAnnotationExpr(new NameExpr("TrepnIgnored")));
+//                        n.setAnnotations(anot);
+//                    }
+
+                }
+
+            }
+        }
+    }
+
+
+
+    @Override
+    public void visit(ConstructorDeclaration n, Object arg) {
+        String retType = "";
+        ClassDefs cDef = (ClassDefs)arg;
+        //String retType =
+        String metodo = InstrumentHelper.wrapMethod(n,cDef);
+        registMethod(metodo);
+
+
+        if(n.getBlock() != null){
+            if(n.getBlock().getStmts() != null){
+                List<Statement> x = n.getBlock().getStmts();
+
+                // then just trace the method
+                if (tracedMethod){
+                    Profiler p =InstrumentHelper.getProfiler();
+
+//                    mcB.setName("TrepnLib.traceMethod");
+                    MethodCallExpr getContext = new MethodCallExpr();
+//                    if (!cDef.isInstrumented()) {
+//                        getContext.setName("getApplicationContext");
+//                    } else {
+//                        getContext.setName("getInstrumentation().getTargetContext");
+//                    }
+                    getContext.setName(InstrumentHelper.getApplicationFullName() + ".getAppContext");
+
+//                    ASTHelper.addArgument(mcB, getContext);
+                    MethodCallExpr mcB = ((TestOrientedProfiler) p).markMethod(getContext,metodo);
+//                    ASTHelper.addArgument(mcB, method);
+                    //ASTHelper.addArgument(mcB, method);
+                    int insertIn = 1;
+                    x.add(insertIn, new ExpressionStmt(mcB));
+                }
+                else {
+
+                    //Avoid monitoring getters and setters and simple methods
+                    int operations = MethodChangerVisitor.countOperations(n);
+                    if(operations>=NUMBER_OF_OPERATIONS){
+
+                        MethodCallExpr getContext = new MethodCallExpr();
+//                        if (!cDef.isInstrumented()) {
+//                            getContext.setName();
+//                        } else {
+//                            getContext.setName("getInstrumentation().getTargetContext");
+//                        }
+
+
+                        getContext.setName(InstrumentHelper.getApplicationFullName() + ".getAppContext");
+
+                        MethodCallExpr mcB = ((MethodOrientedProfiler) InstrumentHelper.getProfiler()).markMethodStart(getContext,metodo);
+//                        ASTHelper.addArgument(mcB, getContext);
+
+//                        ASTHelper.addArgument(mcB, flagE);
+//                        ASTHelper.addArgument(mcB, method);
+                        //ASTHelper.addArgument(mcB, method);
+                        int insertIn = 0;
+//
+//                        if(n.getName().equals("onCreate")){
+//                            MethodCallExpr cont = new MethodCallExpr();
+//                            if (!cDef.isInstrumented()) {
+//                                cont.setName("getApplicationContext");
+//                            } else {
+//                                cont.setName("getInstrumentation().getTargetContext");
+//                            }
+//
+//                            MethodCallExpr setAppContext = new MethodCallExpr();
+//                            setAppContext.setName(InstrumentHelper.getApplicationFullName() + ".setAppContext");
+//                            ASTHelper.addArgument(setAppContext, cont);
+//                            x.add(insertIn++,new ExpressionStmt(setAppContext));
+//                            x.add(insertIn, new ExpressionStmt(mcB));
+//                        }
+//                        else
+                        x.add(insertIn, new ExpressionStmt(mcB));
+
+                        MethodCallExpr mcE = ((MethodOrientedProfiler) InstrumentHelper.getProfiler()).marKMethodStop(getContext,metodo);
+                        ReturnFlag hasRet = new ReturnFlag();
+                        ReturnFlag unReachable = new ReturnFlag();
+                        new ReturnVisitor().visit(n, hasRet);
+                        new WhileChangerVisitor().visit(n, unReachable);
+                        new ForChangerVisitor().visit(n, unReachable);
+
+                        if(hasRet.hasRet()){
                             new GenericBlockVisitor().visit(n, new ExpressionStmt(mcE));
                         }
 

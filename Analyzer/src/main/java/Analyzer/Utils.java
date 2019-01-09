@@ -1,39 +1,30 @@
 package Analyzer;
 
-import Analyzer.Results.Results;
-import Metrics.AndroidProjectRepresentation.MethodInfo;
-import Metrics.*;
+
+import AndroidProjectRepresentation.*;
+
+
+import GreenSourceBridge.JSONContainer;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
+
 import org.json.simple.JSONObject;
-import org.omg.CORBA.INTERNAL;
+
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
+
 import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-import Metrics.AndroidProjectRepresentation.*;
 
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import  GreenSourceBridge.GreenSourceAPI;
-import static GreenSourceBridge.GSUtils.sendJSONtoDB;
+
 
 /**
  * Created by rrua on 03/07/17.
@@ -240,7 +231,6 @@ public class Utils {
 
 
     public static JSONObject getTest() {
-
         JSONObject test = new JSONObject();
         test.put("test_application", Analyzer.applicationID); //TODO
         test.put("test_tool", Analyzer.monkey ? "monkey" : "unittests"); // TODO
@@ -253,7 +243,7 @@ public class Utils {
         for (ClassInfo ci : acu.proj.getCurrentApp().allJavaClasses) {
             for (MethodInfo mi : ci.classMethods.values()) {
                 JSONObject jo = new JSONObject();
-                jo.put("method_class", ci.classPackage + "." + ci.className);
+                jo.put("method_class", ci.getClassID());
                 jo.put("method_name", mi.methodName);
                 // hashArgs
                 String args = "";
@@ -538,27 +528,38 @@ public class Utils {
     }
 
 
-    public static JSONArray getMethodsInvoked(String testResultsID, List<String> methodIDs) {
+    public static JSONArray getMethodsInvoked(String testResultsID) {
         JSONArray ja = new JSONArray();
-        for (String s : methodIDs) {
+        for (String s : Analyzer.methodsSet.keySet()) {
             JSONObject test = new JSONObject();
             test.put("test_results", testResultsID);
             test.put("method", s);
+            test.put("times_invoked", Analyzer.methodsSet.get(s));
             ja.add(test);
         }
 
+        Analyzer.methodsSet.clear();
         return ja;
     }
 
-    public static JSONObject getTestResult(String seed, String desc, String testiD, String profilerID, String deviceID, String deviceStartID, String deviceEndID) {
+    public static JSONObject getTestResult(String seed, String desc, String testiD, String profilerID, String deviceID, JSONObject device_init, JSONObject device_end) {
         JSONObject tesResults = new JSONObject();
         tesResults.put("test_results_seed", seed);
         tesResults.put("test_results_description", desc);
         tesResults.put("test_results_test", testiD);
         tesResults.put("test_results_profiler", profilerID);
         tesResults.put("test_results_device", deviceID);
-        tesResults.put("test_results_device_begin_state", deviceStartID);
-        tesResults.put("test_results_device_end_state", deviceEndID);
+        //tesResults.put("test_results_device_begin_state", deviceStartID);
+        //tesResults.put("test_results_device_end_state", deviceEndID);
+        tesResults.put("test_init_mem", device_init.get("device_state_mem"));
+        tesResults.put("test_init_cpu_free", device_init.get("device_state_cpu_free"));
+        tesResults.put("test_init_nr_processes_running", device_init.get("device_state_nr_processes_running"));
+        tesResults.put("test_end_mem", device_end.get("device_state_mem"));
+        tesResults.put("test_end_cpu_free", device_end.get("device_state_cpu_free"));
+        tesResults.put("test_end_nr_processes_running", device_end.get("device_state_nr_processes_running"));
+        tesResults.put("test_results_api_level", device_init.get("device_state_api_level"));
+        tesResults.put("test_results_android_version", device_init.get("device_state_android_version"));
+
         return tesResults;
     }
 
@@ -600,13 +601,13 @@ public class Utils {
 
         JSONArray ja = new JSONArray();
         JSONObject jo = new JSONObject();
-        jo.put("class", classId);
+        jo.put("cm_class", classId);
         jo.put("cm_metric", "numberOfVars");
         jo.put("cm_value", ci.classVariables.size());
         jo.put("cm_coeficient", 1);
         ja.add(jo);
         jo = new JSONObject();
-        jo.put("class", classId);
+        jo.put("cm_class", classId);
         jo.put("cm_metric", "numberOfMethods");
         jo.put("cm_value", ci.classMethods.size());
         jo.put("cm_coeficient", 1);
@@ -622,62 +623,76 @@ public class Utils {
     public static JSONArray getTestMetrics(String testid, String [] res, double energy, double time, double coverage) {
         JSONArray ja = new JSONArray();
         JSONObject testMetrics = new JSONObject();
+
+
         testMetrics.put("test_results", testid);
         testMetrics.put("metric", "wifistate");
-        testMetrics.put("value", res[0]);
-        testMetrics.put("coeficient", 1);
-        ja.add(testMetrics);
-        testMetrics = new JSONObject();
-        testMetrics.put("test_results", testid);
-        testMetrics.put("metric", "mobiledatastate");
-        testMetrics.put("value", res[1]);
-        testMetrics.put("coeficient", 1);
-        ja.add(testMetrics);
-        testMetrics = new JSONObject();
-        testMetrics.put("test_results", testid);
-        testMetrics.put("metric", "screenstate");
-        testMetrics.put("value",res[2]);
-        testMetrics.put("coeficient", 1);
-        ja.add(testMetrics);
-        testMetrics = new JSONObject();
-        testMetrics.put("test_results", testid);
-        testMetrics.put("metric", "batterystatus");
-        testMetrics.put("value", res[3]);
-        testMetrics.put("coeficient", 1);
-        ja.add(testMetrics);
-        testMetrics = new JSONObject();
-        testMetrics.put("test_results", testid);
-        testMetrics.put("metric", "wifirssilevel");
-        testMetrics.put("value", res[4]);
-        testMetrics.put("coeficient", 1);
-        ja.add(testMetrics);
-        testMetrics = new JSONObject();
-        testMetrics.put("test_results", testid);
-        testMetrics.put("metric", "memory");
         testMetrics.put("value", res[5]);
         testMetrics.put("coeficient", 1);
         ja.add(testMetrics);
         testMetrics = new JSONObject();
         testMetrics.put("test_results", testid);
-        testMetrics.put("metric", "bluetoothstate");
+        testMetrics.put("metric", "mobiledatastate");
         testMetrics.put("value", res[6]);
-        testMetrics.put("coeficient", 1);
-        testMetrics = new JSONObject();
-        testMetrics.put("test_results", testid);
-        testMetrics.put("metric", "gpufrequency");
-        testMetrics.put("value", res[7]);
         testMetrics.put("coeficient", 1);
         ja.add(testMetrics);
         testMetrics = new JSONObject();
         testMetrics.put("test_results", testid);
-        testMetrics.put("metric", "cpuloadnormalized");
+        testMetrics.put("metric", "screenstate");
+        testMetrics.put("value",res[7]);
+        testMetrics.put("coeficient", 1);
+        ja.add(testMetrics);
+        testMetrics = new JSONObject();
+        testMetrics.put("test_results", testid);
+        testMetrics.put("metric", "batterystatus");
         testMetrics.put("value", res[8]);
         testMetrics.put("coeficient", 1);
         ja.add(testMetrics);
         testMetrics = new JSONObject();
         testMetrics.put("test_results", testid);
-        testMetrics.put("metric", "gpsstate");
+        testMetrics.put("metric", "wifirssilevel");
         testMetrics.put("value", res[9]);
+        testMetrics.put("coeficient", 1);
+        ja.add(testMetrics);
+        testMetrics = new JSONObject();
+        testMetrics.put("test_results", testid);
+        testMetrics.put("metric", "avgmemory");
+        testMetrics.put("value", res[10]);
+        testMetrics.put("coeficient", 1);
+        ja.add(testMetrics);
+        testMetrics = new JSONObject();
+        testMetrics.put("test_results", testid);
+        testMetrics.put("metric", "maxmemory");
+        testMetrics.put("value", res[11]);
+        testMetrics.put("coeficient", 1);
+        ja.add(testMetrics);
+        testMetrics = new JSONObject();
+        testMetrics.put("test_results", testid);
+        testMetrics.put("metric", "bluetoothstate");
+        testMetrics.put("value", res[12]);
+        testMetrics.put("coeficient", 1);
+        testMetrics = new JSONObject();
+        testMetrics.put("test_results", testid);
+        testMetrics.put("metric", "gpufrequency");
+        testMetrics.put("value", res[13]);
+        testMetrics.put("coeficient", 1);
+        ja.add(testMetrics);
+        testMetrics = new JSONObject();
+        testMetrics.put("test_results", testid);
+        testMetrics.put("metric", "avgcpuload");
+        testMetrics.put("value", res[14]);
+        testMetrics.put("coeficient", 1);
+        ja.add(testMetrics);
+        testMetrics = new JSONObject();
+        testMetrics.put("test_results", testid);
+        testMetrics.put("metric", "maxcpuload");
+        testMetrics.put("value", res[15]);
+        testMetrics.put("coeficient", 1);
+        ja.add(testMetrics);
+        testMetrics = new JSONObject();
+        testMetrics.put("test_results", testid);
+        testMetrics.put("metric", "gpsstate");
+        testMetrics.put("value", res[16]);
         testMetrics.put("coeficient", 1);
         ja.add(testMetrics);
         testMetrics = new JSONObject();
@@ -700,6 +715,19 @@ public class Utils {
         ja.add(testMetrics);
 
         return ja;
+
+
+    }
+
+
+
+    public static void filterMethodsAndMethodMetricsToSend(GreenSourceAPI gsp){
+        JSONContainer jc = new JSONContainer();
+        for (Object o : gsp.methods.getAll()){
+            JSONObject j = ((JSONObject) o);
+
+
+        }
 
 
     }

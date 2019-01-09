@@ -5,10 +5,9 @@
 package jInst.transform;
 
 //import greendroid.tools.Util;
-import Metrics.APICallUtil;
-import Metrics.AndroidProjectRepresentation.ProjectInfo;
-import Metrics.AndroidProjectRepresentation.AppInfo;
-import Metrics.AndroidProjectRepresentation.Variable;
+
+import AndroidProjectRepresentation.APICallUtil;
+import AndroidProjectRepresentation.Variable;
 import com.github.javaparser.ast.*;
 import com.github.javaparser.ASTHelper;
 import com.github.javaparser.JavaParser;
@@ -76,7 +75,7 @@ public class InstrumentHelper {
     private static Profiler profiler;
     private APICallUtil acu = new APICallUtil();
 
-    public InstrumentHelper(APICallUtil apu ,String tName, String work, String proj, String tests, boolean trace) {
+    public InstrumentHelper(APICallUtil apu , String tName, String work, String proj, String tests, boolean trace) {
         this.acu =apu;
         //acu.app = new AppInfo(projectID, proj, "", "Java", "Gradle", 0.0, "unknown", "unknown");
         this.tName = tName;
@@ -417,7 +416,7 @@ public class InstrumentHelper {
                     res = transformTest(src.getAbsolutePath());
                 
                 }else{ // is normal java file (!test file)
-                    acu.getClassInfo(src.getAbsolutePath());
+                    acu.processJavaFile(src.getAbsolutePath());
                      res = transform(src.getAbsolutePath());
                 }
                 if(!res.equals("")){
@@ -461,17 +460,17 @@ public class InstrumentHelper {
 
                 String[] sp = appclass.split("\\.");
                 this.appPackage = new ClassDefs(pack, sp[sp.length - 1]);
-                // TODO check this î
+                // TODO check this
             }
             stateSetup = true;
         }
     }
 
 
+
     protected String transform(String file) throws Exception {
         // creates an input stream for the file to be parsed
         FileInputStream in = new FileInputStream(file);
-        //System.out.println("Parsing & Instrumenting "+file);
         CompilationUnit cu;
         try {
             // parse the file
@@ -488,17 +487,8 @@ public class InstrumentHelper {
         ClassDefs cDef = new ClassDefs();
         cDef.setName(cl); cDef.setPack(pack);
 
-     //ImportDeclaration imp2 = new ImportDeclaration(ASTHelper.createNameExpr("com.greendroid.StaticEstimator"), false, false);
-        // ImportDeclaration imp2 = new ImportDeclaration(ASTHelper.createNameExpr(" com.greenlab.trepnlib.TrepnLib"), false, false);
         ImportDeclaration imp2 = profiler.getLibrary();
         ImportDeclaration imp3 = null;
-//        if (!testOriented)
-//             imp3 = new ImportDeclaration(ASTHelper.createNameExpr((appPackage.getPack()+"." + appPackage.getName())), false, false);
-
-
-//        System.out.println("packs " + appPackage.getPack() + "|" + appPackage.getName() + "\n  cdef" + cDef.getPack() + "|" + cDef.getName());
-
-//        if(this.appPackage.equals(cDef)){ // se é a appclass
 
         if(cu.getImports() != null){
             //cu.getImports().add(imp1);
@@ -537,11 +527,6 @@ public class InstrumentHelper {
             return cu.toString();
         }
         ClassOrInterfaceDeclaration x = (ClassOrInterfaceDeclaration)cu.getTypes().get(0);
-
-//        if(new String(pack+"."+cl).equals(appPackage.getName())){
-////            System.out.println("olha, encontrei-a!!!!!!!!!!!!!!!!!!");
-//        }
-        //The following condition is NEVER true
         String l = pack+"."+cl;
         if(this.devPackage.equals(l)){
             cDef.setLauncher(true);
@@ -556,7 +541,7 @@ public class InstrumentHelper {
                 }
             }
 
-           if(!testOriented) {
+           if(testOriented) {
                ClassOrInterfaceVisitor v = new ClassOrInterfaceVisitor();
                v.setCu(cu);
                v.setTracedMethod(testOriented);
@@ -1229,9 +1214,22 @@ public class InstrumentHelper {
     }
 
 
-    public static String wrapMethod(MethodDeclaration n, ClassDefs arg){
 
-        String metId=  ((ClassDefs) arg).getPack() + "." + ((ClassDefs) arg).getName()+"<"+n.getName();
+
+
+    public static String wrapMethod(MethodDeclaration n, ClassDefs arg){
+        String out= "";
+        Node x = n.getParentNode();
+        while (! (x instanceof ClassOrInterfaceDeclaration )){
+            x = x.getParentNode();
+        }
+
+        if(x.getParentNode() instanceof  ClassOrInterfaceDeclaration){
+            arg.setInnerClass(((ClassOrInterfaceDeclaration) x.getParentNode()).getName());
+            out= arg.getInnerClass() +".";
+        }
+
+        String metId=  ((ClassDefs) arg).getPack() + "." + out + ((ClassOrInterfaceDeclaration) x).getName() +"<"+n.getName();
         metId +="(";
         Set<Variable> args = new HashSet<>();
 
@@ -1253,8 +1251,20 @@ public class InstrumentHelper {
     }
 
     public static String wrapMethod(ConstructorDeclaration n, ClassDefs arg){
+        String out = "";
+        Node x = n.getParentNode();
+        while (! (x instanceof ClassOrInterfaceDeclaration )){
+            x = x.getParentNode();
+        }
 
-        String metId=  ((ClassDefs) arg).getPack() + "." + ((ClassDefs) arg).getName()+"<"+n.getName();
+
+        if(x.getParentNode() instanceof  ClassOrInterfaceDeclaration){
+            arg.setInnerClass(((ClassOrInterfaceDeclaration) x.getParentNode()).getName());
+            out= arg.getInnerClass() +".";
+        }
+
+
+        String metId=  ((ClassDefs) arg).getPack() + "." +out+ ((ClassOrInterfaceDeclaration) x).getName()+"<"+n.getName();
         metId +="(";
         Set<Variable> args = new HashSet<>();
 

@@ -24,21 +24,23 @@ logDir="logs"
 localDir="$HOME/GDResults"
 localDirOriginal="$HOME/GDResults"
 #trace="-MethodOriented"   #trace=$2  ##RR
-trace="-TestOriented"
+checkLogs="Off"
+trace=$1
 monkey="-Monkey"
 folderPrefix=""
 GD_ANALYZER="jars/Analyzer.jar"  # "analyzer/greenDroidAnalyzer.jar"
 GD_INSTRUMENT="jars/jInst.jar"
+GREENSOURCE_URL=$2
 trepnLib="TrepnLibrary-release.aar"
 trepnJar="TrepnLibrary-release.jar"
 profileHardware="YES" # YES or ""
 flagStatus="on"
 SLEEPTIME=120 # 2 minutes
 #SLEEPTIME=1
-min_monkey_runs=2 #20
-threshold_monkey_runs=4 #50
+min_monkey_runs=1 #20
+threshold_monkey_runs=3 #50
 number_monkey_events=500
-min_coverage=60
+min_coverage=10
 totaUsedTests=0
 #DIR=/Users/ruirua/repos/GreenDroid/50apps/*
 DIR=/Users/ruirua/tests/actual/*
@@ -142,7 +144,7 @@ else
 	#TODO include mode to choose the conected device and echo the device name
 	deviceDir="$deviceExternal/trepn"  #GreenDroid
 	#put Trepn preferences on device
-	#(adb push trepnPreferences/ $deviceDir/saved_preferences/) > /dev/null  2>&1 #new
+	(adb push trepnPreferences/ $deviceDir/saved_preferences/) > /dev/null  2>&1 #new
 	#Start Trepn
 	#adb shell monkey -p com.quicinc.trepn -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1
 	
@@ -165,7 +167,7 @@ else
 	w_echo "$TAG searching for Android Projects in -> $DIR"
 	# getting all seeds from file
 	seeds20=$(head -$min_monkey_runs monkey_seeds.txt)
-	last30=$(tail  -30 monkey_seeds.txt)
+	last30=$(tail  -$threshold_monkey_runs monkey_seeds.txt)
 	for f in $DIR/
 		do
 		localDir=$localDirOriginal
@@ -187,13 +189,13 @@ else
 
 		# check if was already processed
 		suc=$(cat $logDir/success.log 2>/dev/null | sort -u | uniq | grep $ID )
-		if [[ -n $suc  ]]; then
+		if [ -n $suc  ] && [ "$checkLogs" != "Off" ]; then
 			## it was already processed
 			w_echo "Aplicattion $ID already processed. Skipping.."
 			continue
 		fi
 		suc=$(cat $logDir/processedApps.log 2>/dev/null | sort -u | uniq | grep $ID )
-		if [[ -n $suc  ]]; then
+		if [ -n $suc  ] && [ "$checkLogs" != "Off" ]; then
 			## it was already processed
 			w_echo "Application $ID already processed. Skipping.."
 			continue
@@ -248,17 +250,18 @@ else
 						#echo "$TAG Creating support folder..."
 						$MKDIR_COMMAND -p $projLocalDir
 						$MKDIR_COMMAND -p $projLocalDir/oldRuns
-						($MV_COMMAND -f $(find  $projLocalDir/ -maxdepth 1 | $SED_COMMAND -n '1!p' |grep -v "oldRuns") $projLocalDir/oldRuns/ ) >/dev/null 2>&1
+						($MV_COMMAND -f $(find $projLocalDir ! -path $projLocalDir -maxdepth 1 | grep -v "oldRuns") $projLocalDir/oldRuns/ ) >/dev/null 2>&1
 						$MKDIR_COMMAND -p $projLocalDir/all
 
 						FOLDER=${f}${prefix} #$f
 
-						ORIGINAL_GRADLE=($(find $FOLDER/$tName -name "*.gradle" -type f -print | grep -v "settings.gradle" | xargs grep -L "com.android.library" | xargs grep -l "buildscript" | cut -f1 -d:)) # must be done before instrumentation
+						ORIGINAL_GRADLE=($(find $FOLDER/ -name "*.gradle" -type f -print | grep -v "settings.gradle" | xargs grep -L "com.android.library" | xargs grep -l "buildscript" | cut -f1 -d:)) # must be done before instrumentation
 						APP_ID="unknown"
 						getAppUID ${GRADLE[0]} $MANIF_S APP_ID
 						GREENSOURCE_APP_UID="$ID#$APP_ID"
-						APP_JSON="{\"app_id\": \"$GREENSOURCE_APP_UID\", \"app_location\": \"$f\", \"app_version\": \"1\"}" #" \"app_language\": \"Java\"}"
+						APP_JSON="{\"app_id\": \"$GREENSOURCE_APP_UID\", \"app_location\": \"$f\", \"app_version\": \"0.0\", \"app_project\": \"$ID\"}" #" \"app_language\": \"Java\"}"
 						Proj_JSON="{\"project_id\": \"$ID\", \"proj_desc\": \"\", \"proj_build_tool\": \"gradle\", \"project_apps\":[$APP_JSON] , \"project_packages\":[]}"
+						#echo " ids -> $APP_ID , $GREENSOURCE_APP_UID"
 
 #Instrumentation phase	
 						oldInstrumentation=$(cat $FOLDER/$tName/instrumentationType.txt 2>/dev/null | grep  ".*Oriented" )
@@ -268,7 +271,6 @@ else
 							rm -rf $FOLDER/$tName
 							mkdir -p $FOLDER/$tName
 							echo "$Proj_JSON" > $FOLDER/$tName/$GREENSOURCE_APP_UID.json
-							
 							java -jar $GD_INSTRUMENT "-gradle" $tName "X" $FOLDER $MANIF_S $MANIF_T $trace $monkey $GREENSOURCE_APP_UID ##RR
 							#create results support folder
 							#rm -rf $projLocalDir/all/*
@@ -412,7 +414,7 @@ else
 							echo "$ID|$actual_coverage" >> $logDir/below$min_coverage.log
 						fi
 
-						cp $FOLDER/$tName/$GREENSOURCE_APP_UID.json $localDir/projectApplication.json
+						#cp $FOLDER/$tName/$GREENSOURCE_APP_UID.json $localDir/projectApplication.json
 
 						(echo "{\"device_serial_number\": \"$device_serial\", \"device_model\": \"$device_model\",\"device_brand\": \"$device_brand\"}") > device.json
 						./uninstall.sh $PACKAGE $TESTPACKAGE
@@ -425,7 +427,7 @@ else
 						#java -jar $GD_ANALYZER $ID $PACKAGE $TESTPACKAGE $FOLDER $FOLDER/tName $localDir
 						#(java -jar $GD_ANALYZER $trace $projLocalDir/ $projLocalDir/all/ $projLocalDir/*.csv) > $logDir/analyzer.log  ##RR
 						w_echo "Analyzing results .."
-						java -jar $GD_ANALYZER $trace $projLocalDir/ $monkey
+						java -jar $GD_ANALYZER $trace $projLocalDir/ $monkey $GREENSOURCE_URL
 						#cat $logDir/analyzer.log
 						errorAnalyzer=$(cat $logDir/analyzer.log)
 						#TODO se der erro imprimir a vermelho e aconselhar usar o trepFix.sh
@@ -591,7 +593,7 @@ else
 							#continue
 						fi
 						w_echo "Analyzing results .."
-						java -jar $GD_ANALYZER $trace $projLocalDir/ $monkey
+						java -jar $GD_ANALYZER $trace $projLocalDir/ $monkey $GREENSOURCE_URL
 						#cat $logDir/analyzer.log
 						errorAnalyzer=$(cat $logDir/analyzer.log)
 						#TODO se der erro imprimir a vermelho e aconselhar usar o trepFix.sh

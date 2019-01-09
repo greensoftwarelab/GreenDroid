@@ -1,8 +1,6 @@
 package jInst;
 
-import Metrics.APICallUtil;
-import Metrics.AndroidProjectRepresentation.ClassInfo;
-import Metrics.MethodOfAPI;
+
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
@@ -23,6 +21,30 @@ import java.util.Map;
  */
 
 public class tester {
+
+    public static void main(String[] args) throws Exception{
+
+        checkParser();
+    }
+
+
+
+    public static void checkParser() throws Exception{
+
+        String file = "/Users/ruirua/tests/actual/27d5f1b6-d1b3-496b-b6c8-9ba25532a0b7/latest/_TRANSFORMED_/app/src/main/java/com/micnubinub/materiallibrary/MaterialRadioButton.java";
+
+        CompilationUnit cu;
+       FileInputStream in = new FileInputStream(file);
+       try {
+           // parse the file
+           cu = JavaParser.parse(in,null, false);
+           System.out.println("");
+       } finally {
+           in.close();
+       }
+    }
+
+
 
 //    public static MethodCallExpr me = new MethodCallExpr();
 

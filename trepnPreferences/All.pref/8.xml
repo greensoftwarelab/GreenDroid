@@ -9,7 +9,8 @@
     <int name="com.quicinc.preferences.overlays.first_data_point_color" value="-13981957" />
     <string name="com.quicinc.preferences.overlays.type">None</string>
     <int name="com.quicinc.preferences.overlays.second_data_point_color" value="-142299" />
-    <string name="com.quicinc.preferences.overlays.title">&#10;    </string>
+    <string name="com.quicinc.preferences.overlays.title">
+    </string>
     <int name="com.quicinc.preferences.overlays.location_y" value="867" />
     <int name="com.quicinc.preferences.overlays.location_x" value="448" />
 </map>

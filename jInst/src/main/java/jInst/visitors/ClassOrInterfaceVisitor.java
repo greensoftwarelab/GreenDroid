@@ -31,24 +31,15 @@ public class ClassOrInterfaceVisitor extends MethodChangerVisitor {
 
         if(n.isInterface()){
             super.visit(n,arg);
+
+            //
             return;
         }
         else {
             //classe java
             ClassDefs cDef = (ClassDefs)arg;
-
-//            if (n.getExtends()!=null)
-//                for (ClassOrInterfaceType c: n.getExtends()){
-//                    System.out.println("olha os extends sao estes, caso queiras" + c);
-//                }
-
             String appAndroidName = InstrumentHelper.getApplicationFullName();
-//            System.out.println("app android -> " + appAndroidName);
-//            System.out.println("android name é este zé :" + appAndroidName);
             String thisClassName = cDef.getPack() + "." + cDef.getName();
-//            System.out.println("thisclassname -> " +thisClassName);
-//            System.out.println("esta é a classe " + thisClassName);
-//            System.out.println("resultado = " + thisClassName.equals(appAndroidName));
             if (thisClassName.equals(appAndroidName)){
                 // criar variavel context
                 FieldDeclaration fieldDeclaration;
@@ -80,7 +71,6 @@ public class ClassOrInterfaceVisitor extends MethodChangerVisitor {
                 met.setBody(bloco);
 //                met.setModifiers(1);// void
                 met.setDefault(false);
-
                 // metodo para fazer set
                 MethodDeclaration set = new MethodDeclaration();
                 // tipo que devolve

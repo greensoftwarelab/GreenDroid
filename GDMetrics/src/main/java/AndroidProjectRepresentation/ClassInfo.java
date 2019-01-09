@@ -1,8 +1,7 @@
-package Metrics.AndroidProjectRepresentation;
+package AndroidProjectRepresentation;
 
 
 
-import Metrics.NameExpression;
 import com.github.javaparser.ast.body.ModifierSet;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -25,6 +24,7 @@ public class ClassInfo implements Serializable, JSONSerializable {
     public String classPackage = "";
     public String className = "";
     public String extendedClass = "";
+    public String outClass = ""; // if is an inner class
     public Set<NameExpression> classImports = new HashSet<>();
     public Map<String, MethodInfo> classMethods = new HashMap<>();
     public Map<String, Variable> classVariables = new HashMap<>();
@@ -40,12 +40,16 @@ public class ClassInfo implements Serializable, JSONSerializable {
     public void setModifiers(int modifiers) {
         this.isAbstract = ModifierSet.isAbstract(modifiers);
         this.isFinal = ModifierSet.isFinal(modifiers);
-        this.accessModifier = ModifierSet.isPublic(modifiers)? "public" : (ModifierSet.isProtected(modifiers)? "protected" : (ModifierSet.isPrivate(modifiers)? "private": ""));
+        this.accessModifier = ModifierSet.isPublic(modifiers)? "public" : (ModifierSet.isProtected(modifiers)? "protected" : (ModifierSet.isPrivate(modifiers)? "private": "protected"));
     }
 
     public ClassInfo (String appID){
 
         this.appID = appID;
+        this.outClass = "";
+        this.extendedClass ="";
+        this.classPackage="";
+        this.className="";
     }
 
 
@@ -69,6 +73,7 @@ public class ClassInfo implements Serializable, JSONSerializable {
         jo.put("class_is_interface", this.isInterface);
         jo.put("class_non_acc_mod", (this.isFinal? "final" : "" )+ (this.isAbstract? "#abstract" : ""  ));
         jo.put("class_name", this.className);
+        jo.put("class_outterclass", this.outClass);
         jo.put("class_package", this.classPackage);
         jo.put("class_superclass", this.extendedClass);
         jo.put("class_acc_modifier",this.accessModifier );
@@ -76,7 +81,7 @@ public class ClassInfo implements Serializable, JSONSerializable {
         for (NameExpression ne : this.classImports){
             JSONObject jj = new JSONObject();
             //jj.put("import", ne.qualifier+"."+"name" );
-            jj.put("import_name", ne.qualifier+"."+"name");
+            jj.put("import_name", ne.qualifier+"."+ ne.name);
             jj.put("import_class", this.getClassID());
             imports.add(jj);
         }
@@ -111,21 +116,37 @@ public class ClassInfo implements Serializable, JSONSerializable {
 
 
     public String getFullClassName(){
-        return classPackage +"." + className;
+        String s = outClass.equals("") ? "" : (outClass + ".");
+        return classPackage +"."+s + className;
     }
 
     public MethodInfo getMethod(String methodName){
         for (String s : this.classMethods.keySet()){
-            if (s.contains(methodName));
-                return this.classMethods.get(s);
+            if (s.contains(methodName)){
+                MethodInfo m = this.classMethods.get(s);
+                String mm =  methodName.replaceAll("\\(.*?\\)", "");
+                String mic = m.methodName.replaceAll("\\(.*?\\)", "");
+                if (m.getMethodID().contains(methodName)&& mm.equals(mic))
+                    return m;
+
+            }
+
         }
         return null;
     }
 
 
+
+    protected String getSimpleClassID(){
+        String s = outClass.equals("") ? "" : (outClass + ".");
+        return  this.classPackage + "." +s + this.className ;
+    }
+
+
     public String getClassID(){
 
-        return this.appID + "#" + this.classPackage + "." + this.className ;
+        String s = outClass.equals("") ? "" : (outClass + ".");
+        return this.appID + "#" + this.classPackage + "." + s + this.className ;
     }
 
 
@@ -137,7 +158,7 @@ public class ClassInfo implements Serializable, JSONSerializable {
     @Override
     public JSONSerializable fromJSONObject(JSONObject jo) {
         ClassInfo classe = new ClassInfo("");
-        classe.appID = ((String) jo.get("class_id")).split("#")[0];
+        classe.appID = ((String) jo.get("class_app"));
         classe.className = ((String) jo.get("class_name"));
         classe.classPackage = ((String) jo.get("class_package"));
         classe.isInterface = ((boolean) jo.get("class_is_interface"));
@@ -145,6 +166,7 @@ public class ClassInfo implements Serializable, JSONSerializable {
         classe.isFinal = ((String) jo.get("class_non_acc_mod")).contains("final");
         classe.extendedClass = ((String) jo.get("class_superclass"));
         classe.accessModifier = ((String) jo.get("class_acc_modifier"));
+        classe.outClass = ((String) jo.get("class_outterclass"));
 
         for (String  s:((String) jo.get("class_implemented_ifaces")).split("#")){
             classe.interfacesImplemented.add(s);
@@ -155,7 +177,7 @@ public class ClassInfo implements Serializable, JSONSerializable {
             if (job.containsKey("import_name")){
                 String [] imp = ((String) job.get("import_name")).split("\\.");
                 if (imp.length>1){
-                    classe.classImports.add(new NameExpression(imp[0], imp[1]));
+                    classe.classImports.add(new NameExpression( ((String) job.get("import_name")).replace("." + imp[imp.length-1], "") , imp[imp.length-1]));
                 }
 
             }
@@ -212,5 +234,14 @@ public class ClassInfo implements Serializable, JSONSerializable {
 
         return ja;
 
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj==null)
+            return false;
+        ClassInfo ne = (ClassInfo) obj;
+        // return this.type.equals(ne.type) && this.varName.equals(ne.varName);
+        return this.classPackage.equals(ne.classPackage)  && ((this.extendedClass == null || ne.extendedClass == null) || this.extendedClass.equals(ne.extendedClass)) && this.className.equals(ne.className);
     }
 }

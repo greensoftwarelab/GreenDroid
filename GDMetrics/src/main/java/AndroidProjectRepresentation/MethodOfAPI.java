@@ -1,6 +1,4 @@
-package Metrics;
-
-import Metrics.AndroidProjectRepresentation.Variable;
+package AndroidProjectRepresentation;
 
 import java.io.Serializable;
 import java.util.ArrayList;

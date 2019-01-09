@@ -1,4 +1,4 @@
-package Metrics.AndroidProjectRepresentation;
+package AndroidProjectRepresentation;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -44,7 +44,13 @@ public class ProjectInfo implements Serializable, JSONSerializable{
      * **/
     public AppInfo getCurrentApp (){
 
-        return this.apps.get(0); // TODO replace by other mechanism
+        try{
+            return this.apps.get(0); // TODO replace by other mechanism
+        }
+        catch (IndexOutOfBoundsException e){
+
+        }
+        return new AppInfo();
     }
 
     public ClassInfo getClassOfMethod(String method_id){
@@ -74,6 +80,14 @@ public class ProjectInfo implements Serializable, JSONSerializable{
         }
         jo.put("project_apps", apps);
         return jo;
+    }
+
+    public static ProjectInfo getSimpleProjectJSON (JSONObject jo ){
+        JSONObject pro = new JSONObject();
+        pro.put("project_id", jo.get("project_id") );
+        pro.put("project_build_tool", jo.get("project_build_tool") );
+        pro.put("project_description", jo.get("project_description") );
+        return ((ProjectInfo) new ProjectInfo().fromJSONObject(pro));
     }
 
     @Override
@@ -126,6 +140,7 @@ public class ProjectInfo implements Serializable, JSONSerializable{
 
         return ja;
     }
+
 
 
 }

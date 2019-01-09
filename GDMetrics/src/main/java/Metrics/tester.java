@@ -1,31 +1,58 @@
 package Metrics;
 
-import Metrics.AndroidProjectRepresentation.MethodInfo;
-import Metrics.AndroidProjectRepresentation.ProjectInfo;
-import com.github.javaparser.ParseException;
-import com.github.javaparser.ast.body.FieldDeclaration;
+import AndroidProjectRepresentation.APICallUtil;
+import AndroidProjectRepresentation.AppInfo;
+import AndroidProjectRepresentation.ClassInfo;
+import GreenSourceBridge.GreenSourceAPI;
 import org.json.simple.JSONObject;
-
-import java.io.File;
-import java.io.IOException;
 
 public class tester {
 
     // deploy -> mvn install:install-file -DgroupId=com.greenlab -DartifactId=Metrics -Dversion=1.0 -Dpackaging=jar -Dfile=target/Metrics-1.0-SNAPSHOT.jar
-//
-//   public static void main(String[] args) throws IOException, ParseException {
-//      // JSONObject jo = new APICallUtil().fromJSONFile("/Users/ruirua/GDResults/2bb46be6-f071-413d-9221-c090a8f0cb29/MonkeyTest14_09_18_01_55_06/2bb46be6-f071-413d-9221-c090a8f0cb29#com.event.search.json");
-//      // System.out.println("");
-//         JSONObject jo =   new APICallUtil().fromJSONFile("/Users/ruirua/GDResults/25fcc2ea-9dac-4505-a1aa-da3b68ed2425/MonkeyTest15_09_18_22_59_39/25fcc2ea-9dac-4505-a1aa-da3b68ed2425#com.example.zafir.foodsaver.json");
-//
-//         APICallUtil apu = ((APICallUtil) (new APICallUtil().fromJSONObject(jo)));
-//       MethodInfo mi = apu.getMethodOfClass("onCreate(#Bundle)" , "com.example.zafir.foodsaver.MainActivity");
-//       ProjectInfo pi = apu.proj;
-//       System.out.println();
-//// metodo ->  classe com.example.zafir.foodsaver.MainActivity
-//   }
+   public static void main(String[] args) throws Exception {
+          testJSONLoad();
+        //   testServer();
+        // testClassInst();
+   }
 
     //
+
+
+    public static void testClassInst() throws Exception{
+      APICallUtil apu =    new APICallUtil();
+      String file = "/Users/ruirua/tests/actual/27d5f1b6-d1b3-496b-b6c8-9ba25532a0b7/latest/_TRANSFORMED_/" +
+              "app/src/main/java/com/micnubinub/materiallibrary/MaterialCheckBox.java";
+      apu.proj.apps.add(new AppInfo());
+      apu.processJavaFile(file);
+      System.out.println(apu.proj);
+    }
+
+
+    public static void testJSONLoad(){
+
+       String file = "/Users/ruirua/GDResults/27d5f1b6-d1b3-496b-b6c8-9ba25532a0b7/"
+               + "MonkeyTest07_01_19_13_36_18/27d5f1b6-d1b3-496b-b6c8-9ba25532a0b7#com.micnubinub.materiallibrary.json";
+       JSONObject jo = new APICallUtil().fromJSONFile(file);
+        APICallUtil acu = ((APICallUtil) new APICallUtil().fromJSONObject( jo));
+       for (ClassInfo c : acu.proj.getCurrentApp().allJavaClasses){
+           System.out.println(c.className);
+       }
+
+
+   }
+
+
+    public static void testServer(){
+        JSONObject jo = new JSONObject();
+        jo.put("device_serial_number", "1") ;
+        jo.put("device_brand", "marroco21") ;
+        jo.put("device_model", "ipheno21") ;
+
+        GreenSourceAPI.sendDeviceToDB(jo.toJSONString());
+
+       // GSUtils.sendJSONtoDB("http://greensource.di.uminho.pt/devices/", jo.toJSONString());
+
+    }
 
 
 }
