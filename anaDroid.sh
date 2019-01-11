@@ -1,6 +1,8 @@
 #!/bin/bash
 source settings.sh
 
+# invocation : ./anaDroid 
+
 TEST_ORIENTATION="-TestOriented"
 URL="http://greensource.di.uminho.pt/"
 PROFILER="Trepn"
