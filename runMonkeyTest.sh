@@ -46,16 +46,18 @@ grantPermissions(){
 
 
 grantPermissions $package
-adb shell "echo 1 > $deviceDir/GDflag"
+adb shell "echo 0 > $deviceDir/GDflag"
 i_echo "actual seed -> $monkey_seed"
 now=$(date +"%d/%m/%y-%H:%M:%S")
 w_echo "starting the profiler"
 (adb shell am startservice com.quicinc.trepn/.TrepnService) >/dev/null 2>&1
 sleep 5
+
+(adb shell "> $deviceDir/TracedMethods.txt") >/dev/null 2>&1
+
 w_echo "starting profiling phase"
 (adb shell am broadcast -a com.quicinc.trepn.start_profiling -e com.quicinc.trepn.database_file "myfile") >/dev/null 2>&1
 sleep 3
-
 #w_echo "clicking home button.."
 #adb shell am start -a android.intent.action.MAIN -c android.intent.category.HOME > /dev/null 2>&1
 adb shell am broadcast -a org.thisisafactory.simiasque.SET_OVERLAY --ez enable true
@@ -105,22 +107,22 @@ adb shell ps | grep "com.android.commands.monkey" | awk '{print $2}' | xargs -I{
 
 e_echo "state: CPU: $cpu % , MEM: $mem,proc running : $nr_processes sdk level: $sdk_level API:$api_level "
 echo "{\"device_state_mem\": \"$mem\", \"device_state_cpu_free\": \"$cpu\",\"device_state_nr_processes_running\": \"$nr_processes\",\"device_state_api_level\": \"$api_level\",\"device_state_android_version\": \"$sdk_level\" }" > $localDir/end_state$monkey_seed.json
-adb shell "echo -1 > $deviceDir/GDflag"
-grantPermissions $package
+#adb shell "echo -1 > $deviceDir/GDflag"
+#grantPermissions $package
 
 #### AFTER EXPORTING, RUN AGAIN  ( TRACING METHODS)
-adb shell am broadcast -a org.thisisafactory.simiasque.SET_OVERLAY --ez enable true
-w_echo "[Tracing] Running monkey tests..."
+a#db shell am broadcast -a org.thisisafactory.simiasque.SET_OVERLAY --ez enable true
+#w_echo "[Tracing] Running monkey tests..."
 #w_echo "monkey command -> $TIMEOUT_COMMAND -s 9 $TIMEOUT adb shell monkey  -s $monkey_seed -p $package -v --pct-syskeys 0 --kill-process-after-error  $monkey_nr_events"
-sleep 2
-($TIMEOUT_COMMAND -s 9 $TIMEOUT adb shell monkey  -s $monkey_seed -p $package -v  --pct-syskeys 0 --ignore-crashes --ignore-security-exceptions --throttle 10 $monkey_nr_events) &> logs/monkey.log
-RET=$(echo $?)
-if [[ "$RET" != "0" ]]; then
-	e_echo "error while running -> error code : $RET"
-	echo "$localDir,$monkey_seed" >> logs/timeoutSeed.log
-	w_echo "A TIMEOUT Ocurred. killing process of monkey test"
-	adb shell ps | grep "com.android.commands.monkey" | awk '{print $2}' | xargs -I{} adb shell kill -9 {}
-fi
+#sleep 2
+#($TIMEOUT_COMMAND -s 9 $TIMEOUT adb shell monkey  -s $monkey_seed -p $package -v  --pct-syskeys 0 --ignore-crashes --ignore-security-exceptions --throttle 10 $monkey_nr_events) &> logs/monkey.log
+#RET=$(echo $?)
+#if [[ "$RET" != "0" ]]; then
+#	e_echo "error while running -> error code : $RET"
+#	echo "$localDir,$monkey_seed" >> logs/timeoutSeed.log
+#	w_echo "A TIMEOUT Ocurred. killing process of monkey test"
+#	adb shell ps | grep "com.android.commands.monkey" | awk '{print $2}' | xargs -I{} adb shell kill -9 {}
+#fi
 
 echo "cleaning app cache"
 adb shell pm clear $package >/dev/null 2>&1
